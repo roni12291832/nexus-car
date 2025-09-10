@@ -17,7 +17,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import AnimatedGradientText from "@/components/text-gradient";
 
 export default function ConfirmResetPassword() {
   const router = useRouter();
@@ -83,7 +82,7 @@ export default function ConfirmResetPassword() {
 
   return (
     <div className="flex  flex-col h-screen w-screen justify-center items-center px-4 ">
-      <AnimatedGradientText text="FlashLy" />
+      
       <Card className="w-full max-w-md rounded-sm mt-2">
         <CardHeader>
           <CardTitle>Redefinir Senha</CardTitle>
