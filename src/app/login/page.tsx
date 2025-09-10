@@ -9,7 +9,7 @@ export default function Page() {
     <div className="min-h-screen bg-slate-50 dark:bg-gray-900">
       <div className="px-2 py-8">
         <div className="flex justify-center mb-8">
-          <Logo size="large" />
+          <Logo />
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
@@ -23,7 +23,9 @@ export default function Page() {
                 com IA
               </h1>
               <p className="text-xl text-muted-foreground leading-relaxed">
-                Nexus Car oferece um agente virtual inteligente que conversa com seus clientes, qualifica leads e aumenta suas vendas, 24 horas por dia.
+                Nexus Car oferece um agente virtual inteligente que conversa com
+                seus clientes, qualifica leads e aumenta suas vendas, 24 horas
+                por dia.
               </p>
             </div>
 

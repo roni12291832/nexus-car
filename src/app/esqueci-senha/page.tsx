@@ -43,7 +43,6 @@ export default function EsqueciSenha() {
 
   return (
     <div className="flex h-screen w-screen justify-center items-center flex-col">
-    
       <Card className="rounded-sm md:max-w-[25vw] lg:max-w-[32vw] mt-4 mx-4">
         <CardHeader>
           <CardTitle>Recuperar Senha</CardTitle>
@@ -64,7 +63,7 @@ export default function EsqueciSenha() {
               />
             </div>
             <Button
-              className="w-full my-4 bg-[#d8c622] hover:bg-[#f4e37b] text-black"
+              className="w-full my-4 bg-[#372b82] text-white "
               type="submit"
               disabled={loading}
             >
@@ -74,7 +73,7 @@ export default function EsqueciSenha() {
         </CardContent>
         <CardFooter className="text-sm text-muted-foreground text-center">
           Lembrou a senha?{" "}
-          <Link href="/login" className="text-[#d8c622] hover:underline">
+          <Link href="/login" className="text-[#372b82] hover:underline">
             Clique aqui para entrar
           </Link>
         </CardFooter>

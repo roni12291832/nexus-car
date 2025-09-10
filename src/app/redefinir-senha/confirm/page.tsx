@@ -116,7 +116,7 @@ export default function ConfirmResetPassword() {
             </div>
 
             <Button
-              className="w-full bg-[#d8c622] hover:bg-[#f4e37b] text-black"
+              className="w-full bg-[#372b82] text-white"
               type="submit"
               disabled={carregando}
             >
@@ -127,7 +127,7 @@ export default function ConfirmResetPassword() {
 
         <CardFooter className="text-sm text-muted-foreground text-center">
           Lembrou sua senha?{" "}
-          <Link href="/login" className="text-[#d8c622] hover:underline ml-1">
+          <Link href="/login" className="text-[#372b82] hover:underline ml-1">
             Voltar ao login
           </Link>
         </CardFooter>
