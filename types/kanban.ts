@@ -1,5 +1,5 @@
 export interface Task {
-  id: string;
+  id?: string;
   title: string;
   description?: string;
   status: string;
@@ -7,7 +7,7 @@ export interface Task {
   subtasks: Subtask[];
   customFields: CustomField[];
   createdAt: string;
-  columnId: string | null;
+  columnId?: string | null;
 }
 
 export interface Subtask {
