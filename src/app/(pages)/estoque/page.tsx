@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,9 +23,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Plus, Search, Filter, Eye } from "lucide-react";
 
-import Image from "next/image";
-
 import type { StaticImageData } from "next/image";
+import { supabase } from "@/lib/supabase/server";
+import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Vehicle {
   id: string;
@@ -36,45 +37,38 @@ interface Vehicle {
   type: "SUV" | "Sedan" | "Hatch";
   image?: string | StaticImageData;
   status: "Disponível" | "Vendido" | "Reservado";
-  views: number;
 }
 
 export default function Inventory() {
-  const [vehicles] = useState<Vehicle[]>([
-    {
-      id: "1",
-      name: "Honda HR-V",
-      year: 2022,
-      model: "EXL CVT",
-      price: 95000,
-      type: "SUV",
+  const { user } = useAuth();
 
-      status: "Disponível",
-      views: 45,
-    },
-    {
-      id: "2",
-      name: "Honda Civic",
-      year: 2020,
-      model: "Sport",
-      price: 85000,
-      type: "Sedan",
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [loading, setLoading] = useState(true);
 
-      status: "Disponível",
-      views: 32,
-    },
-    {
-      id: "3",
-      name: "Volkswagen Polo",
-      year: 2021,
-      model: "Highline",
-      price: 65000,
-      type: "Hatch",
+  useEffect(() => {
+    if (!user) return;
+    const fetchVehicles = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("estoque")
+        .select("*")
+        .order("name", { ascending: true })
+        .eq("user_id", user.id);
 
-      status: "Reservado",
-      views: 28,
-    },
-  ]);
+      if (error) {
+        console.error("Erro ao buscar veículos:", error);
+      } else if (data) {
+        const vehiclesWithStatus = data.map((v) => ({
+          ...v,
+          status: v.status || "Disponível",
+        }));
+        setVehicles(vehiclesWithStatus);
+      }
+      setLoading(false);
+    };
+
+    fetchVehicles();
+  }, [user]);
 
   const [filteredVehicles, setFilteredVehicles] = useState(vehicles);
   const [filters, setFilters] = useState({
@@ -84,6 +78,11 @@ export default function Inventory() {
     maxPrice: "",
     year: "",
   });
+
+  useEffect(() => {
+  setFilteredVehicles(vehicles);
+}, [vehicles]);
+
 
   const [newVehicle, setNewVehicle] = useState({
     name: "",
@@ -140,14 +139,40 @@ export default function Inventory() {
     setFilteredVehicles(vehicles);
   };
 
-  const addVehicle = () => {
-    setNewVehicle({
-      name: "",
-      year: "",
-      model: "",
-      price: "",
-      type: "",
-    });
+  const addVehicle = async () => {
+    if (
+      !newVehicle.name ||
+      !newVehicle.year ||
+      !newVehicle.type ||
+      !newVehicle.model ||
+      !newVehicle.price
+    ) {
+      alert("Preencha todos os campos!");
+      return;
+    }
+    if (!user) {
+      alert("Você precisa estar logado para adicionar um veículo.");
+      return;
+    }
+    const { error } = await supabase.from("estoque").insert([
+      {
+        name: newVehicle.name,
+        year: newVehicle.year,
+        type: newVehicle.type,
+        model: newVehicle.model,
+        user_id: user.id,
+        price: parseFloat(newVehicle.price),
+        status: "Disponível",
+      },
+    ]);
+
+    if (error) {
+      console.error("Erro ao adicionar veículo:", error);
+      toast.error("Erro ao adicionar veículo");
+    } else {
+      toast.success("Veículo adicionado com sucesso!");
+      setNewVehicle({ name: "", year: "", type: "", model: "", price: "" });
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -162,6 +187,8 @@ export default function Inventory() {
         return "bg-muted text-muted-foreground";
     }
   };
+
+  if (loading) return <p>Carregando veículos...</p>;
 
   return (
     <div className="space-y-6">
@@ -359,21 +386,13 @@ export default function Inventory() {
         </CardContent>
       </Card>
 
-      {/* Lista de Veículos */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filteredVehicles.map((vehicle) => (
           <Card key={vehicle.id} className="overflow-hidden">
-            <div className="aspect-video bg-muted relative">
-              <Image
-                src={vehicle.image}
-                alt={`${vehicle.name} ${vehicle.year}`}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute top-2 right-2">
-                <Badge className={getStatusColor(vehicle.status)}>
-                  {vehicle.status}
-                </Badge>
-              </div>
+            <div className="ml-4">
+              <Badge className={getStatusColor(vehicle.status)}>
+                {vehicle.status}
+              </Badge>
             </div>
 
             <CardContent className="p-4">
@@ -390,9 +409,6 @@ export default function Inventory() {
                 <div className="flex items-center justify-between">
                   <div className="text-2xl font-bold text-primary">
                     R$ {vehicle.price.toLocaleString()}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {vehicle.views} visualizações
                   </div>
                 </div>
 
