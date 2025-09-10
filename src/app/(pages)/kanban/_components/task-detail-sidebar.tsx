@@ -290,7 +290,7 @@ export default function TaskDetailSidebar({
   };
 
   const handleDeleteTask = () => {
-    onDelete(task.id);
+    onDelete(task.id!);
   };
 
   const handleDuplicateTask = () => {

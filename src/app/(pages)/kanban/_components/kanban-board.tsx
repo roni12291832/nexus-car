@@ -211,7 +211,7 @@ export default function KanbanBoard() {
             );
             if (targetColumn && task.status !== targetColumn.title) {
               tasksToMove.push({
-                taskId: task.id,
+                taskId: task.id!,
                 sourceColumnId: column.id, // agora string garantido
                 targetColumnId: action.targetColumnId, // agora string garantido
               });
