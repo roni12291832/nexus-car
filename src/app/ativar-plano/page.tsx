@@ -59,7 +59,7 @@ export default function PlanNotActivated() {
                 </div>
               </div>
 
-              <SubscribeButton priceId="price_1S5AcTAigAbsBK16SVfqPEgk" />
+              <SubscribeButton priceId="price_1S6HECBMIKs9aupq1sSp1H3S" />
             </CardContent>
           </Card>
 
@@ -111,7 +111,7 @@ export default function PlanNotActivated() {
                 </div>
               </div>
 
-              <SubscribeButton priceId="price_1S5AcTAigAbsBK16gxlTXUna" />
+              <SubscribeButton priceId="price_1S6HGABMIKs9aupq7f0LjcTQ" />
             </CardContent>
           </Card>
 

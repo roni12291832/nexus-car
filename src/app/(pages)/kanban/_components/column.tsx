@@ -123,10 +123,10 @@ export default function Column({
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="dark:bg-gray-950">
               <DropdownMenuItem
                 onClick={onDeleteColumn}
-                className="text-red-600 dark:text-red-400"
+                className="text-red-600 dark:text-red-400 "
               >
                 <Trash2 className="mr-2 h-4 w-4" />
                 Deletar coluna
@@ -141,7 +141,7 @@ export default function Column({
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className="flex-1 p-2 overflow-y-auto"
+            className="flex-1 p-2 overflow-y-auto dark:bg-gray-950"
           >
             {column.tasks.map((task, index) => (
               <Draggable key={task.id} draggableId={task.id!} index={index}>
@@ -164,7 +164,7 @@ export default function Column({
 
             {isAddingTask ? (
               <div className="mt-2 p-3 bg-white dark:bg-gray-800 rounded-md shadow-sm border dark:border-gray-700">
-                <Label htmlFor="task-title" className="dark:text-gray-200">
+                <Label htmlFor="task-title" className="dark:text-gray-200 mb-2">
                   Nome da tarefa
                 </Label>
                 <Input
@@ -176,7 +176,7 @@ export default function Column({
                 />
                 <Label
                   htmlFor="task-description"
-                  className="dark:text-gray-200"
+                  className="dark:text-gray-200 mb-2"
                 >
                   Descrição (opcional)
                 </Label>

@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import TaskDetailSidebar from "./task-detail-sidebar";
 import { supabase } from "@/lib/supabase/server";
 import { useAuth } from "@/contexts/AuthContext";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export default function KanbanBoard() {
   const { user } = useAuth();
@@ -36,16 +37,16 @@ export default function KanbanBoard() {
 
   useEffect(() => {
     const fetchData = async () => {
-      // 1. Busca colunas
+      if (!user) return;
       const { data: columnsData, error: colErr } = await supabase
         .from("columns")
-        .select("id, title, color");
+        .select("id, title, color")
+        .eq("user_id", user.id);
       if (colErr) {
         console.error("Erro ao buscar colunas:", colErr);
         return;
       }
 
-      // 2. Busca tasks relacionadas
       const { data: tasksData, error: taskErr } = await supabase
         .from("tasks")
         .select(
@@ -55,12 +56,12 @@ export default function KanbanBoard() {
         custom_fields ( id, name, value )
       `
         );
+
       if (taskErr) {
         console.error("Erro ao buscar tasks:", taskErr);
         return;
       }
 
-      // 3. Monta estrutura Column[] com tasks
       const mappedColumns: ColumnType[] =
         columnsData?.map((col) => ({
           id: col.id!,
@@ -84,7 +85,6 @@ export default function KanbanBoard() {
 
       setColumns(mappedColumns);
 
-      // 4. Busca regras
       const { data: rulesData, error: ruleErr } = await supabase
         .from("rules")
         .select(
@@ -100,7 +100,6 @@ export default function KanbanBoard() {
         return;
       }
 
-      // 5. Monta estrutura Rule[]
       const mappedRules: Rule[] =
         rulesData?.map((rule) => {
           const conditionData = rule.rule_conditions?.[0];
@@ -182,10 +181,7 @@ export default function KanbanBoard() {
             conditionMet =
               task.subtasks.length > 0 &&
               task.subtasks.every((subtask) => subtask.completed);
-          }
-
-          // Condição: custom field
-          else if (condition.type === "custom-field" && condition.field) {
+          } else if (condition.type === "custom-field" && condition.field) {
             const field = task.customFields.find(
               (f) => f.name === condition.field
             );
@@ -212,8 +208,8 @@ export default function KanbanBoard() {
             if (targetColumn && task.status !== targetColumn.title) {
               tasksToMove.push({
                 taskId: task.id!,
-                sourceColumnId: column.id, // agora string garantido
-                targetColumnId: action.targetColumnId, // agora string garantido
+                sourceColumnId: column.id,
+                targetColumnId: action.targetColumnId,
               });
             }
           }
@@ -221,7 +217,6 @@ export default function KanbanBoard() {
       });
     });
 
-    // Aplica os movimentos
     if (tasksToMove.length > 0) {
       const applyMoves = async () => {
         const newColumns = [...columns];
@@ -244,7 +239,6 @@ export default function KanbanBoard() {
                 status: newColumns[targetColIndex].title,
               };
 
-              // 1. Atualiza no Supabase
               const { error } = await supabase
                 .from("tasks")
                 .update({
@@ -255,22 +249,19 @@ export default function KanbanBoard() {
 
               if (error) {
                 console.error("Erro ao mover task:", error);
-                continue; // não aplica no estado se falhar
+                continue;
               }
 
-              // 2. Remove da coluna origem
               newColumns[sourceColIndex] = {
                 ...sourceCol,
                 tasks: sourceCol.tasks.filter((t) => t.id !== taskId),
               };
 
-              // 3. Adiciona na coluna destino
               newColumns[targetColIndex] = {
                 ...newColumns[targetColIndex],
                 tasks: [...newColumns[targetColIndex].tasks, task],
               };
 
-              // 4. Atualiza task selecionada (se for a que foi movida)
               if (selectedTask && selectedTask.id === taskId) {
                 setSelectedTask(task);
               }
@@ -298,7 +289,6 @@ export default function KanbanBoard() {
       return;
     }
 
-    // Colunas de origem e destino
     const sourceColumn = columns.find((col) => col.id === source.droppableId);
     const destColumn = columns.find(
       (col) => col.id === destination.droppableId
@@ -306,7 +296,6 @@ export default function KanbanBoard() {
 
     if (!sourceColumn || !destColumn) return;
 
-    // Clonar colunas
     const newColumns = [...columns];
     const sourceColIndex = newColumns.findIndex(
       (col) => col.id === source.droppableId
@@ -315,11 +304,9 @@ export default function KanbanBoard() {
       (col) => col.id === destination.droppableId
     );
 
-    // Task sendo movida
     const task = sourceColumn.tasks.find((t) => t.id === draggableId);
     if (!task) return;
 
-    // Atualizar no Supabase primeiro
     const updatedTask = {
       ...task,
       status: destColumn.title,
@@ -328,8 +315,8 @@ export default function KanbanBoard() {
     const { error } = await supabase
       .from("tasks")
       .update({
-        column_id: destColumn.id, // id real da coluna
-        status: destColumn.title, // opcional, se quiser manter coerência com o título
+        column_id: destColumn.id,
+        status: destColumn.title,
       })
       .eq("id", draggableId);
 
@@ -432,7 +419,6 @@ export default function KanbanBoard() {
       return;
     }
 
-    // Atualiza no Supabase
     const { error } = await supabase
       .from("tasks")
       .update({
@@ -440,7 +426,7 @@ export default function KanbanBoard() {
         description: updatedTask.description,
         status: updatedTask.status,
         due_date: updatedTask.dueDate,
-        column_id: columnId, // 🔑 usa o columnId passado como parâmetro
+        column_id: columnId,
       })
       .eq("id", updatedTask.id)
       .eq("user_id", user.id);
@@ -451,7 +437,6 @@ export default function KanbanBoard() {
       return;
     }
 
-    // Atualiza estado local
     const newColumns = columns.map((column) => {
       return {
         ...column,
@@ -474,7 +459,6 @@ export default function KanbanBoard() {
       status:
         columns.find((c) => c.id === columnId)?.title ?? updatedTask.status,
     });
-    toast.success("Task atualizada com sucesso ");
   };
 
   const deleteTask = async (taskId: string) => {
@@ -626,7 +610,6 @@ export default function KanbanBoard() {
   };
 
   const deleteColumn = async (columnId: string) => {
-    // Verifica se a coluna existe
     const column = columns.find((col) => col.id === columnId);
     if (!column) {
       toast.error("Coluna não encontrada");
@@ -886,7 +869,10 @@ export default function KanbanBoard() {
           </TabsList>
 
           <TabsContent value="board" className="mt-4">
-            {renderBoardContent()}
+            <ScrollArea className="h-[80vh]">
+              <ScrollBar orientation="horizontal" />
+              {renderBoardContent()}
+            </ScrollArea>
           </TabsContent>
 
           <TabsContent value="automation" className="mt-4">
