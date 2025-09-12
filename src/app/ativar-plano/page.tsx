@@ -11,9 +11,8 @@ export default function PlanNotActivated() {
       <div className="w-full max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Parautilizar todos os recursos da plataforma, é
-            necessário ativar um plano. Escolha a opção que melhor se adapta às
-            suas necessidades:
+            Parautilizar todos os recursos da plataforma, é necessário ativar um
+            plano. Escolha a opção que melhor se adapta às suas necessidades:
           </p>
         </div>
 
@@ -152,8 +151,6 @@ export default function PlanNotActivated() {
                   <span className="text-foreground">Suporte dedicado</span>
                 </div>
               </div>
-
-              <SubscribeButton priceId="price_1S5AcTAigAbsBK16SVfqPEgk" />
             </CardContent>
           </Card>
         </div>
