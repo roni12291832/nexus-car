@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, Users, Car, CreditCard, Kanban } from "lucide-react";
+import { LayoutDashboard, Users, Car } from "lucide-react";
 
 import {
   Sidebar,

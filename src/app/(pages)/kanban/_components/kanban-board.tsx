@@ -145,7 +145,7 @@ export default function KanbanBoard() {
     };
 
     fetchData();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (rules.length === 0) return;

@@ -113,24 +113,24 @@ export default function AgentConfigPage() {
     setSelectedAgent(null);
   };
 
-  const handleSaveAgent = () => {
-    if (selectedAgent) {
-      setAgents(
-        agents.map((agent) =>
-          agent.id === selectedAgent.id
-            ? {
-                ...agent,
-                name: formData.name,
-                instructions: formData.instructions,
-                lastUpdate: new Date().toLocaleString("pt-BR"),
-              }
-            : agent
-        )
-      );
-    }
-    setIsModalOpen(false);
-    setSelectedAgent(null);
-  };
+  // const handleSaveAgent = () => {
+  //   if (selectedAgent) {
+  //     setAgents(
+  //       agents.map((agent) =>
+  //         agent.id === selectedAgent.id
+  //           ? {
+  //               ...agent,
+  //               name: formData.name,
+  //               instructions: formData.instructions,
+  //               lastUpdate: new Date().toLocaleString("pt-BR"),
+  //             }
+  //           : agent
+  //       )
+  //     );
+  //   }
+  //   setIsModalOpen(false);
+  //   setSelectedAgent(null);
+  // };
 
   const handleCancel = () => {
     setIsModalOpen(false);

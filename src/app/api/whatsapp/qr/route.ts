@@ -16,6 +16,7 @@ export async function GET(req: NextRequest) {
 
     if (!res.ok) {
       const err = await res.text();
+      console.error("Erro ao conectar à instância:", err);
       return NextResponse.json({ error: err }, { status: res.status });
     }
 
@@ -25,6 +26,7 @@ export async function GET(req: NextRequest) {
       headers: { "Content-Type": "image/svg+xml" },
     });
   } catch (err) {
+    console.error("Erro ao buscar QR Code:", err);
     return NextResponse.json({ error: "Erro ao buscar QR Code" }, { status: 500 });
   }
 }
