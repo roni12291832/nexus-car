@@ -11,8 +11,8 @@ export default function PlanNotActivated() {
       <div className="w-full max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Parautilizar todos os recursos da plataforma, é necessário ativar um
-            plano. Escolha a opção que melhor se adapta às suas necessidades:
+            Para utilizar todos os recursos da plataforma, é necessário ativar
+            um plano. Escolha a opção que melhor se adapta às suas necessidades:
           </p>
         </div>
 
@@ -34,6 +34,10 @@ export default function PlanNotActivated() {
               </div>
 
               <div className="space-y-3 mb-8">
+                <div className="flex items-center gap-3">
+                  <Star className="w-5 h-5 text-primary" />
+                  <span className="text-foreground">Teste 14 dias grátis</span>
+                </div>
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-primary" />
                   <span className="text-foreground">Até 100 leads/mês</span>
@@ -87,6 +91,10 @@ export default function PlanNotActivated() {
 
               <div className="space-y-3 mb-8">
                 <div className="flex items-center gap-3">
+                  <Star className="w-5 h-5 text-primary" />
+                  <span className="text-foreground">Teste 14 dias grátis</span>
+                </div>
+                <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-primary" />
                   <span className="text-foreground">Até 300 leads/mês</span>
                 </div>
@@ -130,6 +138,10 @@ export default function PlanNotActivated() {
               </div>
 
               <div className="space-y-3 mb-8">
+                <div className="flex items-center gap-3">
+                  <Star className="w-5 h-5 text-primary" />
+                  <span className="text-foreground">Teste 14 dias grátis</span>
+                </div>
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-primary" />
                   <span className="text-foreground">Leads ilimitados</span>

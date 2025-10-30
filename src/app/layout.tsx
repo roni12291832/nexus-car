@@ -75,8 +75,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-br" suppressHydrationWarning>
-      <Script id="facebook-pixel" strategy="afterInteractive">
-        {`
+      <head>
+        <Script id="facebook-pixel" strategy="afterInteractive">
+          {`
           !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -89,19 +90,18 @@ fbq('init', '1608283786798294');
 fbq('track', 'PageView');
 
           `}
-      </Script>
+        </Script>
 
-      {/* NoScript para fallback */}
-      <noscript>
-        <Image
-          height="1"
-          alt="pixel"
-          style={{ display: "none" }}
-          width="1"
-          src={`https://www.facebook.com/tr?id=1608283786798294&ev=PageView&noscript=1`}
-        />
-      </noscript>
-
+        <noscript>
+          <Image
+            height="1"
+            alt="pixel"
+            style={{ display: "none" }}
+            width="1"
+            src={`https://www.facebook.com/tr?id=1608283786798294&ev=PageView&noscript=1`}
+          />
+        </noscript>
+      </head>
       <link rel="icon" href="/favicon.ico" sizes="any" />
       <body
         className={cn(

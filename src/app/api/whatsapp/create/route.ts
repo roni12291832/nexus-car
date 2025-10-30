@@ -13,12 +13,12 @@ export async function POST(req: Request) {
       groupsIgnore: true,
       webhook: {
         url: "https://webhook.linqapps.com/webhook/3e949337-89b9-4fcc-a461-45458213b840",
-        byEvents: true,
+        byEvents: false,
         base64: true,
         headers: {
           "Content-Type": "application/json",
         },
-        events: ["MESSAGES_UPDATE"],
+        events: ["MESSAGES_UPSERT"],
       },
     };
 

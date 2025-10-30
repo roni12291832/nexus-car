@@ -27,8 +27,6 @@ export default function AppSidebar() {
     { name: "Dashboard", href: "/home", icon: LayoutDashboard },
     { name: "Estoque", href: "/estoque", icon: Car },
     { name: "Leads", href: "/leads", icon: Users },
-    { name: "Tarefas", href: "/kanban", icon: Kanban },
-    { name: "Plano & Cobrança", href: "/plano-cobranca", icon: CreditCard },
   ];
 
   const isActive = (href: string) => {

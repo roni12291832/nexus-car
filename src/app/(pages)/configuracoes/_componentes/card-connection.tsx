@@ -1,39 +1,34 @@
 "use client";
 
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase/server";
 import { useAuth } from "@/contexts/AuthContext";
+import { QrCode } from "lucide-react";
 
 interface CreateInstanceResponse {
   pairingCode?: string;
-  code?: string;
   base64?: string;
+  ownerJid?: string;
 }
 
 export default function CardConnection() {
   const { user } = useAuth();
-  const [instanceName, setInstanceName] = useState("");
-  const [whatsappNumber, setWhatsappNumber] = useState("");
+  const instanceName = user?.id || "";
+
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<CreateInstanceResponse | null>(null);
 
   const connectWhatsApp = async () => {
-    if (!whatsappNumber || !instanceName) return;
-    if (user?.id === undefined) return;
+    if (!instanceName) return;
     setLoading(true);
 
     try {
       const res = await fetch("/api/whatsapp/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          instanceName,
-          number: whatsappNumber,
-        }),
+        body: JSON.stringify({ instanceName }),
       });
 
       if (!res.ok) throw new Error("Falha ao criar instância");
@@ -48,14 +43,14 @@ export default function CardConnection() {
         finalData = { ...data, ...qrData };
       }
 
-      setResponse(finalData);
+      const number = finalData.ownerJid?.split("@")[0] || null;
 
       const { error } = await supabase.from("whatsapp_instances").insert({
         instance_name: instanceName,
-        phone_number: whatsappNumber,
         pairing_code: finalData.pairingCode || null,
         qr_code_base64: finalData.base64 || null,
-        user_id: user.id || null,
+        number,
+        user_id: user?.id || null,
         status: "conectado",
       });
 
@@ -64,8 +59,10 @@ export default function CardConnection() {
       } else {
         console.log("Instância salva com sucesso!");
       }
+
+      setResponse(finalData);
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao conectar WhatsApp:", error);
     } finally {
       setLoading(false);
     }
@@ -75,24 +72,9 @@ export default function CardConnection() {
     <div className="space-y-4">
       {!response ? (
         <div className="flex flex-col gap-2">
-          <Label htmlFor="instance">Nome da Instância</Label>
-          <Input
-            id="instance"
-            placeholder="ex: loja01"
-            value={instanceName}
-            onChange={(e) => setInstanceName(e.target.value)}
-          />
-
-          <Label htmlFor="phone">Número do WhatsApp</Label>
-          <Input
-            id="phone"
-            placeholder="(11) 99999-9999"
-            value={whatsappNumber}
-            onChange={(e) => setWhatsappNumber(e.target.value)}
-          />
-
-          <Button onClick={connectWhatsApp} disabled={loading}>
-            {loading ? "Conectando..." : "Conectar"}
+          <Button onClick={connectWhatsApp} disabled={loading || !instanceName}>
+            <QrCode />
+            {loading ? "Gerando..." : "Gerar QR Code"}
           </Button>
         </div>
       ) : (
@@ -114,6 +96,12 @@ export default function CardConnection() {
                 className="mx-auto"
               />
             </div>
+          )}
+
+          {response.ownerJid && (
+            <p className="text-sm text-muted-foreground">
+              Número: {response.ownerJid.split("@")[0]}
+            </p>
           )}
 
           <Button onClick={() => setResponse(null)} variant="outline">
