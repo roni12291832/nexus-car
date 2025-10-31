@@ -29,14 +29,14 @@ import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface Vehicle {
-  id: string;
+  id?: string;
   name: string;
   year: number;
   model: string;
   price: number;
   type: "SUV" | "Sedan" | "Hatch";
-  image?: string | StaticImageData;
-  status: "Disponível" | "Vendido" | "Reservado";
+  image?: File[] | string | StaticImageData;
+  status?: "Disponível" | "Vendido" | "Reservado";
 }
 
 export default function Inventory() {
@@ -80,9 +80,8 @@ export default function Inventory() {
   });
 
   useEffect(() => {
-  setFilteredVehicles(vehicles);
-}, [vehicles]);
-
+    setFilteredVehicles(vehicles);
+  }, [vehicles]);
 
   const [newVehicle, setNewVehicle] = useState({
     name: "",
@@ -172,19 +171,6 @@ export default function Inventory() {
     } else {
       toast.success("Veículo adicionado com sucesso!");
       setNewVehicle({ name: "", year: "", type: "", model: "", price: "" });
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Disponível":
-        return "bg-success text-success-foreground";
-      case "Reservado":
-        return "bg-warning text-warning-foreground";
-      case "Vendido":
-        return "bg-destructive text-destructive-foreground";
-      default:
-        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -280,6 +266,25 @@ export default function Inventory() {
                   onChange={(e) =>
                     setNewVehicle({ ...newVehicle, price: e.target.value })
                   }
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="vehiclePhotos">Fotos</Label>
+                <Input
+                  id="vehiclePhotos"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => {
+                    const files = e.target.files;
+                    if (files && files.length > 0) {
+                      setNewVehicle((prev) => ({
+                        ...prev,
+                        image: Array.from(files),
+                      }));
+                    }
+                  }}
                 />
               </div>
 
@@ -389,12 +394,6 @@ export default function Inventory() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filteredVehicles.map((vehicle) => (
           <Card key={vehicle.id} className="overflow-hidden">
-            <div className="ml-4">
-              <Badge className={getStatusColor(vehicle.status)}>
-                {vehicle.status}
-              </Badge>
-            </div>
-
             <CardContent className="p-4">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
