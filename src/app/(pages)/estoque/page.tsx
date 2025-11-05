@@ -21,7 +21,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Search, Filter, Eye } from "lucide-react";
+import { Plus, Filter, Eye } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase/server";
@@ -172,7 +172,6 @@ export default function Inventory() {
 
     for (const file of newVehicle.image) {
       if (file instanceof File) {
-        const fileExt = file.name.split(".").pop();
         const fileName = `${user.id}/${Date.now()}-${file.name}`;
         const filePath = `${fileName}`;
 
