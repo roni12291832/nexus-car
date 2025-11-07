@@ -146,8 +146,8 @@ export default function Dashboard() {
     },
     {
       title: "Carros Mais Consultados",
-      value: "SUV Honda HR-V",
-      description: "12 consultas hoje",
+      value: " -  ",
+      description: " - ",
       icon: Car,
       trend: "neutral",
     },

@@ -23,7 +23,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Filter, Eye } from "lucide-react";
+import { Plus, Filter, Eye, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase/server";
@@ -48,8 +48,8 @@ export default function Inventory() {
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
 
-  // 🧭 Filtros
   const [filters, setFilters] = useState({
     search: "",
     type: "all",
@@ -58,7 +58,6 @@ export default function Inventory() {
     year: "",
   });
 
-  // 🚗 Novo veículo
   const [newVehicle, setNewVehicle] = useState<Vehicle>({
     name: "",
     year: 0,
@@ -69,13 +68,11 @@ export default function Inventory() {
     status: "Disponível",
   });
 
-  // 🔄 Buscar veículos
   useEffect(() => {
     if (!user) return;
 
     const fetchVehicles = async () => {
       setLoading(true);
-
       const { data, error } = await supabase
         .from("estoque")
         .select("*")
@@ -97,7 +94,6 @@ export default function Inventory() {
         setVehicles(vehiclesWithStatus);
         setFilteredVehicles(vehiclesWithStatus);
       }
-
       setLoading(false);
     };
 
@@ -107,7 +103,6 @@ export default function Inventory() {
   // 🎯 Aplicar filtros
   const applyFilters = () => {
     let filtered = vehicles;
-
     if (filters.search) {
       filtered = filtered.filter(
         (v) =>
@@ -115,29 +110,16 @@ export default function Inventory() {
           v.model.toLowerCase().includes(filters.search.toLowerCase())
       );
     }
-
-    if (filters.type !== "all") {
+    if (filters.type !== "all")
       filtered = filtered.filter((v) => v.type === filters.type);
-    }
-
-    if (filters.minPrice) {
-      filtered = filtered.filter(
-        (v) => v.price >= parseInt(filters.minPrice, 10)
-      );
-    }
-
-    if (filters.maxPrice) {
-      filtered = filtered.filter(
-        (v) => v.price <= parseInt(filters.maxPrice, 10)
-      );
-    }
-
-    if (filters.year) {
+    if (filters.minPrice)
+      filtered = filtered.filter((v) => v.price >= parseInt(filters.minPrice));
+    if (filters.maxPrice)
+      filtered = filtered.filter((v) => v.price <= parseInt(filters.maxPrice));
+    if (filters.year)
       filtered = filtered.filter(
         (v) => v.year.toString() === filters.year.trim()
       );
-    }
-
     setFilteredVehicles(filtered);
   };
 
@@ -339,8 +321,19 @@ export default function Inventory() {
                 }}
               />
 
-              <Button onClick={addVehicle} className="w-full">
-                Adicionar Veículo
+              <Button
+                onClick={addVehicle}
+                className="w-full"
+                disabled={isCreating}
+              >
+                {isCreating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Adicionando...
+                  </>
+                ) : (
+                  "Adicionar Veículo"
+                )}
               </Button>
             </div>
           </DialogContent>

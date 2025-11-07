@@ -71,6 +71,7 @@ export default function AppSidebar() {
                         "hover:bg-gray-200 dark:hover:bg-gray-800",
                         isActive(item.href) && "bg-gray-400 dark:bg-gray-800"
                       )}
+                      tooltip={item.name}
                     >
                       <Link
                         href={item.href}
