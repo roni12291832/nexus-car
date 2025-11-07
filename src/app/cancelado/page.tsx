@@ -26,7 +26,7 @@ export default function CancelledPage() {
             <div className="space-y-4 text-lg">
               <p className="text-muted-foreground leading-relaxed">
                 Sua assinatura foi cancelada. Você não terá mais acesso aos recursos premium da{" "}
-                <span className="font-semibold text-destructive">FlashLy</span>.
+                <span className="font-semibold text-destructive">Nexuscar</span>.
               </p>
 
               <p className="text-foreground font-medium">

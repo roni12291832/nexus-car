@@ -4,6 +4,8 @@ import { useEffect } from "react";
 
 import { Card } from "@/components/ui/card";
 import { CheckCircle, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Page() {
   useEffect(() => {
@@ -84,13 +86,16 @@ export default function Page() {
               <p className="text-muted-foreground leading-relaxed">
                 Seu plano foi ativado com sucesso. Agora você tem acesso
                 completo a todos os recursos da{" "}
-                <span className="font-semibold text-success">FlashLy</span>.
+                <span className="font-semibold text-success">Nexuscar</span>.
               </p>
 
               <p className="text-foreground font-medium">
                 Estamos felizes em ter você com a gente!
               </p>
             </div>
+            <Link href="/home">
+              <Button>Acessar app</Button>
+            </Link>
           </div>
 
           {/* Additional Info */}
