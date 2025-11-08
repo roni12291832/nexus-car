@@ -134,7 +134,6 @@ export default function Inventory() {
     setFilteredVehicles(vehicles);
   };
 
-  // ➕ Adicionar novo veículo
   const addVehicle = async () => {
     if (
       !newVehicle.name ||
@@ -152,60 +151,69 @@ export default function Inventory() {
       return;
     }
 
-    let imageUrls: string[] = [];
+    try {
+      setIsCreating(true); // 🔥 ativa o loading
 
-    for (const file of newVehicle.image) {
-      if (file instanceof File) {
-        const fileName = `${user.id}/${Date.now()}-${file.name}`;
-        const filePath = `${fileName}`;
+      let imageUrls: string[] = [];
 
-        const { error: uploadError } = await supabase.storage
-          .from("veiculos")
-          .upload(filePath, file);
+      for (const file of newVehicle.image) {
+        if (file instanceof File) {
+          const fileName = `${user.id}/${Date.now()}-${file.name}`;
+          const filePath = `${fileName}`;
 
-        if (uploadError) {
-          console.error("Erro no upload:", uploadError);
-          toast.error("Erro ao enviar imagem");
-          return;
+          const { error: uploadError } = await supabase.storage
+            .from("veiculos")
+            .upload(filePath, file);
+
+          if (uploadError) {
+            console.error("Erro no upload:", uploadError);
+            toast.error("Erro ao enviar imagem");
+            return;
+          }
+
+          const { data: publicUrlData } = supabase.storage
+            .from("veiculos")
+            .getPublicUrl(filePath);
+
+          if (publicUrlData?.publicUrl) imageUrls.push(publicUrlData.publicUrl);
+        } else if (typeof file === "string") {
+          imageUrls.push(file);
         }
-
-        const { data: publicUrlData } = supabase.storage
-          .from("veiculos")
-          .getPublicUrl(filePath);
-
-        if (publicUrlData?.publicUrl) imageUrls.push(publicUrlData.publicUrl);
-      } else if (typeof file === "string") {
-        imageUrls.push(file);
       }
-    }
 
-    const { error } = await supabase.from("estoque").insert([
-      {
-        name: newVehicle.name,
-        year: newVehicle.year,
-        model: newVehicle.model,
-        type: newVehicle.type,
-        price: newVehicle.price,
-        status: "Disponível",
-        user_id: user.id,
-        image: imageUrls,
-      },
-    ]);
+      const { error } = await supabase.from("estoque").insert([
+        {
+          name: newVehicle.name,
+          year: newVehicle.year,
+          model: newVehicle.model,
+          type: newVehicle.type,
+          price: newVehicle.price,
+          status: "Disponível",
+          user_id: user.id,
+          image: imageUrls,
+        },
+      ]);
 
-    if (error) {
-      console.error("Erro ao adicionar veículo:", error);
+      if (error) {
+        console.error("Erro ao adicionar veículo:", error);
+        toast.error("Erro ao adicionar veículo");
+      } else {
+        toast.success("Veículo adicionado com sucesso!");
+        setNewVehicle({
+          name: "",
+          year: 0,
+          model: "",
+          price: 0,
+          type: "Sedan",
+          image: [],
+          status: "Disponível",
+        });
+      }
+    } catch (err) {
+      console.error("Erro inesperado:", err);
       toast.error("Erro ao adicionar veículo");
-    } else {
-      toast.success("Veículo adicionado com sucesso!");
-      setNewVehicle({
-        name: "",
-        year: 0,
-        model: "",
-        price: 0,
-        type: "Sedan",
-        image: [],
-        status: "Disponível",
-      });
+    } finally {
+      setIsCreating(false); // ✅ desativa o loading
     }
   };
 
@@ -329,7 +337,7 @@ export default function Inventory() {
                 {isCreating ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Adicionando...
+                    Salvando...
                   </>
                 ) : (
                   "Adicionar Veículo"
