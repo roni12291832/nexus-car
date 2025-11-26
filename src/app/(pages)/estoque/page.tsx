@@ -3,7 +3,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,7 +30,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Filter, Eye, Loader2 } from "lucide-react";
+import { Plus, Filter, Eye, Loader2, Trash, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase/server";
@@ -49,6 +56,12 @@ export default function Inventory() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  const openEdit = (vehicle: Vehicle) => {
+    setSelectedVehicle(vehicle);
+    setIsEditDialogOpen(true);
+  };
 
   const [filters, setFilters] = useState({
     search: "",
@@ -100,7 +113,6 @@ export default function Inventory() {
     fetchVehicles();
   }, [user]);
 
-  // 🎯 Aplicar filtros
   const applyFilters = () => {
     let filtered = vehicles;
     if (filters.search) {
@@ -222,6 +234,55 @@ export default function Inventory() {
     setIsDialogOpen(true);
   };
 
+  const onDelete = async (id: string) => {
+    const { error } = await supabase
+      .from("estoque")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", user?.id); // segurança
+
+    if (error) {
+      console.error("Erro ao deletar veículo:", error);
+      toast.error("Erro ao apagar veículo");
+      return;
+    }
+
+    toast.success("Veículo apagado com sucesso!");
+
+    // Atualiza a lista localmente sem precisar refazer o fetch
+    const updated = vehicles.filter((v) => v.id !== id);
+    setVehicles(updated);
+    setFilteredVehicles(updated);
+  };
+
+  const saveEdit = async () => {
+    if (!selectedVehicle) return;
+
+    const { id, ...dataToUpdate } = selectedVehicle;
+
+    const { error } = await supabase
+      .from("estoque")
+      .update({
+        ...dataToUpdate,
+        image: JSON.stringify(dataToUpdate.image),
+      })
+      .eq("id", id)
+      .eq("user_id", user?.id);
+
+    if (error) {
+      toast.error("Erro ao atualizar veículo");
+      return;
+    }
+
+    toast.success("Veículo atualizado!");
+
+    const updated = vehicles.map((v) => (v.id === id ? selectedVehicle : v));
+
+    setVehicles(updated);
+    setFilteredVehicles(updated);
+    setIsEditDialogOpen(false);
+  };
+
   if (loading) return <p>Carregando veículos...</p>;
 
   return (
@@ -279,7 +340,7 @@ export default function Inventory() {
                       setNewVehicle({ ...newVehicle, type: v })
                     }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Selecione" />
                     </SelectTrigger>
                     <SelectContent>
@@ -368,7 +429,7 @@ export default function Inventory() {
               value={filters.type}
               onValueChange={(v) => setFilters({ ...filters, type: v })}
             >
-              <SelectTrigger>
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Tipo" />
               </SelectTrigger>
               <SelectContent>
@@ -411,25 +472,52 @@ export default function Inventory() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filteredVehicles.map((vehicle) => (
           <Card key={vehicle.id} className="overflow-hidden">
-            <CardContent className="p-4 space-y-2">
-              <div className="flex items-center justify-between">
-                <h3 className="font-semibold">
-                  {vehicle.name} {vehicle.year}
-                </h3>
-                <Badge variant="secondary">{vehicle.type}</Badge>
-              </div>
+            <CardHeader className="flex flex-row items-start justify-between">
+              <CardTitle>
+                {vehicle.name} - {vehicle.year}
+              </CardTitle>
+
+              <CardDescription>
+                <Badge>{vehicle.type}</Badge>
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
               <p className="text-sm text-muted-foreground">{vehicle.model}</p>
-              <div className="text-2xl font-bold text-primary">
+
+              <div className="text-xl font-bold text-primary">
                 R$ {vehicle.price.toLocaleString()}
               </div>
+            </CardContent>
+            <CardFooter className="flex flex-row items-center justify-between w-full mt-4 gap-2">
+              {/* Ver Detalhes */}
               <Button
+                className="flex-1"
                 variant="outline"
-                className="w-full"
                 onClick={() => openDetails(vehicle)}
               >
-                <Eye className="h-4 w-4 mr-2" /> Ver Detalhes
+                <Eye className="h-4 w-4 mr-2" />
+                Ver Detalhes
               </Button>
-            </CardContent>
+
+              {/* Editar */}
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => openEdit(vehicle)}
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+
+              {/* Apagar */}
+              <Button
+                variant="destructive"
+                size="icon"
+                onClick={() => vehicle.id && onDelete(vehicle.id)}
+                disabled={!vehicle.id}
+              >
+                <Trash className="h-4 w-4" />
+              </Button>
+            </CardFooter>
           </Card>
         ))}
       </div>
@@ -493,6 +581,94 @@ export default function Inventory() {
                   Fechar
                 </Button>
               </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Editar Veículo</DialogTitle>
+            <DialogDescription>
+              Atualize as informações abaixo
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedVehicle && (
+            <div className="space-y-4">
+              <Label>Nome do Veículo</Label>
+              <Input
+                value={selectedVehicle.name}
+                onChange={(e) =>
+                  setSelectedVehicle({
+                    ...selectedVehicle,
+                    name: e.target.value,
+                  })
+                }
+              />
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Ano</Label>
+                  <Input
+                    type="number"
+                    value={selectedVehicle.year}
+                    onChange={(e) =>
+                      setSelectedVehicle({
+                        ...selectedVehicle!,
+                        year: parseInt(e.target.value, 10) || 0,
+                      })
+                    }
+                  />
+                </div>
+
+                <div>
+                  <Label>Tipo</Label>
+                  <Select
+                    value={selectedVehicle.type}
+                    onValueChange={(v: Vehicle["type"]) =>
+                      setSelectedVehicle({ ...selectedVehicle, type: v })
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="SUV">SUV</SelectItem>
+                      <SelectItem value="Sedan">Sedan</SelectItem>
+                      <SelectItem value="Hatch">Hatch</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <Label>Modelo</Label>
+              <Input
+                value={selectedVehicle.model}
+                onChange={(e) =>
+                  setSelectedVehicle({
+                    ...selectedVehicle,
+                    model: e.target.value,
+                  })
+                }
+              />
+
+              <Label>Preço (R$)</Label>
+              <Input
+                type="number"
+                value={selectedVehicle.price}
+                onChange={(e) =>
+                  setSelectedVehicle({
+                    ...selectedVehicle,
+                    price: parseFloat(e.target.value) || 0,
+                  })
+                }
+              />
+
+              <Button className="w-full" onClick={saveEdit}>
+                Salvar Alterações
+              </Button>
             </div>
           )}
         </DialogContent>

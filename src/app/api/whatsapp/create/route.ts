@@ -12,7 +12,7 @@ export async function POST(req: Request) {
       integration: "WHATSAPP-BAILEYS",
       groupsIgnore: true,
       webhook: {
-        url: "https://webhook.linqapps.com/webhook/3e949337-89b9-4fcc-a461-45458213b840",
+        url: "https://webhook.linqapps.com/webhook/e8a937c5-4050-4fd5-a446-c41d6ed31c06",
         byEvents: false,
         base64: true,
         headers: {

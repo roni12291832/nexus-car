@@ -13,6 +13,7 @@ import {
   SidebarHeader,
   useSidebar,
 } from "@/components/ui/sidebar";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -30,24 +31,24 @@ export default function AppSidebar() {
   ];
 
   const isActive = (href: string) => {
-    if (href === "/") {
-      return pathname === "/";
-    }
+    if (href === "/") return pathname === "/";
     return pathname.startsWith(href);
   };
 
   return (
     <Sidebar collapsible="icon">
+      {/* HEADER */}
       <SidebarHeader className="dark:bg-gray-900">
-        <div className="flex items-center flex-row  gap-2 mt-2">
+        <div className="flex items-center flex-row gap-2 mt-2 px-2">
           <div className="rounded-sm flex items-center justify-center text-white">
             <Image
               src="/assets/icon.png"
               alt="Nexus Car Logo"
-              width="30"
-              height="30"
+              width={30}
+              height={30}
             />
           </div>
+
           {!isCollapsed && (
             <span className="text-xl font-bold text-gray-900 dark:text-white">
               Nexus Car
@@ -56,22 +57,25 @@ export default function AppSidebar() {
         </div>
       </SidebarHeader>
 
+      {/* MENU PRINCIPAL */}
       <SidebarContent className="dark:bg-gray-900">
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
               {navigation.map((item) => {
                 const Icon = item.icon;
+
                 return (
                   <SidebarMenuItem key={item.name}>
                     <SidebarMenuButton
                       asChild
                       isActive={isActive(item.href)}
+                      tooltip={item.name}
                       className={cn(
                         "hover:bg-gray-200 dark:hover:bg-gray-800",
-                        isActive(item.href) && "bg-gray-400 dark:bg-gray-800"
+                        isActive(item.href) &&
+                          "bg-gray-300 dark:bg-gray-800 font-medium"
                       )}
-                      tooltip={item.name}
                     >
                       <Link
                         href={item.href}

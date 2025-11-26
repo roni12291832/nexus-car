@@ -106,22 +106,10 @@ export default function WhatsAppConnections() {
   };
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
+    <div className="grid gap-4 md:grid-cols-4">
       {connections.map((conn) => (
-        <Card key={conn.instance_name} className="shadow-lg rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              {conn.number && (
-                <p className="text-sm text-muted-foreground">
-                  Número: {conn.number}
-                </p>
-              )}
-              {conn.evolution && (
-                <p className="text-sm text-muted-foreground">
-                  Evolução: {conn.evolution}
-                </p>
-              )}
-            </div>
+        <Card key={conn.instance_name} className="flex items-center justify-center">
+          <CardHeader className="flex flex-row items-center justify-center ">
             {conn.status === "conectado" ? (
               <Badge className="flex items-center gap-1">
                 <Wifi className="w-4 h-4" /> Conectado
@@ -133,7 +121,7 @@ export default function WhatsAppConnections() {
             )}
           </CardHeader>
 
-          <CardContent className="space-y-2">
+          <CardContent className="space-y-2 flex flex-col items-center justify-center">
             {conn.status === "conectado" ? (
               <>
                 <p className="text-sm text-muted-foreground">
