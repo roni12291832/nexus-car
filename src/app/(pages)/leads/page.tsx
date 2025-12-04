@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/dialog";
 import { MessageSquare } from "lucide-react";
 import { supabase } from "@/lib/supabase/server";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Lead {
   id: string;
@@ -34,6 +35,7 @@ interface Lead {
 }
 
 export default function Leads() {
+    const { user } = useAuth();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
@@ -44,6 +46,7 @@ export default function Leads() {
         const { data, error } = await supabase
           .from("dados_cliente")
           .select("id, nomewpp, telefone")
+           .eq("whatsapp_id", user?.id)
           .order("created_at", { ascending: false });
 
         if (error) {
