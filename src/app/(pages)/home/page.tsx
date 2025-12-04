@@ -51,10 +51,10 @@ export default function Dashboard() {
       todayEnd.setHours(23, 59, 59, 999);
 
       try {
-        // Leads de hoje
         const { data: leadsData, error: leadsError } = await supabase
           .from("dados_cliente")
           .select("id")
+          .eq("whatsapp_id", user?.id)
           .gte("created_at", todayStart.toISOString())
           .lte("created_at", todayEnd.toISOString());
 
@@ -67,6 +67,7 @@ export default function Dashboard() {
           .from("dados_cliente")
           .select("id, nomewpp, created_at")
           .order("created_at", { ascending: false })
+          .eq("whatsapp_id", user?.id)
           .limit(1)
           .single();
 
@@ -109,7 +110,8 @@ export default function Dashboard() {
           .from("chat_messages")
           .select("created_at, phone, nomewpp, user_message")
           .order("created_at", { ascending: false })
-          .limit(10); 
+          .eq("whatsapp_id", user?.id)
+          .limit(10);
 
         if (error) {
           console.error("Erro ao buscar atividades:", error.message);
