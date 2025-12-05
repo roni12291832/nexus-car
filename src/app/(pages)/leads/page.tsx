@@ -34,11 +34,19 @@ interface Lead {
   phone: string;
 }
 
+interface StoreSettings {
+  storeName: string;
+}
+
 export default function Leads() {
-    const { user } = useAuth();
+  const { user } = useAuth();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+
+  const [settings, setSettings] = useState<StoreSettings>({
+    storeName: "",
+  });
 
   useEffect(() => {
     const fetchLeads = async () => {
@@ -46,7 +54,7 @@ export default function Leads() {
         const { data, error } = await supabase
           .from("dados_cliente")
           .select("id, nomewpp, telefone")
-           .eq("whatsapp_id", user?.id)
+          .eq("whatsapp_id", user?.id)
           .order("created_at", { ascending: false });
 
         if (error) {
@@ -69,9 +77,38 @@ export default function Leads() {
     fetchLeads();
   }, []);
 
+  useEffect(() => {
+    const fetchSettings = async () => {
+      if (!user?.id) return;
+
+      try {
+        const { data, error } = await supabase
+          .from("store_settings")
+          .select("store_name")
+          .eq("user_id", user.id)
+          .single();
+
+        if (error && error.code !== "PGRST116") {
+          console.error("Erro ao buscar configurações:", error.message);
+        }
+
+        if (data) {
+          setSettings({
+            storeName: data.store_name,
+          });
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+      }
+    };
+
+    fetchSettings();
+  }, [user?.id]);
+
   const callWhatsApp = (lead: Lead) => {
-    const phoneRaw = lead.phone.replace(/\D/g, ""); // remove caracteres não numéricos
-    const message = `Olá ${lead.name}! Sou da AutoShow Premium. Posso te ajudar com mais informações?`;
+    const phoneRaw = lead.phone.replace(/\D/g, "");
+    const message = `Olá ${lead.name}! Sou da ${settings.storeName}. Posso te ajudar com mais informações?`;
     const whatsappUrl = `https://wa.me/${phoneRaw}?text=${encodeURIComponent(
       message
     )}`;

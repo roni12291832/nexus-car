@@ -22,6 +22,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { ModeToggle } from "@/components/ThemeToggle";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase/server";
+import { toast } from "sonner";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,6 +30,8 @@ export default function Navbar() {
   const isMobile = useIsMobile();
   const pathname = usePathname();
   const router = useRouter();
+  const [loadingPortal, setLoadingPortal] = useState(false);
+  const [customerId, setCustomerId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -39,19 +42,53 @@ export default function Navbar() {
       if (user) {
         const { data: profile } = await supabase
           .from("users")
-          .select("full_name")
+          .select("full_name,subscription_id ")
           .eq("user_id", user.id)
           .single();
 
         setUser({
           email: user.email,
           name: profile?.full_name || "Usuário",
+          customerId: profile?.subscription_id,
         });
+
+        setCustomerId(profile?.subscription_id || null);
       }
     };
 
     fetchUser();
   }, []);
+
+  const handleOpenBillingPortal = async () => {
+    if (!customerId) {
+      toast.error("Erro.");
+      return;
+    }
+    console.log("id da stripe", customerId);
+
+    try {
+      setLoadingPortal(true);
+
+      const response = await fetch("/api/create-customer-portal-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ customerId }),
+      });
+
+      const data: { url?: string; error?: string } = await response.json();
+
+      if (!response.ok || !data.url) {
+        throw new Error(data.error || "Erro ao criar sessão do portal.");
+      }
+
+      window.location.href = data.url;
+    } catch (error) {
+      console.error(error);
+      toast.error("Não foi possível abrir o portal de cobrança.");
+    } finally {
+      setLoadingPortal(false);
+    }
+  };
 
   const navigation = [
     { name: "Dashboard", href: "/home", icon: LayoutDashboard },
@@ -92,7 +129,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 dark:bg-gray-900 dark:border-gray-700">
+    <nav className="bg-[#f1f1f1] border-b border-gray-200 sticky top-0 z-50 dark:bg-gray-900 dark:border-gray-700">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo / Menu */}
@@ -145,6 +182,18 @@ export default function Navbar() {
                     <div className="space-y-2 flex-1 mt-12">
                       <NavLinks mobile />
                     </div>
+
+                    <Button
+                      onClick={handleOpenBillingPortal}
+                      disabled={!customerId || loadingPortal}
+                      className="mx-2"
+                    >
+                      {loadingPortal
+                        ? "Abrindo portal..."
+                        : customerId
+                        ? "Gerenciar assinatura"
+                        : "Sem assinatura ativa"}
+                    </Button>
 
                     <div className="border-t pt-4 mt-4 ml-5 mb-5">
                       <div className="flex items-center space-x-3 mb-4">

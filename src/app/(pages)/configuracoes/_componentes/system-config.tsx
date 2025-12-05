@@ -28,6 +28,7 @@ import {
 import { supabase } from "@/lib/supabase/server";
 import CardConnection from "./card-connection";
 import WhatsAppConnections from "./whatsapp-conections";
+import { toast } from "sonner";
 
 interface StoreSettings {
   storeName: string;
@@ -42,7 +43,8 @@ export default function Settings() {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-
+  const [loadingPortal, setLoadingPortal] = useState(false);
+  const [customerId, setCustomerId] = useState<string | null>(null);
   const [settings, setSettings] = useState<StoreSettings>({
     storeName: "",
     email: user?.email || "",
@@ -88,6 +90,32 @@ export default function Settings() {
     fetchSettings();
   }, [user?.id]);
 
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchUserSettings = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("user_id", user.id)
+          .single();
+
+        if (error && error.code !== "PGRST116") throw error;
+
+        if (data) {
+          setCustomerId(data.subscription_id || null);
+        }
+      } catch (err) {
+        console.error(err);
+        toast.error("Erro ao carregar dados do usuário.");
+      } finally {
+      }
+    };
+
+    fetchUserSettings();
+  }, [user]);
+
   const saveSettings = async () => {
     if (!user?.id) return;
 
@@ -119,6 +147,37 @@ export default function Settings() {
     }
   };
 
+  const handleOpenBillingPortal = async () => {
+    if (!customerId) {
+      toast.error("Erro.");
+      return;
+    }
+    console.log("id da stripe", customerId);
+
+    try {
+      setLoadingPortal(true);
+
+      const response = await fetch("/api/create-customer-portal-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ customerId }),
+      });
+
+      const data: { url?: string; error?: string } = await response.json();
+
+      if (!response.ok || !data.url) {
+        throw new Error(data.error || "Erro ao criar sessão do portal.");
+      }
+
+      window.location.href = data.url;
+    } catch (error) {
+      console.error(error);
+      toast.error("Não foi possível abrir o portal de cobrança.");
+    } finally {
+      setLoadingPortal(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -131,11 +190,24 @@ export default function Settings() {
 
       <div>
         <Card>
-          <CardHeader>
-            <CardTitle>Informações da Loja</CardTitle>
-            <CardDescription>
-              Dados básicos da sua concessionária
-            </CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>Informações da Loja</CardTitle>
+              <CardDescription>
+                Dados básicos da sua concessionária
+              </CardDescription>
+            </div>
+            <Button
+              onClick={handleOpenBillingPortal}
+              disabled={!customerId || loadingPortal}
+              className="hidden md:block"
+            >
+              {loadingPortal
+                ? "Abrindo portal..."
+                : customerId
+                ? "Gerenciar assinatura"
+                : "Sem assinatura ativa"}
+            </Button>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">

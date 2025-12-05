@@ -38,7 +38,7 @@ export default function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       {/* HEADER */}
-      <SidebarHeader className="dark:bg-gray-900">
+      <SidebarHeader className="bg-[#f1f1f1] dark:bg-gray-900">
         <div className="flex items-center flex-row gap-2 mt-2 px-2">
           <div className="rounded-sm flex items-center justify-center text-white">
             <Image
@@ -58,7 +58,7 @@ export default function AppSidebar() {
       </SidebarHeader>
 
       {/* MENU PRINCIPAL */}
-      <SidebarContent className="dark:bg-gray-900">
+      <SidebarContent className=" bg-[#f1f1f1] dark:bg-gray-900">
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>

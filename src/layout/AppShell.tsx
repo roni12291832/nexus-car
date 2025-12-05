@@ -18,7 +18,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <div className="min-h-screen bg-gray-50 flex w-full dark:bg-gray-900">
+      <div className="min-h-screen bg-[#f1f1f1] flex w-full dark:bg-gray-900">
         {!isMobile && <AppSidebar />}
         <div className="flex-1 flex flex-col min-w-0">
           <Navbar />
