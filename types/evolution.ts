@@ -8,7 +8,7 @@ export interface WebhookConfig {
 
 export interface InstanceCreatePayload {
   instanceName: string;
-  number: string;
+  number?: string;
   qrcode: boolean;
   integration: "WHATSAPP-BAILEYS" | "WHATSAPP-BUSINESS" | "EVOLUTION";
   groupsIgnore?: boolean;

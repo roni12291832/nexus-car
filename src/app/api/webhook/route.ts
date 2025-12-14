@@ -45,6 +45,7 @@ export async function POST(req: Request) {
 
       const subscriptionId = session.subscription as string | undefined;
       const userId = session.metadata?.user_id;
+      const customerId = session.customer as string | undefined;
 
       if (subscriptionId && userId && session.payment_status === "paid") {
         try {
@@ -55,7 +56,7 @@ export async function POST(req: Request) {
           const { error } = await supabase
             .from("users")
             .update({
-              subscription_id: subscription.id,
+              subscription_id: customerId,
               status: subscription.status,
               ativo: true,
             })

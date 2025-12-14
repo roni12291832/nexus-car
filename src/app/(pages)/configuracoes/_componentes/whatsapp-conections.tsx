@@ -62,14 +62,10 @@ export default function WhatsAppConnections() {
         )
       );
 
-      if (data.number) {
-        await supabase
-          .from("whatsapp_instances")
-          .update({ number: data.number, status: "conectado" })
-          .eq("instance_name", instanceName);
-
-        fetchLocalConnections();
-      }
+      await supabase
+        .from("whatsapp_instances")
+        .update({ status: "conectado" })
+        .eq("instance_name", instanceName);
     } catch (error) {
       console.error(error);
     }
@@ -108,7 +104,10 @@ export default function WhatsAppConnections() {
   return (
     <div className="grid gap-4 md:grid-cols-4">
       {connections.map((conn) => (
-        <Card key={conn.instance_name} className="flex items-center justify-center">
+        <Card
+          key={conn.instance_name}
+          className="flex items-center justify-center"
+        >
           <CardHeader className="flex flex-row items-center justify-center ">
             {conn.status === "conectado" ? (
               <Badge className="flex items-center gap-1">

@@ -11,14 +11,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 
-import {
-  Users,
-  Car,
-  Clock,
-  MessageSquare,
-  CheckCircle,
-  AlertCircle,
-} from "lucide-react";
+import { Users, Car, Clock, MessageSquare } from "lucide-react";
 import { supabase } from "@/lib/supabase/server";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -200,16 +193,6 @@ export default function Dashboard() {
               <p className="text-xs text-muted-foreground">
                 {card.description}
               </p>
-              {card.trend === "up" && (
-                <div className="absolute top-2 right-2">
-                  <CheckCircle className="h-3 w-3 text-success" />
-                </div>
-              )}
-              {card.trend === "down" && (
-                <div className="absolute top-2 right-2">
-                  <AlertCircle className="h-3 w-3 text-warning" />
-                </div>
-              )}
             </CardContent>
           </Card>
         ))}
