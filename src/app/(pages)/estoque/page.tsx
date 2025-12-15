@@ -42,7 +42,18 @@ interface Vehicle {
   year: number;
   model: string;
   price: number;
-  type: "SUV" | "Sedan" | "Hatch";
+  type:
+    | "SUV"
+    | "Sedan"
+    | "Hatch"
+    | "Crossover"
+    | "Minivan"
+    | "Caminhão"
+    | "Ônibus"
+    | "Jipe"
+    | "Quadriciclo"
+    | "Motocicleta"
+    | "Caminhonete";
   image: (File | string)[];
   status: "Disponível" | "Vendido" | "Reservado";
 }
@@ -344,9 +355,17 @@ export default function Inventory() {
                       <SelectValue placeholder="Selecione" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="SUV">SUV</SelectItem>
-                      <SelectItem value="Sedan">Sedan</SelectItem>
-                      <SelectItem value="Hatch">Hatch</SelectItem>
+                      <SelectItem value="suv">SUV</SelectItem>
+                      <SelectItem value="sedan">Sedan</SelectItem>
+                      <SelectItem value="hatch">Hatch</SelectItem>
+                      <SelectItem value="crossover">Crossover</SelectItem>
+                      <SelectItem value="minivan">Minivan</SelectItem>
+                      <SelectItem value="caminhao">Caminhão</SelectItem>
+                      <SelectItem value="onibus">Ônibus</SelectItem>
+                      <SelectItem value="jipe">Jipe</SelectItem>
+                      <SelectItem value="quadriciclo">Quadriciclo</SelectItem>
+                      <SelectItem value="motocicleta">Motocicleta</SelectItem>
+                      <SelectItem value="caminhonete">Caminhonete</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
