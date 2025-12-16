@@ -55,6 +55,11 @@ interface Vehicle {
     | "Motocicleta"
     | "Caminhonete";
   image: (File | string)[];
+  mileage: number;
+
+  fuel: "Gasolina" | "Álcool" | "Flex" | "Diesel" | "Elétrico" | "Híbrido";
+
+  transmission: "Automático" | "Manual";
   status: "Disponível" | "Vendido" | "Reservado";
 }
 
@@ -84,10 +89,18 @@ export default function Inventory() {
 
   const [newVehicle, setNewVehicle] = useState<Vehicle>({
     name: "",
-    year: 0,
+    year: new Date().getFullYear(),
     model: "",
     price: 0,
+
     type: "Sedan",
+
+    mileage: 0,
+
+    fuel: "Gasolina",
+
+    transmission: "Manual",
+
     image: [],
     status: "Disponível",
   });
@@ -224,10 +237,18 @@ export default function Inventory() {
         toast.success("Veículo adicionado com sucesso!");
         setNewVehicle({
           name: "",
-          year: 0,
+          year: new Date().getFullYear(),
           model: "",
           price: 0,
+
           type: "Sedan",
+
+          mileage: 0,
+
+          fuel: "Gasolina",
+
+          transmission: "Manual",
+
           image: [],
           status: "Disponível",
         });
@@ -310,6 +331,7 @@ export default function Inventory() {
               <Plus className="h-4 w-4 mr-2" /> Adicionar Veículo
             </Button>
           </DialogTrigger>
+
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle>Adicionar Novo Veículo</DialogTitle>
@@ -355,17 +377,17 @@ export default function Inventory() {
                       <SelectValue placeholder="Selecione" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="suv">SUV</SelectItem>
-                      <SelectItem value="sedan">Sedan</SelectItem>
-                      <SelectItem value="hatch">Hatch</SelectItem>
-                      <SelectItem value="crossover">Crossover</SelectItem>
-                      <SelectItem value="minivan">Minivan</SelectItem>
-                      <SelectItem value="caminhao">Caminhão</SelectItem>
-                      <SelectItem value="onibus">Ônibus</SelectItem>
-                      <SelectItem value="jipe">Jipe</SelectItem>
-                      <SelectItem value="quadriciclo">Quadriciclo</SelectItem>
-                      <SelectItem value="motocicleta">Motocicleta</SelectItem>
-                      <SelectItem value="caminhonete">Caminhonete</SelectItem>
+                      <SelectItem value="SUV">SUV</SelectItem>
+                      <SelectItem value="Sedan">Sedan</SelectItem>
+                      <SelectItem value="Hatch">Hatch</SelectItem>
+                      <SelectItem value="Crossover">Crossover</SelectItem>
+                      <SelectItem value="Minivan">Minivan</SelectItem>
+                      <SelectItem value="Caminhão">Caminhão</SelectItem>
+                      <SelectItem value="Ônibus">Ônibus</SelectItem>
+                      <SelectItem value="Jipe">Jipe</SelectItem>
+                      <SelectItem value="Quadriciclo">Quadriciclo</SelectItem>
+                      <SelectItem value="Motocicleta">Motocicleta</SelectItem>
+                      <SelectItem value="Caminhonete">Caminhonete</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -379,6 +401,61 @@ export default function Inventory() {
                   setNewVehicle({ ...newVehicle, model: e.target.value })
                 }
               />
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Quilometragem (KM)</Label>
+                  <Input
+                    type="number"
+                    placeholder="45000"
+                    value={newVehicle.mileage || ""}
+                    onChange={(e) =>
+                      setNewVehicle({
+                        ...newVehicle,
+                        mileage: parseInt(e.target.value, 10) || 0,
+                      })
+                    }
+                  />
+                </div>
+
+                <div>
+                  <Label>Câmbio</Label>
+                  <Select
+                    value={newVehicle.transmission}
+                    onValueChange={(v: Vehicle["transmission"]) =>
+                      setNewVehicle({ ...newVehicle, transmission: v })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Manual">Manual</SelectItem>
+                      <SelectItem value="Automático">Automático</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <Label>Combustível</Label>
+              <Select
+                value={newVehicle.fuel}
+                onValueChange={(v: Vehicle["fuel"]) =>
+                  setNewVehicle({ ...newVehicle, fuel: v })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Gasolina">Gasolina</SelectItem>
+                  <SelectItem value="Álcool">Álcool</SelectItem>
+                  <SelectItem value="Flex">Flex</SelectItem>
+                  <SelectItem value="Diesel">Diesel</SelectItem>
+                  <SelectItem value="Elétrico">Elétrico</SelectItem>
+                  <SelectItem value="Híbrido">Híbrido</SelectItem>
+                </SelectContent>
+              </Select>
 
               <Label>Preço (R$)</Label>
               <Input
