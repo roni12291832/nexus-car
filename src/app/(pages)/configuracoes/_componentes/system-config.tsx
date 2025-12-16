@@ -222,7 +222,7 @@ export default function Settings() {
             </Button>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="storeName">Nome da Loja</Label>
                 <Input
@@ -243,7 +243,7 @@ export default function Settings() {
                   }
                 />
               </div>
-              <div className="space-y-2 col-span-2">
+              <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="storeName">Endereço</Label>
                 <Input
                   id="endereco"
@@ -254,7 +254,7 @@ export default function Settings() {
                 />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid md:Lgrid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="email">E-mail</Label>
                 <Input
