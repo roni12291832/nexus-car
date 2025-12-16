@@ -33,10 +33,13 @@ import { toast } from "sonner";
 interface StoreSettings {
   storeName: string;
   email: string;
-  openTime: string;
-  closeTime: string;
-  weekendOpen: boolean;
-  businessHoursMessage: string;
+  openTime?: string;
+  closeTime?: string;
+  weekendOpen?: boolean;
+  businessHoursMessage?: string;
+  numero: string;
+  endereco: string;
+  atendente: string;
 }
 
 export default function Settings() {
@@ -50,6 +53,9 @@ export default function Settings() {
     email: user?.email || "",
     openTime: "08:00",
     closeTime: "18:00",
+    numero: "",
+    endereco: "",
+    atendente: "",
     weekendOpen: true,
     businessHoursMessage:
       "Obrigado pelo contato! Nosso horário de atendimento é de segunda a sexta das 8h às 18h. Responderemos em breve!",
@@ -72,12 +78,15 @@ export default function Settings() {
 
         if (data) {
           setSettings({
-            storeName: data.store_name,
-            email: data.email,
-            openTime: data.open_time,
-            closeTime: data.close_time,
-            weekendOpen: data.weekend_open,
-            businessHoursMessage: data.business_hours_message,
+            storeName: data.store_name ?? "",
+            email: data.email ?? "",
+            openTime: data.open_time ?? "08:00",
+            closeTime: data.close_time ?? "18:00",
+            weekendOpen: data.weekend_open ?? true,
+            numero: data.numero ?? "", 
+            endereco: data.endereco ?? "", 
+            atendente: data.atendente ?? "", 
+            businessHoursMessage: data.business_hours_message ?? "",
           });
         }
       } catch (err) {
@@ -131,6 +140,9 @@ export default function Settings() {
           close_time: settings.closeTime,
           weekend_open: settings.weekendOpen,
           business_hours_message: settings.businessHoursMessage,
+          numero: settings.numero,
+          endereco: settings.endereco,
+          atendente: settings.atendente,
         },
         { onConflict: "user_id" }
       );
@@ -210,84 +222,65 @@ export default function Settings() {
             </Button>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="storeName">Nome da Loja</Label>
-              <Input
-                id="storeName"
-                value={settings.storeName}
-                onChange={(e) =>
-                  setSettings({ ...settings, storeName: e.target.value })
-                }
-              />
+            <div className="grid grid-cols-4 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="storeName">Nome da Loja</Label>
+                <Input
+                  id="storeName"
+                  value={settings.storeName}
+                  onChange={(e) =>
+                    setSettings({ ...settings, storeName: e.target.value })
+                  }
+                />
+              </div>
+              <div className="space-y-2 ">
+                <Label htmlFor="storeName">Nome do atendente</Label>
+                <Input
+                  id="atendente"
+                  value={settings.atendente}
+                  onChange={(e) =>
+                    setSettings({ ...settings, atendente: e.target.value })
+                  }
+                />
+              </div>
+              <div className="space-y-2 col-span-2">
+                <Label htmlFor="storeName">Endereço</Label>
+                <Input
+                  id="endereco"
+                  value={settings.endereco ?? ""}
+                  onChange={(e) =>
+                    setSettings({ ...settings, endereco: e.target.value })
+                  }
+                />
+              </div>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email">E-mail</Label>
-              <Input
-                id="email"
-                type="email"
-                readOnly
-                disabled
-                value={settings.email}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">E-mail</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  readOnly
+                  disabled
+                  value={settings.email}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Numero da Loja (Notificacões)</Label>
+                <Input
+                  id="numero"
+                  type="text"
+                  required
+                  placeholder="86999999999 - coloque com DDD"
+                  value={settings.numero ?? ""}
+                  onChange={(e) =>
+                    setSettings({ ...settings, numero: e.target.value })
+                  }
+                />
+              </div>
             </div>
 
             <Separator />
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="openTime">Abertura</Label>
-                <Input
-                  id="openTime"
-                  type="time"
-                  value={settings.openTime}
-                  onChange={(e) =>
-                    setSettings({ ...settings, openTime: e.target.value })
-                  }
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="closeTime">Fechamento</Label>
-                <Input
-                  id="closeTime"
-                  type="time"
-                  value={settings.closeTime}
-                  onChange={(e) =>
-                    setSettings({ ...settings, closeTime: e.target.value })
-                  }
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="weekendOpen"
-                checked={settings.weekendOpen}
-                onCheckedChange={(checked) =>
-                  setSettings({ ...settings, weekendOpen: checked })
-                }
-              />
-              <Label htmlFor="weekendOpen">Atender nos fins de semana</Label>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="businessHoursMessage">
-                Mensagem fora do horário
-              </Label>
-              <Textarea
-                id="businessHoursMessage"
-                placeholder="Mensagem para fora do horário comercial"
-                value={settings.businessHoursMessage}
-                onChange={(e) =>
-                  setSettings({
-                    ...settings,
-                    businessHoursMessage: e.target.value,
-                  })
-                }
-                rows={3}
-              />
-            </div>
 
             <Dialog open={showModal} onOpenChange={setShowModal}>
               <DialogTrigger asChild>
