@@ -44,17 +44,9 @@ export default function PlanNotActivated() {
                 </div>
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-primary" />
-                  <span className="text-foreground">1 conexão</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-primary" />
                   <span className="text-foreground">
                     Até 7 carros no estoque
                   </span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-primary" />
-                  <span className="text-foreground">Relatórios básicos</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-primary" />
@@ -98,20 +90,14 @@ export default function PlanNotActivated() {
                   <Check className="w-5 h-5 text-primary" />
                   <span className="text-foreground">Até 300 leads/mês</span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-primary" />
-                  <span className="text-foreground">3 conexões</span>
-                </div>
+
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-primary" />
                   <span className="text-foreground">
                     Até 20 carros no estoque
                   </span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-primary" />
-                  <span className="text-foreground">Relatórios avançados</span>
-                </div>
+
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-primary" />
                   <span className="text-foreground">Suporte prioritário</span>
