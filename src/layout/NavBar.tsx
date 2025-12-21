@@ -23,6 +23,7 @@ import { ModeToggle } from "@/components/ThemeToggle";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase/server";
 import { toast } from "sonner";
+import { Label } from "@/components/ui/label";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -109,10 +110,10 @@ export default function Navbar() {
             href={item.href}
             onClick={() => mobile && setIsOpen(false)}
             className={cn(
-              "flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+              "flex items-center px-3 py-2 mx-2 rounded-sm text-sm font-medium transition-colors",
               isActive(item.href)
-                ? "bg-blue-100 text-blue-900 shadow-sm"
-                : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                ? "bg-[#372b82] text-white"
+                : "text-muted-foreground hover:bg-gray-100 hover:text-gray-900"
             )}
           >
             <Icon className="w-5 h-5 mr-3" />
@@ -177,36 +178,38 @@ export default function Navbar() {
                     <Menu className="w-5 h-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <SheetContent side="right" className="w-[300px] sm:w-[400px] dark:bg-gray-950">
                   <div className="flex flex-col h-full">
                     <div className="space-y-2 flex-1 mt-12">
                       <NavLinks mobile />
                     </div>
-
-                    <Button
-                      onClick={handleOpenBillingPortal}
-                      disabled={!customerId || loadingPortal}
-                      className="mx-2"
-                    >
-                      {loadingPortal
-                        ? "Abrindo portal..."
-                        : customerId
-                        ? "Gerenciar assinatura"
-                        : "Sem assinatura ativa"}
-                    </Button>
+                  
+                      <Label className="mb-2 mx-2 text-xl">Faça Upgrade do seu plano</Label>
+                      <Button
+                        onClick={handleOpenBillingPortal}
+                        disabled={!customerId || loadingPortal}
+                        className="mx-2 bg-[#372b82]"
+                      >
+                        {loadingPortal
+                          ? "Abrindo portal..."
+                          : customerId
+                          ? "Gerenciar assinatura"
+                          : "Sem assinatura ativa"}
+                      </Button>
+                
 
                     <div className="border-t pt-4 mt-4 ml-5 mb-5">
                       <div className="flex items-center space-x-3 mb-4">
-                        <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                        <div className="w-10 h-10 bg-[#372b82] rounded-full flex items-center justify-center">
                           <span className="text-white font-medium">
                             {user?.name?.charAt(0) || "U"}
                           </span>
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-gray-900">
+                          <p className="text-base font-medium">
                             {user?.name || "Usuário"}
                           </p>
-                          <p className="text-xs text-gray-500">{user?.email}</p>
+                          <p className="text-xs text-muted-foreground">{user?.email}</p>
                         </div>
                       </div>
                       <Link
@@ -215,7 +218,7 @@ export default function Navbar() {
                       >
                         <Button
                           variant="ghost"
-                          className="w-full justify-start text-gray-600 hover:text-gray-900"
+                          className="w-full justify-start text-muted-foreground"
                         >
                           <Settings className="w-4 h-4 mr-2" />
                           Configurações
@@ -223,7 +226,7 @@ export default function Navbar() {
                       </Link>
                       <Button
                         variant="ghost"
-                        className="w-full justify-start text-gray-600 hover:text-gray-900"
+                        className="w-full justify-start text-muted-foreground"
                         onClick={() => {
                           setIsOpen(false);
                           handleLogout();

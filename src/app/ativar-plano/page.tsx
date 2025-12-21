@@ -4,6 +4,7 @@ import { Check, Star } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import SubscribeButton from "./_componentes/button";
+import { Button } from "@/components/ui/button";
 
 export default function PlanNotActivated() {
   return (
@@ -34,10 +35,6 @@ export default function PlanNotActivated() {
               </div>
 
               <div className="space-y-3 mb-8">
-                <div className="flex items-center gap-3">
-                  <Star className="w-5 h-5 text-primary" />
-                  <span className="text-foreground">Teste 14 dias grátis</span>
-                </div>
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-primary" />
                   <span className="text-foreground">Até 100 leads/mês</span>
@@ -83,10 +80,6 @@ export default function PlanNotActivated() {
 
               <div className="space-y-3 mb-8">
                 <div className="flex items-center gap-3">
-                  <Star className="w-5 h-5 text-primary" />
-                  <span className="text-foreground">Teste 14 dias grátis</span>
-                </div>
-                <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-primary" />
                   <span className="text-foreground">Até 300 leads/mês</span>
                 </div>
@@ -125,10 +118,6 @@ export default function PlanNotActivated() {
 
               <div className="space-y-3 mb-8">
                 <div className="flex items-center gap-3">
-                  <Star className="w-5 h-5 text-primary" />
-                  <span className="text-foreground">Teste 14 dias grátis</span>
-                </div>
-                <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-primary" />
                   <span className="text-foreground">Leads ilimitados</span>
                 </div>
@@ -138,7 +127,7 @@ export default function PlanNotActivated() {
                 </div>
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-primary" />
-                  <span className="text-foreground">API personalizada</span>
+                  <span className="text-foreground">IA personalizada</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-primary" />
@@ -149,6 +138,22 @@ export default function PlanNotActivated() {
                   <span className="text-foreground">Suporte dedicado</span>
                 </div>
               </div>
+              <Button
+                className="w-full text-white rounded bg-[#372b82]"
+                onClick={() => {
+                  const phone = "5586988333664"; // número com DDI +55
+                  const message = encodeURIComponent(
+                    "Olá! Tenho interesse em saber mais sobre o plano Diamante."
+                  );
+
+                  window.open(
+                    `https://wa.me/${phone}?text=${message}`,
+                    "_blank"
+                  );
+                }}
+              >
+                Entrar em contato
+              </Button>
             </CardContent>
           </Card>
         </div>
