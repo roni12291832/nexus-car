@@ -532,10 +532,17 @@ export default function Inventory() {
                 <SelectValue placeholder="Tipo" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todos</SelectItem>
                 <SelectItem value="SUV">SUV</SelectItem>
                 <SelectItem value="Sedan">Sedan</SelectItem>
                 <SelectItem value="Hatch">Hatch</SelectItem>
+                <SelectItem value="Crossover">Crossover</SelectItem>
+                <SelectItem value="Minivan">Minivan</SelectItem>
+                <SelectItem value="Caminhão">Caminhão</SelectItem>
+                <SelectItem value="Ônibus">Ônibus</SelectItem>
+                <SelectItem value="Jipe">Jipe</SelectItem>
+                <SelectItem value="Quadriciclo">Quadriciclo</SelectItem>
+                <SelectItem value="Motocicleta">Motocicleta</SelectItem>
+                <SelectItem value="Caminhonete">Caminhonete</SelectItem>
               </SelectContent>
             </Select>
             <Input
