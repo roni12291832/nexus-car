@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, Users, Car } from "lucide-react";
+import { LayoutDashboard, Users, Car, CreditCard } from "lucide-react";
 
 import {
   Sidebar,
@@ -18,11 +18,75 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase/server";
+import { toast } from "sonner";
 
 export default function AppSidebar() {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
   const pathname = usePathname();
+  const [loadingPortal, setLoadingPortal] = useState(false);
+  const [customerId, setCustomerId] = useState<string | null>(null);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        const { data: profile } = await supabase
+          .from("users")
+          .select("full_name,subscription_id ")
+          .eq("user_id", user.id)
+          .single();
+
+        setUser({
+          email: user.email,
+          name: profile?.full_name || "Usuário",
+          customerId: profile?.subscription_id,
+        });
+
+        setCustomerId(profile?.subscription_id || null);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  const handleOpenBillingPortal = async () => {
+    if (!customerId) {
+      toast.error("Erro.");
+      return;
+    }
+    console.log("id da stripe", customerId);
+
+    try {
+      setLoadingPortal(true);
+
+      const response = await fetch("/api/create-customer-portal-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ customerId }),
+      });
+
+      const data: { url?: string; error?: string } = await response.json();
+
+      if (!response.ok || !data.url) {
+        throw new Error(data.error || "Erro ao criar sessão do portal.");
+      }
+
+      window.location.href = data.url;
+    } catch (error) {
+      console.error(error);
+      toast.error("Não foi possível abrir o portal de cobrança.");
+    } finally {
+      setLoadingPortal(false);
+    }
+  };
 
   const navigation = [
     { name: "Dashboard", href: "/home", icon: LayoutDashboard },
@@ -88,6 +152,18 @@ export default function AppSidebar() {
                   </SidebarMenuItem>
                 );
               })}
+              <SidebarMenuButton
+                onClick={handleOpenBillingPortal}
+                disabled={!customerId || loadingPortal}
+                className=" text-white bg-[#372b82] hover:bg-[#2c2166] hover:text-white"
+              >
+                <CreditCard className="w-5 h-5 " />
+                {loadingPortal
+                  ? "Abrindo portal..."
+                  : customerId
+                  ? "Faça upgrade do seu plano"
+                  : "Sem assinatura ativa"}
+              </SidebarMenuButton>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

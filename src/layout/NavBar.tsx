@@ -14,6 +14,7 @@ import {
   Settings,
   LogOut,
   Car,
+  CreditCard,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -178,25 +179,26 @@ export default function Navbar() {
                     <Menu className="w-5 h-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[300px] sm:w-[400px] dark:bg-gray-950">
+                <SheetContent
+                  side="right"
+                  className="w-[300px] sm:w-[400px] dark:bg-gray-950"
+                >
                   <div className="flex flex-col h-full">
                     <div className="space-y-2 flex-1 mt-12">
                       <NavLinks mobile />
-                    </div>
-                  
-                      <Label className="mb-2 mx-2 text-xl">Faça Upgrade do seu plano</Label>
                       <Button
                         onClick={handleOpenBillingPortal}
                         disabled={!customerId || loadingPortal}
-                        className="mx-2 bg-[#372b82]"
+                        className="mx-2 w-[70vw] bg-[#372b82]"
                       >
+                        <CreditCard className="w-5 h-5 " />
                         {loadingPortal
                           ? "Abrindo portal..."
                           : customerId
-                          ? "Gerenciar assinatura"
+                          ? "Faça upgrade do seu plano"
                           : "Sem assinatura ativa"}
                       </Button>
-                
+                    </div>
 
                     <div className="border-t pt-4 mt-4 ml-5 mb-5">
                       <div className="flex items-center space-x-3 mb-4">
@@ -209,7 +211,9 @@ export default function Navbar() {
                           <p className="text-base font-medium">
                             {user?.name || "Usuário"}
                           </p>
-                          <p className="text-xs text-muted-foreground">{user?.email}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {user?.email}
+                          </p>
                         </div>
                       </div>
                       <Link

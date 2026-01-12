@@ -23,8 +23,10 @@ import {
 } from "@/components/ui/select";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -81,7 +83,7 @@ export default function Inventory() {
 
   const [filters, setFilters] = useState({
     search: "",
-    type: "all",
+    type: "",
     minPrice: "",
     maxPrice: "",
     year: "",
@@ -529,7 +531,7 @@ export default function Inventory() {
               onValueChange={(v) => setFilters({ ...filters, type: v })}
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Tipo" />
+                <SelectValue placeholder="Tipo do veículo" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="SUV">SUV</SelectItem>
@@ -632,6 +634,7 @@ export default function Inventory() {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-3xl">
           <DialogTitle>{selectedVehicle?.name}</DialogTitle>
+          <Badge>{selectedVehicle?.status}</Badge>
           {selectedVehicle && (
             <div className="space-y-4">
               {Array.isArray(selectedVehicle.image) &&
@@ -670,22 +673,18 @@ export default function Inventory() {
                   <strong>Tipo:</strong> {selectedVehicle.type}
                 </p>
                 <p>
+                  <strong>Km:</strong> {selectedVehicle.mileage}
+                </p>
+                <p>
+                  <strong>Câmbio:</strong> {selectedVehicle.transmission}
+                </p>
+                <p>
+                  <strong>Combustível:</strong> {selectedVehicle.fuel}
+                </p>
+                <p>
                   <strong>Preço:</strong> R${" "}
                   {selectedVehicle.price.toLocaleString()}
                 </p>
-                <p>
-                  <strong>Status:</strong>{" "}
-                  <Badge>{selectedVehicle.status}</Badge>
-                </p>
-              </div>
-
-              <div className="flex justify-end">
-                <Button
-                  variant="outline"
-                  onClick={() => setIsDialogOpen(false)}
-                >
-                  Fechar
-                </Button>
               </div>
             </div>
           )}
@@ -703,34 +702,38 @@ export default function Inventory() {
 
           {selectedVehicle && (
             <div className="space-y-4">
-              <Label>Nome do Veículo</Label>
-              <Input
-                value={selectedVehicle.name}
-                onChange={(e) =>
-                  setSelectedVehicle({
-                    ...selectedVehicle,
-                    name: e.target.value,
-                  })
-                }
-              />
+              {/* Nome */}
+              <div>
+                <Label className="mb-2 ">Nome do Veículo</Label>
+                <Input
+                  value={selectedVehicle.name}
+                  onChange={(e) =>
+                    setSelectedVehicle({
+                      ...selectedVehicle,
+                      name: e.target.value,
+                    })
+                  }
+                />
+              </div>
 
+              {/* Ano + Tipo */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>Ano</Label>
+                  <Label className="mb-2 ">Ano</Label>
                   <Input
                     type="number"
                     value={selectedVehicle.year}
                     onChange={(e) =>
                       setSelectedVehicle({
-                        ...selectedVehicle!,
-                        year: parseInt(e.target.value, 10) || 0,
+                        ...selectedVehicle,
+                        year: Number(e.target.value) || 0,
                       })
                     }
                   />
                 </div>
 
                 <div>
-                  <Label>Tipo</Label>
+                  <Label className="mb-2 ">Tipo</Label>
                   <Select
                     value={selectedVehicle.type}
                     onValueChange={(v: Vehicle["type"]) =>
@@ -744,37 +747,141 @@ export default function Inventory() {
                       <SelectItem value="SUV">SUV</SelectItem>
                       <SelectItem value="Sedan">Sedan</SelectItem>
                       <SelectItem value="Hatch">Hatch</SelectItem>
+                      <SelectItem value="Crossover">Crossover</SelectItem>
+                      <SelectItem value="Minivan">Minivan</SelectItem>
+                      <SelectItem value="Caminhão">Caminhão</SelectItem>
+                      <SelectItem value="Ônibus">Ônibus</SelectItem>
+                      <SelectItem value="Jipe">Jipe</SelectItem>
+                      <SelectItem value="Quadriciclo">Quadriciclo</SelectItem>
+                      <SelectItem value="Motocicleta">Motocicleta</SelectItem>
+                      <SelectItem value="Caminhonete">Caminhonete</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                {/* Modelo */}
+                <div>
+                  <Label className="mb-2 ">Modelo</Label>
+                  <Input
+                    value={selectedVehicle.model}
+                    onChange={(e) =>
+                      setSelectedVehicle({
+                        ...selectedVehicle,
+                        model: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+
+                {/* Preço */}
+                <div>
+                  <Label className="mb-2 ">Preço (R$)</Label>
+                  <Input
+                    type="number"
+                    value={selectedVehicle.price}
+                    onChange={(e) =>
+                      setSelectedVehicle({
+                        ...selectedVehicle,
+                        price: Number(e.target.value) || 0,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                {/* Quilometragem */}
+                <div>
+                  <Label className="mb-2 ">Quilometragem</Label>
+                  <Input
+                    type="number"
+                    value={selectedVehicle.mileage}
+                    onChange={(e) =>
+                      setSelectedVehicle({
+                        ...selectedVehicle,
+                        mileage: Number(e.target.value) || 0,
+                      })
+                    }
+                  />
+                </div>
+
+                {/* Combustível */}
+                <div>
+                  <Label className="mb-2 ">Combustível</Label>
+                  <Select
+                    value={selectedVehicle.fuel}
+                    onValueChange={(v: Vehicle["fuel"]) =>
+                      setSelectedVehicle({ ...selectedVehicle, fuel: v })
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Gasolina">Gasolina</SelectItem>
+                      <SelectItem value="Álcool">Álcool</SelectItem>
+                      <SelectItem value="Flex">Flex</SelectItem>
+                      <SelectItem value="Diesel">Diesel</SelectItem>
+                      <SelectItem value="Elétrico">Elétrico</SelectItem>
+                      <SelectItem value="Híbrido">Híbrido</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
-              <Label>Modelo</Label>
-              <Input
-                value={selectedVehicle.model}
-                onChange={(e) =>
-                  setSelectedVehicle({
-                    ...selectedVehicle,
-                    model: e.target.value,
-                  })
-                }
-              />
+              <div className="grid grid-cols-2 gap-4">
+                {/* Transmissão */}
+                <div>
+                  <Label className="mb-2 ">Transmissão</Label>
+                  <Select
+                    value={selectedVehicle.transmission}
+                    onValueChange={(v: Vehicle["transmission"]) =>
+                      setSelectedVehicle({
+                        ...selectedVehicle,
+                        transmission: v,
+                      })
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Automático">Automático</SelectItem>
+                      <SelectItem value="Manual">Manual</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              <Label>Preço (R$)</Label>
-              <Input
-                type="number"
-                value={selectedVehicle.price}
-                onChange={(e) =>
-                  setSelectedVehicle({
-                    ...selectedVehicle,
-                    price: parseFloat(e.target.value) || 0,
-                  })
-                }
-              />
+                {/* Status */}
+                <div>
+                  <Label className="mb-2 ">Status</Label>
+                  <Select
+                    value={selectedVehicle.status}
+                    onValueChange={(v: Vehicle["status"]) =>
+                      setSelectedVehicle({ ...selectedVehicle, status: v })
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Disponível">Disponível</SelectItem>
+                      <SelectItem value="Reservado">Reservado</SelectItem>
+                      <SelectItem value="Vendido">Vendido</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
 
-              <Button className="w-full" onClick={saveEdit}>
-                Salvar Alterações
-              </Button>
+              <DialogFooter>
+                <DialogClose>
+                  <Button variant="outline" className="w-full">
+                    Cancelar
+                  </Button>
+                </DialogClose>
+                <Button onClick={saveEdit}>Salvar Alterações</Button>
+              </DialogFooter>
             </div>
           )}
         </DialogContent>
