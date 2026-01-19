@@ -161,7 +161,7 @@ export default function PlanNotActivated() {
         {/* Footer */}
         <div className="text-center mt-12">
           <p className="text-muted-foreground">
-            Todos os planos incluem 14 dias de grátis. Cancele a qualquer
+            Todos os planos incluem 7 dias de grátis. Cancele a qualquer
             momento.
           </p>
         </div>

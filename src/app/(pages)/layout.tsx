@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-
 import "../globals.css";
 
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -20,7 +19,7 @@ export default function RootLayout({
   const router = useRouter();
 
   useEffect(() => {
-    if (loading) return; 
+    if (loading) return;
 
     async function checkUser() {
       if (!user) {
@@ -47,10 +46,8 @@ export default function RootLayout({
   }
 
   return (
-    <div>
-      <SidebarProvider>
-        <AppShell>{children}</AppShell>
-      </SidebarProvider>
-    </div>
+    <SidebarProvider>
+      <AppShell>{children}</AppShell>
+    </SidebarProvider>
   );
 }

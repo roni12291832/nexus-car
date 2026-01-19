@@ -2,7 +2,6 @@
 
 import { ReactNode } from "react";
 
-import { TooltipProvider } from "@/components/ui/tooltip";
 
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -15,9 +14,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const isMobile = useIsMobile();
 
   return (
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
+
       <div className="min-h-screen bg-[#f1f1f1] flex w-full dark:bg-gray-900">
         {!isMobile && <AppSidebar />}
         <div className="flex-1 flex flex-col min-w-0">
@@ -25,6 +22,6 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <main className="flex-1 p-6">{children}</main>
         </div>
       </div>
-    </TooltipProvider>
+  
   );
 }

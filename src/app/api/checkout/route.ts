@@ -32,7 +32,7 @@ export async function POST(req: Request) {
       payment_method_types: ["card"],
       customer_email: user.email,
       subscription_data: {
-        trial_period_days: 14, 
+        trial_period_days: 7, 
       },
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/obrigado`,

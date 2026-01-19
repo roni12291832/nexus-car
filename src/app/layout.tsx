@@ -7,6 +7,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/ThemeToggle/theme-provider";
 import Script from "next/script";
 import Image from "next/image";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata = {
   title: "Nexus Car - Atendimento por IA para sua Loja de Veículos",
@@ -75,50 +77,27 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-br" suppressHydrationWarning>
-      <head>
-        <Script id="facebook-pixel" strategy="afterInteractive">
-          {`
-          !function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '1608283786798294');
-fbq('track', 'PageView');
-
-          `}
-        </Script>
-
-        <noscript>
-          <Image
-            height="1"
-            alt="pixel"
-            style={{ display: "none" }}
-            width="1"
-            src={`https://www.facebook.com/tr?id=1608283786798294&ev=PageView&noscript=1`}
-          />
-        </noscript>
-      </head>
       <link rel="icon" href="/favicon.ico" sizes="any" />
       <body
         className={cn(
           "min-h-screen  font-sans antialiased box-border",
-          inter.className
+          inter.className,
         )}
       >
-        <AuthProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
-        </AuthProvider>
+        <Toaster />
+       
+        <TooltipProvider>
+          <AuthProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="light"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+            </ThemeProvider>
+          </AuthProvider>
+        </TooltipProvider>
       </body>
     </html>
   );
