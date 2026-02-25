@@ -51,8 +51,10 @@
       "parameters": {
         "method": "POST",
         "url": "https://nexaflow.uazapi.com/instance/connect",
-        "sendQuery": true,
-        "queryParameters": {
+        "sendQuery": false,
+        "queryParameters": {},
+        "sendHeaders": true,
+        "headerParameters": {
           "parameters": [
             {
               "name": "token",
@@ -150,8 +152,10 @@
     {
       "parameters": {
         "url": "https://nexaflow.uazapi.com/instance/status",
-        "sendQuery": true,
-        "queryParameters": {
+        "sendQuery": false,
+        "queryParameters": {},
+        "sendHeaders": true,
+        "headerParameters": {
           "parameters": [
             {
               "name": "token",
@@ -177,10 +181,6 @@
         "queryParameters": {
           "parameters": [
             {
-              "name": "token",
-              "value": "={{ $item(\"0\").$node[\"Switch1\"].json[\"token\"] }}"
-            },
-            {
               "name": "status",
               "value": "={{ $item(\"0\").$node[\"Update a row\"].json[\"status\"] }}"
             },
@@ -195,6 +195,15 @@
             {
               "name": "conected",
               "value": "={{ $json.connected }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "={{ $item(\"0\").$node[\"Switch1\"].json[\"token\"] }}"
             }
           ]
         },
@@ -317,7 +326,7 @@
               "fieldValue": "={{ $item(\"0\").$node[\"Switch1\"].json[\"status\"] }}"
             },
             {
-              "fieldId": "token",
+              "fieldId": "uazapi_token",
               "fieldValue": "={{ $item(\"0\").$node[\"Edit Fields1\"].json[\"token\"] }}"
             }
           ]
