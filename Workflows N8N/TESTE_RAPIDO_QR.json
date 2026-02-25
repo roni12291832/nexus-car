@@ -10,7 +10,10 @@
       },
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
-      "position": [0, 0],
+      "position": [
+        0,
+        0
+      ],
       "name": "Webhook"
     },
     {
@@ -22,21 +25,33 @@
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            { "name": "Content-Type", "value": "application/json" },
-            { "name": "admintoken", "value": "z6hUzjbsDoZKwYzUr3l8rRbDavfG6tgr55ifG4IdIl82w2cSfY" }
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "admintoken",
+              "value": "z6hUzjbsDoZKwYzUr3l8rRbDavfG6tgr55ifG4IdIl82w2cSfY"
+            }
           ]
         },
         "sendBody": true,
         "bodyParameters": {
           "parameters": [
-            { "name": "name", "value": "={{ $json.body.instance_name }}" }
+            {
+              "name": "name",
+              "value": "={{ $json.body.instance_name }}"
+            }
           ]
         },
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [200, 0],
+      "position": [
+        200,
+        0
+      ],
       "name": "INIT"
     },
     {
@@ -46,33 +61,74 @@
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            { "name": "token", "value": "={{ $json.token }}" }
+            {
+              "name": "token",
+              "value": "={{ $json.token }}"
+            }
           ]
         },
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [400, 0],
+      "position": [
+        400,
+        0
+      ],
       "name": "CONNECT"
     },
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\n  \"success\": true,\n  \"qrcode\": \"{{ $json.base64 }}\",\n  \"token\": \"{{ $json.instance.token }}\"\n}",
+        "responseBody": "={\n  \"success\": true,\n  \"qrcode\": \"{{ $json.instance.qrcode }}\",\n  \"token\": \"{{ $json.instance.token }}\"\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
-      "position": [600, 0],
+      "position": [
+        600,
+        0
+      ],
       "name": "RESPOND"
     }
   ],
   "connections": {
-    "Webhook": { "main": [ [ { "node": "INIT", "type": "main", "index": 0 } ] ] },
-    "INIT": { "main": [ [ { "node": "CONNECT", "type": "main", "index": 0 } ] ] },
-    "CONNECT": { "main": [ [ { "node": "RESPOND", "type": "main", "index": 0 } ] ] }
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "INIT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "INIT": {
+      "main": [
+        [
+          {
+            "node": "CONNECT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CONNECT": {
+      "main": [
+        [
+          {
+            "node": "RESPOND",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
   },
   "active": false,
-  "settings": { "executionOrder": "v1" }
+  "settings": {
+    "executionOrder": "v1"
+  }
 }

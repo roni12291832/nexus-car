@@ -277,7 +277,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\n  \"success\": true,\n  \"qrcode\": \"{{ $item(\"0\").$node[\"HTTP GENERATE QR1\"].json[\"qrcode\"] }}\",\n  \"token\": \"{{ $item(\"0\").$node[\"HTTP GENERATE QR1\"].json[\"token\"] }}\"\n}",
+        "responseBody": "={\n  \"success\": true,\n  \"qrcode\": \"{{ $item(\"0\").$node[\"HTTP GENERATE QR1\"].json[\"instance\"][\"qrcode\"] }}\",\n  \"token\": \"{{ $item(\"0\").$node[\"HTTP GENERATE QR1\"].json[\"instance\"][\"token\"] }}\"\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.respondToWebhook",
