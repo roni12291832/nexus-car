@@ -41,18 +41,16 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -48,
-        496
+        -896,
+        2928
       ],
-      "id": "bebc76ce-a743-402b-a1ec-257fbbad2c15",
+      "id": "96848c24-2335-43ce-a150-b377765b0a50",
       "name": "HTTP CREATE INSTANCE1"
     },
     {
       "parameters": {
         "method": "POST",
         "url": "https://nexaflow.uazapi.com/instance/connect",
-        "sendQuery": false,
-        "queryParameters": {},
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -67,10 +65,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        656,
-        496
+        -192,
+        2928
       ],
-      "id": "f3c4cd98-e47d-456a-86d7-613cdf7daf5f",
+      "id": "78d667b5-8a6e-4121-8efc-72d9235b2e8a",
       "name": "HTTP GENERATE QR1"
     },
     {
@@ -87,7 +85,7 @@
                 },
                 "conditions": [
                   {
-                    "leftValue": "={{ $json.status }}",
+                    "leftValue": "={{ $json.instance.status }}",
                     "rightValue": "connected",
                     "operator": {
                       "type": "string",
@@ -110,7 +108,7 @@
                 "conditions": [
                   {
                     "id": "d34e1bd5-37de-4c18-b8bf-b4098f1d5453",
-                    "leftValue": "={{ $json.status }}",
+                    "leftValue": "={{ $json.instance.status }}",
                     "rightValue": "connected",
                     "operator": {
                       "type": "string",
@@ -129,10 +127,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        1280,
-        288
+        368,
+        2768
       ],
-      "id": "0a971c33-7ff4-4e65-8ce5-a16c7309ef30",
+      "id": "5862a80c-6336-4934-8cd8-8a6b7f95a7f4",
       "name": "Switch1"
     },
     {
@@ -142,12 +140,35 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        1424,
-        32
+        576,
+        2464
       ],
-      "id": "ffdddca5-1aa0-4d55-9d4c-574a7e2c0236",
+      "id": "07617ae7-1811-42d1-8824-b6bd772bdcae",
       "name": "Wait1",
       "webhookId": "adefe0cf-2463-4258-b38b-9081c2657645"
+    },
+    {
+      "parameters": {
+        "url": "https://nexaflow.uazapi.com/instance/status",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "={{ $item(\"0\").$node[\"Edit Fields3\"].json[\"token\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        2928
+      ],
+      "id": "ba01f8b8-e075-4060-aa81-314fa0adb467",
+      "name": "HTTP GET STATUS2"
     },
     {
       "parameters": {
@@ -159,7 +180,7 @@
           "parameters": [
             {
               "name": "token",
-              "value": "={{ $json.token }}"
+              "value": "={{ $item(\"0\").$node[\"Edit Fields3\"].json[\"token\"] }}"
             }
           ]
         },
@@ -168,54 +189,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1120,
-        560
+        704,
+        2928
       ],
-      "id": "4534cdc9-8346-4e8f-90e2-427fa5590d0c",
-      "name": "HTTP GET STATUS2"
-    },
-    {
-      "parameters": {
-        "url": "https://nexaflow.uazapi.com/instance/status",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "status",
-              "value": "={{ $item(\"0\").$node[\"Update a row\"].json[\"status\"] }}"
-            },
-            {
-              "name": "instance_name",
-              "value": "={{ $item(\"0\").$node[\"Update a row\"].json[\"instance_name\"] }}"
-            },
-            {
-              "name": "user_id",
-              "value": "={{ $item(\"0\").$node[\"Update a row\"].json[\"user_id\"] }}"
-            },
-            {
-              "name": "conected",
-              "value": "={{ $json.connected }}"
-            }
-          ]
-        },
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "token",
-              "value": "={{ $item(\"0\").$node[\"Switch1\"].json[\"token\"] }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1552,
-        528
-      ],
-      "id": "e7b315e3-7df1-4438-b634-2c1c10d963d1",
+      "id": "a9033012-0a79-4028-b51a-b1eb078708d8",
       "name": "HTTP GET STATUS3"
     },
     {
@@ -227,10 +204,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
       "position": [
-        2064,
-        528
+        1216,
+        2928
       ],
-      "id": "4d091575-6367-469f-9fc7-4b98405a2410",
+      "id": "038fcd00-83d7-4ee0-ac98-941f00039a18",
       "name": "Respond to Webhook1"
     },
     {
@@ -240,25 +217,25 @@
             {
               "id": "7b745e3b-d16e-4f93-bf96-af4c7b874f72",
               "name": "status",
-              "value": "={{ $json.status }}",
+              "value": "={{ $json.instance.status }}",
               "type": "string"
             },
             {
               "id": "c10d98cb-89b3-4f6e-af6a-dd43d957f7a0",
               "name": "token",
-              "value": "={{ $item(\"0\").$node[\"HTTP GET STATUS3\"].json[\"token\"] }}",
+              "value": "={{ $item(\"0\").$node[\"Edit Fields3\"].json[\"token\"] }}",
               "type": "string"
             },
             {
               "id": "0d93f27d-b958-4ebd-aa2d-92a48c537166",
               "name": "instance_name",
-              "value": "={{ $item(\"0\").$node[\"Update a row\"].json[\"instance_name\"] }}",
+              "value": "={{ $item(\"0\").$node[\"Webhook\"].json[\"body\"][\"instance_name\"] }}",
               "type": "string"
             },
             {
               "id": "2fcb8472-ecbf-41dc-a234-adcf88045f60",
               "name": "user_id",
-              "value": "={{ $item(\"0\").$node[\"Update a row\"].json[\"user_id\"] }}",
+              "value": "={{ $item(\"0\").$node[\"Webhook\"].json[\"body\"][\"user_id\"] }}",
               "type": "string"
             }
           ]
@@ -268,10 +245,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1776,
-        528
+        928,
+        2928
       ],
-      "id": "34c47001-09e0-4179-a837-f1fa42b8c970",
+      "id": "7a72e40a-eaa4-4980-801e-6e48ef524f08",
       "name": "Edit Fields1"
     },
     {
@@ -283,10 +260,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
       "position": [
-        880,
-        496
+        32,
+        2928
       ],
-      "id": "9f371988-164c-44db-9659-6bd548f53495",
+      "id": "19de3849-0568-4354-9d1c-ab0a6595f343",
       "name": "Respond to Webhook CONNECT1"
     },
     {
@@ -299,53 +276,53 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -640,
-        496
+        -1088,
+        2928
       ],
-      "id": "46b630da-6c7a-417c-a474-64376b82ca0d",
+      "id": "61a4003e-1379-42ad-81b9-6b4b0da606e8",
       "name": "Webhook",
       "webhookId": "722cd849-b0e5-4f14-9a42-afc95a8df49c"
     },
     {
       "parameters": {
-        "operation": "update",
-        "tableId": "whatsapp_instances",
-        "filters": {
-          "conditions": [
+        "method": "POST",
+        "url": "https://kmkcrqlozwmzsgfdgath.supabase.co/rest/v1/whatsapp_instances",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
             {
-              "keyName": "user_id",
-              "condition": "eq",
-              "keyValue": "={{ $item(\"0\").$node[\"Webhook\"].json[\"body\"][\"user_id\"] }}"
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtta2NycWxvendtenNnZmRnYXRoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NjkwNzQ0OCwiZXhwIjoyMDcyNDgzNDQ4fQ.oo2nabZxXzBuu9xOp5F9GIbDRJ1vwiS0EzkXUKXQfrk"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtta2NycWxvendtenNnZmRnYXRoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NjkwNzQ0OCwiZXhwIjoyMDcyNDgzNDQ4fQ.oo2nabZxXzBuu9xOp5F9GIbDRJ1vwiS0EzkXUKXQfrk"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "resolution=merge-duplicates,return=representation"
             }
           ]
         },
-        "fieldsUi": {
-          "fieldValues": [
-            {
-              "fieldId": "status",
-              "fieldValue": "={{ $item(\"0\").$node[\"Switch1\"].json[\"status\"] }}"
-            },
-            {
-              "fieldId": "uazapi_token",
-              "fieldValue": "={{ $item(\"0\").$node[\"Edit Fields1\"].json[\"token\"] }}"
-            }
-          ]
-        }
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ \"user_id\": $item(\"0\").$node[\"Webhook\"].json[\"body\"][\"user_id\"], \"instance_name\": $item(\"0\").$node[\"Webhook\"].json[\"body\"][\"instance_name\"], \"uazapi_token\": $item(\"0\").$node[\"Switch1\"].json[\"instance\"][\"token\"], \"status\": \"conectado\" }) }}",
+        "options": {}
       },
-      "type": "n8n-nodes-base.supabase",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
-        1344,
-        528
+        496,
+        2928
       ],
-      "id": "f52f2e5d-8b47-4abe-a092-601e59fa87d6",
+      "id": "547c5b51-ee2d-49c3-8b76-afaa4a5ee9d1",
       "name": "Update a row",
-      "credentials": {
-        "supabaseApi": {
-          "id": "QgLbykTuIu22HYo2",
-          "name": "Supabase Nexus"
-        }
-      }
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
@@ -370,10 +347,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        416,
-        496
+        -432,
+        2928
       ],
-      "id": "38685e25-4262-40df-8f7f-f88d74026c2c",
+      "id": "17727d4d-de7d-4bf4-8246-02528a5a09cd",
       "name": "Edit Fields3"
     },
     {
@@ -397,15 +374,49 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        192,
-        441
+        -656,
+        2928
       ],
-      "id": "b7d958e9-806f-4f67-9db6-1759b01cd1fa",
+      "id": "35cf4889-e7b5-430d-8c16-f8cf780a392d",
       "name": "HTTP Request1",
       "retryOnFail": false
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n-n8n-start.uvfexz.easypanel.host",
+            "user-agent": "node",
+            "content-length": "203",
+            "accept": "*/*",
+            "accept-encoding": "br, gzip, deflate",
+            "accept-language": "*",
+            "content-type": "application/json",
+            "sec-fetch-mode": "cors",
+            "x-forwarded-for": "52.87.32.193",
+            "x-forwarded-host": "n8n-n8n-start.uvfexz.easypanel.host",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "460be1398f88",
+            "x-invocation-id": "gru1::m8p6x-1771999347145-cfca2ba624b1",
+            "x-real-ip": "52.87.32.193",
+            "x-vercel-id": "gru1::m8p6x-1771999347145-cfca2ba624b1"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "instance_name": "70e421e9-c706-4854-b8b6-59921c48aa60",
+            "user_id": "70e421e9-c706-4854-b8b6-59921c48aa60",
+            "receipt_webhook_url": "https://webhook.linqapps.com/webhook/e8a937c5-4050-4fd5-a446-c41d6ed31c06"
+          },
+          "webhookUrl": "https://n8n-n8n-start.uvfexz.easypanel.host/webhook/wa/createnexus",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
   "connections": {
     "HTTP CREATE INSTANCE1": {
       "main": [
@@ -480,11 +491,6 @@
         ]
       ]
     },
-    "Respond to Webhook1": {
-      "main": [
-        []
-      ]
-    },
     "Edit Fields1": {
       "main": [
         [
@@ -557,17 +563,17 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "c1db363b-7bda-43fb-8036-92179751c333",
+  "versionId": "7284b950-c0a7-4c47-a119-c480e5e152a0",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "98a7f76cbff973591af08e09b5be2fed14b55b37d878782c0638229a94477203"
   },
-  "id": "Mc7QR1KHie7gQhFh4umPT",
+  "id": "K-6y_jI6MLXWzR4mwYrv7",
   "tags": [
     {
-      "updatedAt": "2025-10-22T01:54:35.069Z",
-      "createdAt": "2025-10-22T01:54:35.069Z",
-      "id": "9AHGaqlKMh6mordA",
+      "updatedAt": "2026-02-25T01:51:05.043Z",
+      "createdAt": "2026-02-25T01:51:05.043Z",
+      "id": "DTo4LDgRNlpWJeht",
       "name": "RONSILSON"
     }
   ]
