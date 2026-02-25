@@ -15,6 +15,8 @@ import {
   LogOut,
   Car,
   CreditCard,
+  MessageSquare,
+  DollarSign,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -96,6 +98,8 @@ export default function Navbar() {
     { name: "Dashboard", href: "/home", icon: LayoutDashboard },
     { name: "Estoque", href: "/estoque", icon: Car },
     { name: "Leads", href: "/leads", icon: Users },
+    { name: "WhatsApp", href: "/whatsapp", icon: MessageSquare },
+    { name: "Financeiro", href: "/financeiro", icon: DollarSign },
   ];
 
   const isActive = (href: string) =>
@@ -195,8 +199,8 @@ export default function Navbar() {
                         {loadingPortal
                           ? "Abrindo portal..."
                           : customerId
-                          ? "Faça upgrade do seu plano"
-                          : "Sem assinatura ativa"}
+                            ? "Faça upgrade do seu plano"
+                            : "Sem assinatura ativa"}
                       </Button>
                     </div>
 
