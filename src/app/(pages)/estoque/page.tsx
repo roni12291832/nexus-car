@@ -32,7 +32,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Filter, Eye, Loader2, Trash, Pencil } from "lucide-react";
+import { Plus, Filter, Eye, Loader2, Trash, Pencil, X, Upload } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase/server";
@@ -45,17 +45,17 @@ interface Vehicle {
   model: string;
   price: number;
   type:
-    | "SUV"
-    | "Sedan"
-    | "Hatch"
-    | "Crossover"
-    | "Minivan"
-    | "Caminhão"
-    | "Ônibus"
-    | "Jipe"
-    | "Quadriciclo"
-    | "Motocicleta"
-    | "Caminhonete";
+  | "SUV"
+  | "Sedan"
+  | "Hatch"
+  | "Crossover"
+  | "Minivan"
+  | "Caminhão"
+  | "Ônibus"
+  | "Jipe"
+  | "Quadriciclo"
+  | "Motocicleta"
+  | "Caminhonete";
   image: (File | string)[];
   mileage: number;
 
@@ -292,32 +292,65 @@ export default function Inventory() {
     setFilteredVehicles(updated);
   };
 
+  const [isSaving, setIsSaving] = useState(false);
+
   const saveEdit = async () => {
     if (!selectedVehicle) return;
+    setIsSaving(true);
 
-    const { id, ...dataToUpdate } = selectedVehicle;
+    try {
+      // Upload novas fotos (File objects) e manter as existentes (strings)
+      const finalImageUrls: string[] = [];
 
-    const { error } = await supabase
-      .from("estoque")
-      .update({
-        ...dataToUpdate,
-        image: JSON.stringify(dataToUpdate.image),
-      })
-      .eq("id", id)
-      .eq("user_id", user?.id);
+      for (const img of selectedVehicle.image) {
+        if (img instanceof File) {
+          const fileName = `${user?.id}/${Date.now()}-${img.name}`;
+          const { error: uploadError } = await supabase.storage
+            .from("veiculos")
+            .upload(fileName, img);
 
-    if (error) {
-      toast.error("Erro ao atualizar veículo");
-      return;
+          if (uploadError) {
+            toast.error("Erro ao enviar foto");
+            setIsSaving(false);
+            return;
+          }
+
+          const { data: urlData } = supabase.storage
+            .from("veiculos")
+            .getPublicUrl(fileName);
+
+          if (urlData?.publicUrl) finalImageUrls.push(urlData.publicUrl);
+        } else if (typeof img === "string") {
+          finalImageUrls.push(img);
+        }
+      }
+
+      const { id, ...dataToUpdate } = selectedVehicle;
+
+      const { error } = await supabase
+        .from("estoque")
+        .update({
+          ...dataToUpdate,
+          image: finalImageUrls,
+        })
+        .eq("id", id)
+        .eq("user_id", user?.id);
+
+      if (error) {
+        toast.error("Erro ao atualizar veículo");
+        return;
+      }
+
+      toast.success("Veículo atualizado!");
+
+      const updatedVehicle = { ...selectedVehicle, image: finalImageUrls };
+      const updated = vehicles.map((v) => (v.id === id ? updatedVehicle : v));
+      setVehicles(updated);
+      setFilteredVehicles(updated);
+      setIsEditDialogOpen(false);
+    } finally {
+      setIsSaving(false);
     }
-
-    toast.success("Veículo atualizado!");
-
-    const updated = vehicles.map((v) => (v.id === id ? selectedVehicle : v));
-
-    setVehicles(updated);
-    setFilteredVehicles(updated);
-    setIsEditDialogOpen(false);
   };
 
   if (loading) return <p>Carregando veículos...</p>;
@@ -638,7 +671,7 @@ export default function Inventory() {
           {selectedVehicle && (
             <div className="space-y-4">
               {Array.isArray(selectedVehicle.image) &&
-              selectedVehicle.image.length > 0 ? (
+                selectedVehicle.image.length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {selectedVehicle.image.map((img, i) => (
                     <Image
@@ -874,13 +907,67 @@ export default function Inventory() {
                 </div>
               </div>
 
+              {/* Fotos */}
+              <div>
+                <Label className="mb-2">Fotos do Veículo</Label>
+
+                {/* Fotos existentes */}
+                {Array.isArray(selectedVehicle.image) && selectedVehicle.image.length > 0 && (
+                  <div className="grid grid-cols-3 gap-2 mb-3">
+                    {selectedVehicle.image.map((img, i) => (
+                      <div key={i} className="relative group">
+                        <Image
+                          src={typeof img === "string" ? img : URL.createObjectURL(img)}
+                          alt={`Foto ${i + 1}`}
+                          width={200}
+                          height={150}
+                          className="rounded-lg w-full h-20 object-cover border"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const newImages = selectedVehicle.image.filter((_, idx) => idx !== i);
+                            setSelectedVehicle({ ...selectedVehicle, image: newImages });
+                          }}
+                          className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Adicionar novas fotos */}
+                <label className="flex items-center gap-2 cursor-pointer border border-dashed rounded-lg p-3 hover:bg-muted/50 transition-colors">
+                  <Upload className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Adicionar mais fotos</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files || []);
+                      if (files.length > 0) {
+                        setSelectedVehicle({
+                          ...selectedVehicle,
+                          image: [...selectedVehicle.image, ...files],
+                        });
+                      }
+                      e.target.value = "";
+                    }}
+                  />
+                </label>
+              </div>
+
               <DialogFooter>
                 <DialogClose>
-                  <Button variant="outline" className="w-full">
-                    Cancelar
-                  </Button>
+                  <Button variant="outline" className="w-full">Cancelar</Button>
                 </DialogClose>
-                <Button onClick={saveEdit}>Salvar Alterações</Button>
+                <Button onClick={saveEdit} disabled={isSaving}>
+                  {isSaving ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Salvando...</> : "Salvar Alterações"}
+                </Button>
               </DialogFooter>
             </div>
           )}
