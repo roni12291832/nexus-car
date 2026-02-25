@@ -283,7 +283,7 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "wa/create",
+        "path": "wa/createnexus",
         "responseMode": "responseNode",
         "options": {}
       },
