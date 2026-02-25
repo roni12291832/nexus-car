@@ -449,6 +449,44 @@
       "name": "UAZAPI Notify Store"
     },
     {
+      "parameters": {
+        "operation": "update",
+        "tableId": "dados_cliente",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "telefone",
+              "condition": "eq",
+              "keyValue": "={{ $('Dados').item.json.Telefone }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "crm_status",
+              "fieldValue": "negociando"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        5600,
+        2192
+      ],
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "name": "Auto Mover Lead Negociando",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "QgLbykTuIu22HYo2",
+          "name": "Supabase Nexus"
+        }
+      }
+    },
+    {
       "parameters": {},
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
@@ -3406,6 +3444,17 @@
           {
             "node": "Basic LLM Chain1",
             "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "UAZAPI Notify Store": {
+      "main": [
+        [
+          {
+            "node": "Auto Mover Lead Negociando",
+            "type": "main",
             "index": 0
           }
         ]
