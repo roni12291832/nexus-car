@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import type { Vehicle } from "../../../../types/vehicle";
 import { Badge } from "@/components/ui/badge";
 

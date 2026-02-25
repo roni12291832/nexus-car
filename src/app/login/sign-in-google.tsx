@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 
 export default function SignInGoogleButton() {
   const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
+  const supabase = createClient();
 
   async function signInWithGoogle() {
     setIsGoogleLoading(true);

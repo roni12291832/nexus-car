@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import { Car, Truck, CircleDot } from "lucide-react";
 import type { Vehicle } from "../../../../types/vehicle";
 import { Badge } from "@/components/ui/badge";

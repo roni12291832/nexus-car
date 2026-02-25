@@ -1,43 +1,32 @@
 import { NextResponse } from "next/server";
-import { InstanceCreatePayload, InstanceCreateResponse } from "../../../../../types/evolution";
+import { UazapiInstanceResponse } from "../../../../../types/uazapi";
 
 export async function POST(req: Request) {
   try {
-    const { instanceName, number }: { instanceName: string; number: string } = await req.json();
+    const { instanceName }: { instanceName: string } = await req.json();
 
-    const payload: InstanceCreatePayload = {
-      instanceName,
-      number,
-      qrcode: true,
-      integration: "WHATSAPP-BAILEYS",
-      groupsIgnore: true,
-      webhook: {
-        url: "https://webhook.linqapps.com/webhook/e8a937c5-4050-4fd5-a446-c41d6ed31c06",
-        byEvents: false,
-        base64: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        events: ["MESSAGES_UPSERT"],
-      },
-    };
-
-    const res = await fetch(`${process.env.EVO_API_URL}/instance/create`, {
+    // 1. Call n8n Webhook to generate QR and setup instance
+    const n8nRes = await fetch(process.env.WPP_CREATE_WEBHOOK_URL!, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        apikey: process.env.EVOLUTION_API_KEY ?? "", 
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        instance_name: instanceName,
+        user_id: instanceName, // Using instance name as user_id as per current pattern
+        receipt_webhook_url: process.env.WHATSAPP_WEBHOOK_URL
+      }),
     });
 
-    if (!res.ok) {
-      const err = await res.text();
-      return NextResponse.json({ error: err }, { status: res.status });
+    if (!n8nRes.ok) {
+      const err = await n8nRes.text();
+      return NextResponse.json({ error: `Erro no n8n: ${err}` }, { status: n8nRes.status });
     }
 
-    const data: InstanceCreateResponse = await res.json();
-    return NextResponse.json(data);
+    const n8nData = await n8nRes.json();
+
+    // 2. Return the n8n response (which should contain the QR and token)
+    return NextResponse.json(n8nData);
   } catch (err) {
     if (err instanceof Error) {
       return NextResponse.json({ error: err.message }, { status: 500 });

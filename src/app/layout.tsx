@@ -5,8 +5,6 @@ const inter = Inter({ subsets: ["latin"] });
 import { AuthProvider } from "@/contexts/AuthContext";
 
 import { ThemeProvider } from "@/components/ThemeToggle/theme-provider";
-import Script from "next/script";
-import Image from "next/image";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -85,7 +83,7 @@ export default function RootLayout({
         )}
       >
         <Toaster />
-       
+
         <TooltipProvider>
           <AuthProvider>
             <ThemeProvider

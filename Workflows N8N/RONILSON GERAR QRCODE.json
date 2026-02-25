@@ -1,0 +1,658 @@
+{
+  "name": "RONILSON GERAR QRCODE",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 401
+        }
+      },
+      "name": "Error 401",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        192,
+        864
+      ],
+      "id": "cd4cfb32-a549-4b3c-980b-c4788e03666d"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://nexaflow.uazapi.com/instance/create",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "adminToken",
+              "value": "=z6hUzjbsDoZKwYzUr3l8rRbDavfG6tgr55ifG4IdIl82w2cSfY"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "adminToken",
+              "value": "z6hUzjbsDoZKwYzUr3l8rRbDavfG6tgr55ifG4IdIl82w2cSfY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ $item(\"0\").$node[\"Webhook\"].json[\"body\"][\"instance_name\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -48,
+        496
+      ],
+      "id": "bebc76ce-a743-402b-a1ec-257fbbad2c15",
+      "name": "HTTP CREATE INSTANCE1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://nexaflow.uazapi.com/instance/connect",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "={{ $item(\"0\").$node[\"Edit Fields3\"].json[\"token\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        656,
+        496
+      ],
+      "id": "f3c4cd98-e47d-456a-86d7-613cdf7daf5f",
+      "name": "HTTP GENERATE QR1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.instance.status }}",
+                    "rightValue": "connected",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEquals"
+                    },
+                    "id": "347da817-8ae9-4bbb-8327-5e65807a8f76"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d34e1bd5-37de-4c18-b8bf-b4098f1d5453",
+                    "leftValue": "={{ $json.instance.status }}",
+                    "rightValue": "connected",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1280,
+        288
+      ],
+      "id": "0a971c33-7ff4-4e65-8ce5-a16c7309ef30",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1424,
+        32
+      ],
+      "id": "ffdddca5-1aa0-4d55-9d4c-574a7e2c0236",
+      "name": "Wait1",
+      "webhookId": "adefe0cf-2463-4258-b38b-9081c2657645"
+    },
+    {
+      "parameters": {
+        "url": "https://nexaflow.uazapi.com/instance/status",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "={{ $json.instance.token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1120,
+        560
+      ],
+      "id": "4534cdc9-8346-4e8f-90e2-427fa5590d0c",
+      "name": "HTTP GET STATUS2"
+    },
+    {
+      "parameters": {
+        "url": "https://nexaflow.uazapi.com/instance/status",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "={{ $item(\"0\").$node[\"Switch1\"].json[\"instance\"][\"token\"] }}"
+            },
+            {
+              "name": "status",
+              "value": "={{ $item(\"0\").$node[\"Update a row\"].json[\"status\"] }}"
+            },
+            {
+              "name": "instance_name",
+              "value": "={{ $item(\"0\").$node[\"Update a row\"].json[\"instance_name\"] }}"
+            },
+            {
+              "name": "user_id",
+              "value": "={{ $item(\"0\").$node[\"Update a row\"].json[\"user_id\"] }}"
+            },
+            {
+              "name": "conected",
+              "value": "={{ $json.connected }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1552,
+        528
+      ],
+      "id": "e7b315e3-7df1-4438-b634-2c1c10d963d1",
+      "name": "HTTP GET STATUS3"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "=\n{\n  \"success\": true,\n  \"status\": \"{{ $item(\"0\").$node[\"Edit Fields1\"].json[\"status\"] }}\",\n  \"token\": \"{{ $item(\"0\").$node[\"Edit Fields1\"].json[\"token\"] }}\",\n  \"instance_name\": \"{{ $item(\"0\").$node[\"Edit Fields1\"].json[\"instance_name\"] }}\"\n}\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        2064,
+        528
+      ],
+      "id": "4d091575-6367-469f-9fc7-4b98405a2410",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7b745e3b-d16e-4f93-bf96-af4c7b874f72",
+              "name": "status",
+              "value": "={{ $json.instance.status }}",
+              "type": "string"
+            },
+            {
+              "id": "c10d98cb-89b3-4f6e-af6a-dd43d957f7a0",
+              "name": "token",
+              "value": "={{ $item(\"0\").$node[\"HTTP GET STATUS3\"].json[\"instance\"][\"token\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "0d93f27d-b958-4ebd-aa2d-92a48c537166",
+              "name": "instance_name",
+              "value": "={{ $item(\"0\").$node[\"Update a row\"].json[\"instance_name\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "2fcb8472-ecbf-41dc-a234-adcf88045f60",
+              "name": "user_id",
+              "value": "={{ $item(\"0\").$node[\"Update a row\"].json[\"user_id\"] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1776,
+        528
+      ],
+      "id": "34c47001-09e0-4179-a837-f1fa42b8c970",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"qrcode\": \"{{ $item(\"0\").$node[\"HTTP GENERATE QR1\"].json[\"instance\"][\"qrcode\"] }}\",\n  \"token\": \"{{ $item(\"0\").$node[\"HTTP GENERATE QR1\"].json[\"instance\"][\"token\"] }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        880,
+        496
+      ],
+      "id": "9f371988-164c-44db-9659-6bd548f53495",
+      "name": "Respond to Webhook CONNECT1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wa/create",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -640,
+        496
+      ],
+      "id": "46b630da-6c7a-417c-a474-64376b82ca0d",
+      "name": "Webhook",
+      "webhookId": "722cd849-b0e5-4f14-9a42-afc95a8df49c"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "whatsapp_instances",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "user_id",
+              "condition": "eq",
+              "keyValue": "={{ $item(\"0\").$node[\"Webhook\"].json[\"body\"][\"user_id\"] }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "status",
+              "fieldValue": "={{ $item(\"0\").$node[\"Switch1\"].json[\"instance\"][\"status\"] }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1344,
+        528
+      ],
+      "id": "f52f2e5d-8b47-4abe-a092-601e59fa87d6",
+      "name": "Update a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "QgLbykTuIu22HYo2",
+          "name": "Supabase Nexus"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "61b95582-718d-43f9-b4ba-dc38ae82288c",
+              "name": "token",
+              "value": "={{ $item(\"0\").$node[\"HTTP CREATE INSTANCE1\"].json[\"instance\"][\"token\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "b19d0a6a-38de-4729-aeb7-c0be4a158fde",
+              "name": "instance_name",
+              "value": "={{ $item(\"0\").$node[\"Webhook\"].json[\"body\"][\"instance_name\"] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        496
+      ],
+      "id": "38685e25-4262-40df-8f7f-f88d74026c2c",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "whatsapp_tokens",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "user_id",
+              "condition": "eq",
+              "keyValue": "={{ $item(\"0\").$node[\"Respond to Webhook1\"].json[\"user_id\"] }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "encrypted_token",
+              "fieldValue": "={{ $item(\"0\").$node[\"Respond to Webhook1\"].json[\"token\"] }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2272,
+        528
+      ],
+      "id": "888c1126-be23-429e-ac07-f49536686158",
+      "name": "Update a row4",
+      "alwaysOutputData": false,
+      "credentials": {
+        "supabaseApi": {
+          "id": "QgLbykTuIu22HYo2",
+          "name": "Supabase Nexus"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://nexaflow.uazapi.com/webhook",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "={{ $node[\"HTTP CREATE INSTANCE1\"].json[\"token\"] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"url\": \"{{ $node[\"Webhook\"].json[\"body\"][\"receipt_webhook_url\"] }}\",\n  \"enabled\": true,\n  \"events\": [\"messages\"],\n  \"excludeMessages\": [\"wasSentByApi\"]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        192,
+        441
+      ],
+      "id": "b7d958e9-806f-4f67-9db6-1759b01cd1fa",
+      "name": "HTTP Request1",
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $item(\"0\").$node[\"Webhook\"].json[\"headers\"][\"x-n8n-secret\"] }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "name": "Check Secret1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        528
+      ],
+      "id": "3bc43006-6bec-42bb-b3fe-b7dd1e99b35a"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP CREATE INSTANCE1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP GENERATE QR1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook CONNECT1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "HTTP GET STATUS2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP GET STATUS2": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP GET STATUS3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Update a row4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook CONNECT1": {
+      "main": [
+        [
+          {
+            "node": "HTTP GET STATUS2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Check Secret1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a row": {
+      "main": [
+        [
+          {
+            "node": "HTTP GET STATUS3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "HTTP GENERATE QR1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Secret1": {
+      "main": [
+        [
+          {
+            "node": "HTTP CREATE INSTANCE1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error 401",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "c1db363b-7bda-43fb-8036-92179751c333",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "98a7f76cbff973591af08e09b5be2fed14b55b37d878782c0638229a94477203"
+  },
+  "id": "Mc7QR1KHie7gQhFh4umPT",
+  "tags": [
+    {
+      "updatedAt": "2025-10-22T01:54:35.069Z",
+      "createdAt": "2025-10-22T01:54:35.069Z",
+      "id": "9AHGaqlKMh6mordA",
+      "name": "RONSILSON"
+    }
+  ]
+}

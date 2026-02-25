@@ -1,6 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Calendar, Tag, MessageCircle, Phone, Share2 } from "lucide-react";
+import { Calendar, Tag } from "lucide-react";
 import { ImageGallery } from "./ImageGallery";
 import { StatusBadge } from "./StatusBadge";
 import { VehicleTypeBadge } from "./VehicleTypeBadge";

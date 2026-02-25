@@ -99,11 +99,10 @@ export default function Leads() {
         }
       } catch (err) {
         console.error(err);
-      } finally {
       }
     };
 
-    fetchSettings();
+    if (user?.id) fetchSettings();
   }, [user?.id]);
 
   const callWhatsApp = (lead: Lead) => {

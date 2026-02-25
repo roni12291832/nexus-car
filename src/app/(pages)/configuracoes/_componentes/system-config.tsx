@@ -11,8 +11,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Plus, Save } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -83,9 +81,9 @@ export default function Settings() {
             openTime: data.open_time ?? "08:00",
             closeTime: data.close_time ?? "18:00",
             weekendOpen: data.weekend_open ?? true,
-            numero: data.numero ?? "", 
-            endereco: data.endereco ?? "", 
-            atendente: data.atendente ?? "", 
+            numero: data.numero ?? "",
+            endereco: data.endereco ?? "",
+            atendente: data.atendente ?? "",
             businessHoursMessage: data.business_hours_message ?? "",
           });
         }
@@ -217,8 +215,8 @@ export default function Settings() {
               {loadingPortal
                 ? "Abrindo portal..."
                 : customerId
-                ? "Gerenciar assinatura"
-                : "Sem assinatura ativa"}
+                  ? "Gerenciar assinatura"
+                  : "Sem assinatura ativa"}
             </Button>
           </CardHeader>
           <CardContent className="space-y-4">

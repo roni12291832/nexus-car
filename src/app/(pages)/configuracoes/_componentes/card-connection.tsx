@@ -33,25 +33,26 @@ export default function CardConnection() {
 
       if (!res.ok) throw new Error("Falha ao criar instância");
 
-      const data: CreateInstanceResponse = await res.json();
+      const data = await res.json() as Record<string, unknown>; // UazapiInstanceResponse
+      const token = data.token as string | undefined;
 
-      const qrRes = await fetch(`/api/whatsapp/qr?instance=${instanceName}`);
-      let finalData: CreateInstanceResponse = data;
+      // 2. Get QR Code
+      const qrRes = await fetch(`/api/whatsapp/qr?instance=${instanceName}&token=${token}`);
+      let finalData = data;
 
       if (qrRes.ok) {
-        const qrData: CreateInstanceResponse = await qrRes.json();
+        const qrData = await qrRes.json();
         finalData = { ...data, ...qrData };
       }
-
-      const number = finalData.ownerJid?.split("@")[0] || null;
 
       const { error } = await supabase.from("whatsapp_instances").insert({
         instance_name: instanceName,
         pairing_code: finalData.pairingCode || null,
-        qr_code_base64: finalData.base64 || null,
-        number,
+        qr_code_base64: finalData.base64 || finalData.qrcode || null,
+        number: finalData.number || null,
         user_id: user?.id || null,
         status: "conectado",
+        token: token, // Storing the vital UAZAPI token
       });
 
       if (error) {

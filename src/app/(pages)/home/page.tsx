@@ -124,12 +124,11 @@ export default function Dashboard() {
         setActivities(mappedActivities);
       } catch (err) {
         console.error(err);
-      } finally {
       }
     };
 
-    fetchActivities();
-  }, []);
+    if (user?.id) fetchActivities();
+  }, [user?.id]);
 
   const statsCards = [
     {
@@ -150,9 +149,9 @@ export default function Dashboard() {
       title: "Último Lead",
       value: ultimoLead
         ? new Date(ultimoLead.created_at).toLocaleTimeString("pt-BR", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })
+          hour: "2-digit",
+          minute: "2-digit",
+        })
         : "-",
       description: ultimoLead ? ultimoLead.nomewpp : "-",
       icon: Clock,

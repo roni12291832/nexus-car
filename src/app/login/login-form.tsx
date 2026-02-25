@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
 import {
@@ -46,6 +46,7 @@ export default function LoginForm() {
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
+    const supabase = createClient();
 
     if (!loginEmail || !loginPassword) {
       toast.error("Por favor, preencha e-mail e senha.");
@@ -80,6 +81,8 @@ export default function LoginForm() {
       toast("As senhas não coincidem.");
       return;
     }
+
+    const supabase = createClient();
 
     const { data, error } = await supabase.auth.signUp({
       email: registerEmail,

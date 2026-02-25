@@ -22,7 +22,7 @@ type WhatsAppConnection = {
   number?: string;
   status: "conectado" | "desconectado";
   qr_code_base64?: string | null;
-  evolution?: string;
+  uazapi_token?: string; // Mapped from Supabase
 };
 
 export default function WhatsAppConnections() {
@@ -47,15 +47,16 @@ export default function WhatsAppConnections() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const generateQr = async (instanceName: string) => {
+  const generateQr = async (instanceName: string, token?: string) => {
+    if (!token) return console.error("Token não encontrado para gerar QR");
     try {
-      const res = await fetch(`/api/whatsapp/qr?instance=${instanceName}`);
+      const res = await fetch(`/api/whatsapp/qr?instance=${instanceName}&token=${token}`);
       if (!res.ok) throw new Error("Falha ao gerar QR Code");
 
       const data = await res.json();
 
       setConnections((prev) =>
-        prev.map((c) =>
+        prev.map((c: WhatsAppConnection) =>
           c.instance_name === instanceName
             ? { ...c, qr_code_base64: data.base64 }
             : c
@@ -73,14 +74,16 @@ export default function WhatsAppConnections() {
 
   const disconnectInstance = async (
     instanceId: string,
-    instanceName: string
+    instanceName: string,
+    token?: string
   ) => {
+    if (!token) return console.error("Token não encontrado para desconectar");
     setLoading(true);
     try {
-      const res = await fetch("/api/evolution/disconnect", {
+      const res = await fetch("/api/uazapi/disconnect", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ instanceName }),
+        body: JSON.stringify({ instanceName, token }),
       });
 
       if (!res.ok) {

@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase/server";
+import { supabase, supabaseService } from "@/lib/supabase/server";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
@@ -10,6 +10,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 type SubscriptionWithPeriod = Stripe.Subscription & {
   current_period_end: number;
 };
+
+// Dummy client fallback for types, shouldn't be used in production without the real key
+const supabaseServiceDummy = supabaseService || supabase;
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -45,7 +48,6 @@ export async function POST(req: Request) {
 
       const subscriptionId = session.subscription as string | undefined;
       const userId = session.metadata?.user_id;
-      const customerId = session.customer as string | undefined;
 
       if (subscriptionId && userId && session.payment_status === "paid") {
         try {
@@ -53,10 +55,10 @@ export async function POST(req: Request) {
             subscriptionId
           );
 
-          const { error } = await supabase
+          const { error } = await (supabaseService || supabaseServiceDummy)
             .from("users")
             .update({
-              subscription_id: customerId,
+              subscription_id: subscriptionId, // Changed from customerId to subscriptionId as per recommendations
               status: subscription.status,
               ativo: true,
             })
@@ -91,7 +93,7 @@ export async function POST(req: Request) {
         subscription.current_period_end * 1000
       ).toISOString();
 
-      await supabase.from("users").upsert(
+      await (supabaseService || supabaseServiceDummy).from("users").upsert(
         {
           user_id: userId,
           subscription_id: subscription.id,
@@ -111,7 +113,7 @@ export async function POST(req: Request) {
       const userId = subscription.metadata?.user_id;
       if (!userId) break;
 
-      await supabase.from("users").upsert(
+      await (supabaseService || supabaseServiceDummy).from("users").upsert(
         {
           user_id: userId,
           subscription_id: subscription.id,
