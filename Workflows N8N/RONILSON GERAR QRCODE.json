@@ -317,7 +317,7 @@
               "fieldValue": "={{ $item(\"0\").$node[\"Switch1\"].json[\"status\"] }}"
             },
             {
-              "fieldId": "uazapi_token",
+              "fieldId": "token",
               "fieldValue": "={{ $item(\"0\").$node[\"Edit Fields1\"].json[\"token\"] }}"
             }
           ]

@@ -47,15 +47,15 @@ export default function CardConnection() {
         }
       }
 
-      const { error } = await supabase.from("whatsapp_instances").upsert({
+      const { error } = await supabase.from("whatsapp_instances").insert({
         instance_name: instanceName,
         pairing_code: finalData.pairingCode || null,
         qr_code_base64: finalData.base64 || (finalData as any).qrcode || null,
         number: finalData.number || null,
         user_id: user?.id || null,
         status: "conectado",
-        uazapi_token: token, // Storing the vital UAZAPI token in the correct NexusCar column
-      }, { onConflict: "instance_name" });
+        token: token, // Reverting to 'token' column which worked at 23:39
+      });
 
       if (error) {
         console.error("Erro ao salvar no Supabase:", error.message);
