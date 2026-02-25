@@ -100,7 +100,7 @@
                 },
                 "conditions": [
                   {
-                    "leftValue": "={{ $json.instance.status }}",
+                    "leftValue": "={{ $json.status }}",
                     "rightValue": "connected",
                     "operator": {
                       "type": "string",
@@ -123,7 +123,7 @@
                 "conditions": [
                   {
                     "id": "d34e1bd5-37de-4c18-b8bf-b4098f1d5453",
-                    "leftValue": "={{ $json.instance.status }}",
+                    "leftValue": "={{ $json.status }}",
                     "rightValue": "connected",
                     "operator": {
                       "type": "string",
@@ -170,7 +170,7 @@
           "parameters": [
             {
               "name": "token",
-              "value": "={{ $json.instance.token }}"
+              "value": "={{ $json.token }}"
             }
           ]
         },
@@ -193,7 +193,7 @@
           "parameters": [
             {
               "name": "token",
-              "value": "={{ $item(\"0\").$node[\"Switch1\"].json[\"instance\"][\"token\"] }}"
+              "value": "={{ $item(\"0\").$node[\"Switch1\"].json[\"token\"] }}"
             },
             {
               "name": "status",
@@ -246,13 +246,13 @@
             {
               "id": "7b745e3b-d16e-4f93-bf96-af4c7b874f72",
               "name": "status",
-              "value": "={{ $json.instance.status }}",
+              "value": "={{ $json.status }}",
               "type": "string"
             },
             {
               "id": "c10d98cb-89b3-4f6e-af6a-dd43d957f7a0",
               "name": "token",
-              "value": "={{ $item(\"0\").$node[\"HTTP GET STATUS3\"].json[\"instance\"][\"token\"] }}",
+              "value": "={{ $item(\"0\").$node[\"HTTP GET STATUS3\"].json[\"token\"] }}",
               "type": "string"
             },
             {
@@ -283,7 +283,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\n  \"success\": true,\n  \"qrcode\": \"{{ $item(\"0\").$node[\"HTTP GENERATE QR1\"].json[\"instance\"][\"qrcode\"] }}\",\n  \"token\": \"{{ $item(\"0\").$node[\"HTTP GENERATE QR1\"].json[\"instance\"][\"token\"] }}\"\n}",
+        "responseBody": "={\n  \"success\": true,\n  \"qrcode\": \"{{ $item(\"0\").$node[\"HTTP GENERATE QR1\"].json[\"qrcode\"] }}\",\n  \"token\": \"{{ $item(\"0\").$node[\"HTTP GENERATE QR1\"].json[\"token\"] }}\"\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.respondToWebhook",
@@ -329,7 +329,7 @@
           "fieldValues": [
             {
               "fieldId": "status",
-              "fieldValue": "={{ $item(\"0\").$node[\"Switch1\"].json[\"instance\"][\"status\"] }}"
+              "fieldValue": "={{ $item(\"0\").$node[\"Switch1\"].json[\"status\"] }}"
             }
           ]
         }
@@ -356,7 +356,7 @@
             {
               "id": "61b95582-718d-43f9-b4ba-dc38ae82288c",
               "name": "token",
-              "value": "={{ $item(\"0\").$node[\"HTTP CREATE INSTANCE1\"].json[\"instance\"][\"token\"] }}",
+              "value": "={{ $item(\"0\").$node[\"HTTP CREATE INSTANCE1\"].json[\"token\"] }}",
               "type": "string"
             },
             {
