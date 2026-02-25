@@ -19,13 +19,13 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://nexaflow.uazapi.com/instance/create",
+        "url": "https://nexaflow.uazapi.com/instance/init",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
             {
               "name": "adminToken",
-              "value": "=z6hUzjbsDoZKwYzUr3l8rRbDavfG6tgr55ifG4IdIl82w2cSfY"
+              "value": "z6hUzjbsDoZKwYzUr3l8rRbDavfG6tgr55ifG4IdIl82w2cSfY"
             }
           ]
         },
@@ -419,7 +419,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://nexaflow.uazapi.com/webhook",
+        "url": "https://nexaflow.uazapi.com/webhook",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
