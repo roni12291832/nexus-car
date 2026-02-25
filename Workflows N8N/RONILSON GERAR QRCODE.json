@@ -3,21 +3,6 @@
   "nodes": [
     {
       "parameters": {
-        "options": {
-          "responseCode": 401
-        }
-      },
-      "name": "Error 401",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1,
-      "position": [
-        192,
-        864
-      ],
-      "id": "cd4cfb32-a549-4b3c-980b-c4788e03666d"
-    },
-    {
-      "parameters": {
         "method": "POST",
         "url": "https://nexaflow.uazapi.com/instance/init",
         "sendQuery": true,
@@ -409,26 +394,6 @@
       "id": "b7d958e9-806f-4f67-9db6-1759b01cd1fa",
       "name": "HTTP Request1",
       "retryOnFail": false
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{ $item(\"0\").$node[\"Webhook\"].json[\"headers\"][\"x-n8n-secret\"] }}",
-              "operation": "isNotEmpty"
-            }
-          ]
-        }
-      },
-      "name": "Check Secret1",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        -352,
-        528
-      ],
-      "id": "3bc43006-6bec-42bb-b3fe-b7dd1e99b35a"
     }
   ],
   "pinData": {},
@@ -537,7 +502,7 @@
       "main": [
         [
           {
-            "node": "Check Secret1",
+            "node": "HTTP CREATE INSTANCE1",
             "type": "main",
             "index": 0
           }
@@ -571,24 +536,6 @@
         [
           {
             "node": "Edit Fields3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Check Secret1": {
-      "main": [
-        [
-          {
-            "node": "HTTP CREATE INSTANCE1",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Error 401",
             "type": "main",
             "index": 0
           }
