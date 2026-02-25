@@ -15,7 +15,11 @@ interface CreateInstanceResponse {
   token?: string;
 }
 
-export default function CardConnection() {
+interface CardConnectionProps {
+  onSuccess?: () => void;
+}
+
+export default function CardConnection({ onSuccess }: CardConnectionProps) {
   const { user } = useAuth();
   const instanceName = user?.id || "";
 
@@ -52,11 +56,14 @@ export default function CardConnection() {
             .update({ status: "conectado" })
             .eq("instance_name", instanceName);
 
-          // Fecha a tela do QR após 2 segundos mostrando a mensagem de sucesso
+          // Chama callback de sucesso no pai (fecha dialog + mostra toast)
+          onSuccess?.();
+
+          // Fecha a tela do QR após 1.5s
           setTimeout(() => {
             setResponse(null);
             setConnected(false);
-          }, 2500);
+          }, 1500);
         }
       } catch {
         stopPolling();

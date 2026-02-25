@@ -297,7 +297,13 @@ export default function Settings() {
                   </DialogDescription>
                 </DialogHeader>
 
-                <CardConnection />
+                <CardConnection onSuccess={() => {
+                  setShowModal(false);
+                  toast.success("✅ WhatsApp conectado com sucesso!", {
+                    description: "Seu número está ativo e pronto para receber leads.",
+                    duration: 5000,
+                  });
+                }} />
               </DialogContent>
             </Dialog>
 
