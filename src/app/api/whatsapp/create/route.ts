@@ -5,28 +5,23 @@ export async function POST(req: Request) {
   try {
     const { instanceName }: { instanceName: string } = await req.json();
 
-    // 1. Call n8n Webhook to generate QR and setup instance
-    const n8nRes = await fetch(process.env.WPP_CREATE_WEBHOOK_URL!, {
+    // 1. Call UAZAPI directly to initialize instance (NexusCar Reality)
+    const res = await fetch(`${process.env.UAZAPI_BASE_URL}/instance/init`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        admintoken: process.env.UAZAPI_ADMIN_TOKEN ?? "",
       },
-      body: JSON.stringify({
-        instance_name: instanceName,
-        user_id: instanceName, // Using instance name as user_id as per current pattern
-        receipt_webhook_url: process.env.WHATSAPP_WEBHOOK_URL
-      }),
+      body: JSON.stringify({ name: instanceName }),
     });
 
-    if (!n8nRes.ok) {
-      const err = await n8nRes.text();
-      return NextResponse.json({ error: `Erro no n8n: ${err}` }, { status: n8nRes.status });
+    if (!res.ok) {
+      const err = await res.text();
+      return NextResponse.json({ error: `Erro na UAZAPI: ${err}` }, { status: res.status });
     }
 
-    const n8nData = await n8nRes.json();
-
-    // 2. Return the n8n response (which should contain the QR and token)
-    return NextResponse.json(n8nData);
+    const data = await res.json();
+    return NextResponse.json(data);
   } catch (err) {
     if (err instanceof Error) {
       return NextResponse.json({ error: err.message }, { status: 500 });
