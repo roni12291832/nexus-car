@@ -47,10 +47,11 @@ export default function CardConnection() {
         }
       }
 
+      type InstanceData = Record<string, string | null | boolean | undefined>;
       const { error } = await supabase.from("whatsapp_instances").upsert({
         instance_name: instanceName,
         pairing_code: finalData.pairingCode || null,
-        qr_code_base64: finalData.base64 || (finalData as any).qrcode || null,
+        qr_code_base64: finalData.base64 || (finalData as InstanceData).qrcode || null,
         number: finalData.number || null,
         user_id: user?.id || null,
         status: "conectado",
@@ -89,10 +90,10 @@ export default function CardConnection() {
             </div>
           )}
 
-          {(response.base64 || (response as any).qrcode) && (
+          {(response.base64 || (response as Record<string, string>).qrcode) && (
             <div className="mx-auto">
               <Image
-                src={response.base64 || (response as any).qrcode}
+                src={response.base64 || (response as Record<string, string>).qrcode}
                 alt="QR Code"
                 width={250}
                 height={250}

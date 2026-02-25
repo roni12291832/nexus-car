@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { UazapiInstanceResponse } from "../../../../../types/uazapi";
 
 // Aumenta o timeout da função serverless na Vercel para 60 segundos
 // Necessário porque o N8N precisa criar instância + configurar webhook + gerar QR
