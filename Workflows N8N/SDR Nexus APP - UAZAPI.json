@@ -2554,19 +2554,19 @@
             {
               "id": "11800d83-ecca-4f9c-a878-a2419db0c8e9",
               "name": "message.chat_id",
-              "value": "={{ $json.body.phone || '' }}",
+              "value": "={{ $json.body.chat.wa_chatid || '' }}",
               "type": "string"
             },
             {
               "id": "c33f9527-e661-49e5-8e5e-64f3b430928a",
               "name": "message.content_type",
-              "value": "={{ $json.body.message?.text ? 'text' : 'unknown' }}",
+              "value": "={{ $json.body.message?.text ? 'text' : ($json.body.message?.mediaType || 'unknown') }}",
               "type": "string"
             },
             {
               "id": "06eba1c9-cff0-4f68-b6da-6bb0092466b7",
               "name": "message.content",
-              "value": "={{ $json.body.message?.text || '' }}",
+              "value": "={{ $json.body.message?.text || $json.body.message?.content || '' }}",
               "type": "string"
             },
             {
@@ -2584,13 +2584,13 @@
             {
               "id": "d04a0c6e-7842-41d2-bdb0-c0ce51d6dad7",
               "name": "Telefone",
-              "value": "={{ $json.body.phone }}",
+              "value": "={{ $json.body.chat?.wa_chatid || $json.body.message?.chatid || '' }}",
               "type": "string"
             },
             {
               "id": "a57db642-3e13-452e-bb5b-19f7e9f3bd5d",
               "name": "NomeWpp",
-              "value": "={{ $json.body.pushName }}",
+              "value": "={{ $json.body.chat?.wa_name || $json.body.message?.senderName || $json.body.chat?.name || '' }}",
               "type": "string"
             },
             {
@@ -2771,7 +2771,7 @@
                   {
                     "id": "5922557b-71e7-4390-af21-10b683e7a875",
                     "leftValue": "={{ $json.Telefone }}",
-                    "rightValue": "={{ $('Webhook EVO').item.json.body.data.key.remoteJid }}",
+                    "rightValue": "={{ $('Webhook EVO').item.json.body.chat.wa_chatid }}",
                     "operator": {
                       "type": "string",
                       "operation": "equals"
