@@ -330,6 +330,10 @@
             {
               "fieldId": "status",
               "fieldValue": "={{ $item(\"0\").$node[\"Switch1\"].json[\"status\"] }}"
+            },
+            {
+              "fieldId": "uazapi_token",
+              "fieldValue": "={{ $item(\"0\").$node[\"Edit Fields1\"].json[\"token\"] }}"
             }
           ]
         }
@@ -377,44 +381,6 @@
       ],
       "id": "38685e25-4262-40df-8f7f-f88d74026c2c",
       "name": "Edit Fields3"
-    },
-    {
-      "parameters": {
-        "operation": "update",
-        "tableId": "whatsapp_tokens",
-        "filters": {
-          "conditions": [
-            {
-              "keyName": "user_id",
-              "condition": "eq",
-              "keyValue": "={{ $item(\"0\").$node[\"Respond to Webhook1\"].json[\"user_id\"] }}"
-            }
-          ]
-        },
-        "fieldsUi": {
-          "fieldValues": [
-            {
-              "fieldId": "encrypted_token",
-              "fieldValue": "={{ $item(\"0\").$node[\"Respond to Webhook1\"].json[\"token\"] }}"
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.supabase",
-      "typeVersion": 1,
-      "position": [
-        2272,
-        528
-      ],
-      "id": "888c1126-be23-429e-ac07-f49536686158",
-      "name": "Update a row4",
-      "alwaysOutputData": false,
-      "credentials": {
-        "supabaseApi": {
-          "id": "QgLbykTuIu22HYo2",
-          "name": "Supabase Nexus"
-        }
-      }
     },
     {
       "parameters": {
@@ -542,13 +508,7 @@
     },
     "Respond to Webhook1": {
       "main": [
-        [
-          {
-            "node": "Update a row4",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Edit Fields1": {

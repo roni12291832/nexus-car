@@ -377,13 +377,13 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ $('Dados').item.json.evoDomain }}/message/text",
+        "url": "={{ $('Dados').item.json.uazDomain }}/message/text",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "token",
-              "value": "={{ $('Dados').item.json.evoAPIKey }}"
+              "value": "={{ $('Dados').item.json.uazToken }}"
             }
           ]
         },
@@ -414,13 +414,13 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ $('Dados').item.json.evoDomain }}/message/text",
+        "url": "={{ $('Dados').item.json.uazDomain }}/message/text",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "token",
-              "value": "={{ $('Dados').item.json.evoAPIKey }}"
+              "value": "={{ $('Dados').item.json.uazToken }}"
             }
           ]
         },
@@ -663,7 +663,7 @@
             },
             {
               "fieldId": "whatsapp_id",
-              "fieldValue": "={{ $('Dados').item.json.evoInstance }}"
+              "fieldValue": "={{ $('Dados').item.json.uazInstance }}"
             }
           ]
         }
@@ -914,7 +914,7 @@
             },
             {
               "fieldId": "whatsapp_id",
-              "fieldValue": "={{ $('Dados').item.json.evoInstance }}"
+              "fieldValue": "={{ $('Dados').item.json.uazInstance }}"
             }
           ]
         }
@@ -2513,13 +2513,13 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ $('Dados').item.json.evoDomain }}/message/text",
+        "url": "={{ $('Dados').item.json.uazDomain }}/message/text",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "token",
-              "value": "={{ $('Dados').item.json.evoAPIKey }}"
+              "value": "={{ $('Dados').item.json.uazToken }}"
             }
           ]
         },
@@ -2595,19 +2595,19 @@
             },
             {
               "id": "98f1a2a5-94db-4530-831a-1d0cf8cb56d5",
-              "name": "evoDomain",
+              "name": "uazDomain",
               "value": "https://nexaflow.uazapi.com",
               "type": "string"
             },
             {
               "id": "1cc7912e-a60e-4550-8e73-6eae6ae2d99e",
-              "name": "evoInstance",
+              "name": "uazInstance",
               "value": "={{ $json.body.instanceName }}",
               "type": "string"
             },
             {
               "id": "a3f4aeee-b954-4aac-8889-52613691aca3",
-              "name": "evoAPIKey",
+              "name": "uazToken",
               "value": "={{ $json.body.token }}",
               "type": "string"
             }
@@ -2847,13 +2847,13 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ $('Dados').item.json.evoDomain }}/message/text",
+        "url": "={{ $('Dados').item.json.uazDomain }}/message/text",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "token",
-              "value": "={{ $('Dados').item.json.evoAPIKey }}"
+              "value": "={{ $('Dados').item.json.uazToken }}"
             }
           ]
         },
@@ -2900,7 +2900,7 @@
           "conditions": [
             {
               "keyName": "user_id",
-              "keyValue": "={{ $('Dados').item.json.evoInstance }}"
+              "keyValue": "={{ $('Dados').item.json.uazInstance }}"
             }
           ]
         }
@@ -2969,7 +2969,7 @@
           "conditions": [
             {
               "keyName": "user_id",
-              "keyValue": "={{ $('Dados').item.json.evoInstance }}"
+              "keyValue": "={{ $('Dados').item.json.uazInstance }}"
             }
           ]
         }
@@ -3053,13 +3053,13 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ $('Dados').item.json.evoDomain }}/message/text",
+        "url": "={{ $('Dados').item.json.uazDomain }}/message/text",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "token",
-              "value": "={{ $('Dados').item.json.evoAPIKey }}"
+              "value": "={{ $('Dados').item.json.uazToken }}"
             }
           ]
         },

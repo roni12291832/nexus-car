@@ -33,27 +33,29 @@ export default function CardConnection() {
 
       if (!res.ok) throw new Error("Falha ao criar instância");
 
-      const data = await res.json() as Record<string, unknown>; // UazapiInstanceResponse
+      const data = await res.json() as Record<string, unknown>; // Data from n8n (via our api/whatsapp/create)
       const token = data.token as string | undefined;
 
-      // 2. Get QR Code
-      const qrRes = await fetch(`/api/whatsapp/qr?instance=${instanceName}&token=${token}`);
       let finalData = data;
 
-      if (qrRes.ok) {
-        const qrData = await qrRes.json();
-        finalData = { ...data, ...qrData };
+      // 2. Get QR Code ONLY if not already provided by n8n
+      if (!data.base64 && !data.qrcode && token) {
+        const qrRes = await fetch(`/api/whatsapp/qr?instance=${instanceName}&token=${token}`);
+        if (qrRes.ok) {
+          const qrData = await qrRes.json();
+          finalData = { ...data, ...qrData };
+        }
       }
 
-      const { error } = await supabase.from("whatsapp_instances").insert({
+      const { error } = await supabase.from("whatsapp_instances").upsert({
         instance_name: instanceName,
         pairing_code: finalData.pairingCode || null,
-        qr_code_base64: finalData.base64 || finalData.qrcode || null,
+        qr_code_base64: finalData.base64 || (finalData as any).qrcode || null,
         number: finalData.number || null,
         user_id: user?.id || null,
         status: "conectado",
-        token: token, // Storing the vital UAZAPI token
-      });
+        uazapi_token: token, // Storing the vital UAZAPI token in the correct NexusCar column
+      }, { onConflict: "instance_name" });
 
       if (error) {
         console.error("Erro ao salvar no Supabase:", error.message);
@@ -87,10 +89,10 @@ export default function CardConnection() {
             </div>
           )}
 
-          {response.base64 && (
+          {(response.base64 || (response as any).qrcode) && (
             <div className="mx-auto">
               <Image
-                src={response.base64}
+                src={response.base64 || (response as any).qrcode}
                 alt="QR Code"
                 width={250}
                 height={250}
