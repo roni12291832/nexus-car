@@ -353,15 +353,33 @@ export default function Inventory() {
     }
   };
 
-  if (loading) return <p>Carregando veículos...</p>;
+  if (loading) return (
+    <div className="flex items-center justify-center h-64">
+      <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+
+  const statusColors: Record<string, string> = {
+    "Disponível": "bg-green-500/20 text-green-400 border-green-500/30",
+    "Reservado": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+    "Vendido": "bg-red-500/20 text-red-400 border-red-500/30",
+  };
 
   return (
     <div className="space-y-6">
-      {/* 🔘 Cabeçalho */}
-      <div className="flex items-center justify-between">
-        <p className="text-muted-foreground">
-          Gerencie os veículos disponíveis em sua loja
-        </p>
+      {/* Header */}
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500 to-blue-600 flex items-center justify-center shadow-lg">
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0l-4-4m4 4l-4 4M5 11l4-4m-4 4l4 4" />
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-white">Estoque</h1>
+            <p className="text-white/50 text-sm">{filteredVehicles.length} veículos disponíveis</p>
+          </div>
+        </div>
 
         <Dialog>
           <DialogTrigger asChild>
@@ -370,10 +388,10 @@ export default function Inventory() {
             </Button>
           </DialogTrigger>
 
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="sm:max-w-md bg-[#13141a] border border-white/10 text-white">
             <DialogHeader>
-              <DialogTitle>Adicionar Novo Veículo</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="text-white">Adicionar Novo Veículo</DialogTitle>
+              <DialogDescription className="text-white/50">
                 Preencha as informações do veículo
               </DialogDescription>
             </DialogHeader>
@@ -543,131 +561,117 @@ export default function Inventory() {
         </Dialog>
       </div>
 
-      {/* 🧩 Filtros */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Filter className="h-5 w-5" /> Filtros
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
-            <Input
-              placeholder="Buscar por nome ou modelo"
-              value={filters.search}
-              onChange={(e) =>
-                setFilters({ ...filters, search: e.target.value })
-              }
-            />
-            <Select
-              value={filters.type}
-              onValueChange={(v) => setFilters({ ...filters, type: v })}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Tipo do veículo" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="SUV">SUV</SelectItem>
-                <SelectItem value="Sedan">Sedan</SelectItem>
-                <SelectItem value="Hatch">Hatch</SelectItem>
-                <SelectItem value="Crossover">Crossover</SelectItem>
-                <SelectItem value="Minivan">Minivan</SelectItem>
-                <SelectItem value="Caminhão">Caminhão</SelectItem>
-                <SelectItem value="Ônibus">Ônibus</SelectItem>
-                <SelectItem value="Jipe">Jipe</SelectItem>
-                <SelectItem value="Quadriciclo">Quadriciclo</SelectItem>
-                <SelectItem value="Motocicleta">Motocicleta</SelectItem>
-                <SelectItem value="Caminhonete">Caminhonete</SelectItem>
-              </SelectContent>
-            </Select>
-            <Input
-              placeholder="Preço mínimo"
-              value={filters.minPrice}
-              onChange={(e) =>
-                setFilters({ ...filters, minPrice: e.target.value })
-              }
-            />
-            <Input
-              placeholder="Preço máximo"
-              value={filters.maxPrice}
-              onChange={(e) =>
-                setFilters({ ...filters, maxPrice: e.target.value })
-              }
-            />
-            <Input
-              placeholder="Ano"
-              value={filters.year}
-              onChange={(e) => setFilters({ ...filters, year: e.target.value })}
-            />
-            <div className="flex gap-2">
-              <Button onClick={applyFilters}>Filtrar</Button>
-              <Button variant="outline" onClick={clearFilters}>
-                Limpar
-              </Button>
-            </div>
+      {/* Filtros */}
+      <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+        <div className="flex items-center gap-2 mb-4">
+          <Filter className="h-4 w-4 text-violet-400" />
+          <span className="text-white/70 text-sm font-medium">Filtros</span>
+        </div>
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-6">
+          <Input
+            placeholder="Buscar por nome ou modelo"
+            value={filters.search}
+            onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+            className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+          />
+          <Select value={filters.type} onValueChange={(v) => setFilters({ ...filters, type: v })}>
+            <SelectTrigger className="bg-white/5 border-white/10 text-white">
+              <SelectValue placeholder="Tipo do veículo" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="SUV">SUV</SelectItem>
+              <SelectItem value="Sedan">Sedan</SelectItem>
+              <SelectItem value="Hatch">Hatch</SelectItem>
+              <SelectItem value="Crossover">Crossover</SelectItem>
+              <SelectItem value="Minivan">Minivan</SelectItem>
+              <SelectItem value="Caminhão">Caminhão</SelectItem>
+              <SelectItem value="Ônibus">Ônibus</SelectItem>
+              <SelectItem value="Jipe">Jipe</SelectItem>
+              <SelectItem value="Quadriciclo">Quadriciclo</SelectItem>
+              <SelectItem value="Motocicleta">Motocicleta</SelectItem>
+              <SelectItem value="Caminhonete">Caminhonete</SelectItem>
+            </SelectContent>
+          </Select>
+          <Input placeholder="Preço mínimo" value={filters.minPrice}
+            onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
+            className="bg-white/5 border-white/10 text-white placeholder:text-white/30" />
+          <Input placeholder="Preço máximo" value={filters.maxPrice}
+            onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
+            className="bg-white/5 border-white/10 text-white placeholder:text-white/30" />
+          <Input placeholder="Ano" value={filters.year}
+            onChange={(e) => setFilters({ ...filters, year: e.target.value })}
+            className="bg-white/5 border-white/10 text-white placeholder:text-white/30" />
+          <div className="flex gap-2">
+            <Button onClick={applyFilters} className="flex-1 bg-violet-600 hover:bg-violet-500 text-white border-0">Filtrar</Button>
+            <Button variant="outline" onClick={clearFilters} className="border-white/10 text-white/60 hover:text-white hover:bg-white/10">Limpar</Button>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* 📦 Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {filteredVehicles.map((vehicle) => (
-          <Card key={vehicle.id} className="overflow-hidden">
-            <CardHeader className="flex flex-row items-start justify-between">
-              <CardTitle>
-                {vehicle.name} - {vehicle.year}
-              </CardTitle>
-
-              <CardDescription>
-                <Badge>{vehicle.type}</Badge>
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">{vehicle.model}</p>
-
-              <div className="text-xl font-bold text-primary">
-                R$ {vehicle.price.toLocaleString()}
-              </div>
-            </CardContent>
-            <CardFooter className="flex flex-row items-center justify-between w-full mt-4 gap-2">
-              {/* Ver Detalhes */}
-              <Button
-                className="flex-1"
-                variant="outline"
-                onClick={() => openDetails(vehicle)}
-              >
-                <Eye className="h-4 w-4 mr-2" />
-                Ver Detalhes
-              </Button>
-
-              {/* Editar */}
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => openEdit(vehicle)}
-              >
-                <Pencil className="h-4 w-4" />
-              </Button>
-
-              {/* Apagar */}
-              <Button
-                variant="destructive"
-                size="icon"
-                onClick={() => vehicle.id && onDelete(vehicle.id)}
-                disabled={!vehicle.id}
-              >
-                <Trash className="h-4 w-4" />
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
+        </div>
       </div>
 
-      {/* 🪟 Modal de detalhes */}
+      {/* Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {filteredVehicles.map((vehicle) => {
+          const firstImage = Array.isArray(vehicle.image) && vehicle.image.length > 0
+            ? (typeof vehicle.image[0] === "string" ? vehicle.image[0] : URL.createObjectURL(vehicle.image[0] as File))
+            : null;
+          return (
+            <div key={vehicle.id} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-violet-500/40 transition-all duration-200 group">
+              {/* Foto */}
+              <div className="relative h-44 bg-white/5">
+                {firstImage ? (
+                  <Image src={firstImage} alt={vehicle.name} fill className="object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-white/20">
+                    <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                )}
+                <div className="absolute top-2 right-2">
+                  <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${statusColors[vehicle.status] || statusColors["Disponível"]}`}>
+                    {vehicle.status}
+                  </span>
+                </div>
+                <div className="absolute top-2 left-2">
+                  <span className="text-xs bg-black/60 text-white/70 px-2 py-0.5 rounded-full">{vehicle.type}</span>
+                </div>
+              </div>
+
+              {/* Info */}
+              <div className="p-4">
+                <h3 className="text-white font-semibold">{vehicle.name} <span className="text-white/40">{vehicle.year}</span></h3>
+                <p className="text-white/40 text-xs mt-0.5">{vehicle.model} • {vehicle.mileage?.toLocaleString()} km • {vehicle.fuel}</p>
+                <div className="text-xl font-bold text-violet-400 mt-2">
+                  R$ {vehicle.price.toLocaleString()}
+                </div>
+
+                <div className="flex gap-2 mt-4">
+                  <Button size="sm" variant="outline" onClick={() => openDetails(vehicle)}
+                    className="flex-1 border-white/10 text-white/60 hover:text-white hover:bg-white/10">
+                    <Eye className="h-3.5 w-3.5 mr-1.5" /> Detalhes
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => openEdit(vehicle)}
+                    className="border-white/10 text-violet-400 hover:bg-violet-500/20 hover:border-violet-500/40">
+                    <Pencil className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button size="sm" variant="destructive" onClick={() => vehicle.id && onDelete(vehicle.id)}
+                    className="bg-red-500/20 hover:bg-red-500/40 text-red-400 border border-red-500/30 hover:border-red-500/50">
+                    <Trash className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Modal de detalhes */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-3xl">
-          <DialogTitle>{selectedVehicle?.name}</DialogTitle>
-          <Badge>{selectedVehicle?.status}</Badge>
+        <DialogContent className="max-w-3xl bg-[#13141a] border border-white/10 text-white">
+          <DialogTitle className="text-white">{selectedVehicle?.name}</DialogTitle>
+          <span className={`text-xs px-2 py-0.5 rounded-full border font-medium w-fit ${statusColors[selectedVehicle?.status || "Disponível"]}`}>
+            {selectedVehicle?.status}
+          </span>
           {selectedVehicle && (
             <div className="space-y-4">
               {Array.isArray(selectedVehicle.image) &&
