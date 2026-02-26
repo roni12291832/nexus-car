@@ -6,6 +6,29 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Users, Plus, Search, Car } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+interface Carro {
+  id: string;
+  name: string;
+  model: string;
+  year: number;
+}
 
 interface Lead {
   id: string;
@@ -43,6 +66,18 @@ export default function LeadsPage() {
   const [dragging, setDragging] = useState<string | null>(null);
   const [storeName, setStoreName] = useState("");
 
+  const [carros, setCarros] = useState<Carro[]>([]);
+  const [isNewLeadOpen, setIsNewLeadOpen] = useState(false);
+  const [isEditLeadOpen, setIsEditLeadOpen] = useState(false);
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+
+  const [leadForm, setLeadForm] = useState({
+    name: "",
+    telefone: "",
+    veiculosSelecionados: [] as string[],
+    outroVeiculo: "",
+  });
+
   const fetchLeads = useCallback(async () => {
     if (!user?.id) return;
     const { data } = await supabase
@@ -62,8 +97,12 @@ export default function LeadsPage() {
 
   useEffect(() => {
     fetchLeads();
-    supabase.from("store_settings").select("store_name").eq("user_id", user?.id || "").single()
-      .then(({ data }) => setStoreName(data?.store_name || ""));
+    if (user?.id) {
+      supabase.from("store_settings").select("store_name").eq("user_id", user.id).single()
+        .then(({ data }) => setStoreName(data?.store_name || ""));
+      supabase.from("estoque").select("id, name, model, year").eq("user_id", user.id).eq("status", "Disponível")
+        .then(({ data }) => setCarros(data || []));
+    }
 
     // Realtime: atualiza quando o Supabase recebe dados novos do N8N
     const channel = supabase
@@ -111,6 +150,111 @@ export default function LeadsPage() {
 
   const getColumn = (status: CrmStatus) => filtered.filter((l) => l.crm_status === status);
 
+  const openNewLead = () => {
+    setLeadForm({ name: "", telefone: "", veiculosSelecionados: [], outroVeiculo: "" });
+    setIsNewLeadOpen(true);
+  };
+
+  const openEditLead = (lead: Lead) => {
+    setSelectedLead(lead);
+
+    // Parse existing vehicles
+    const existingInterest = lead.lead_field01 || "";
+    const vehiclesArr = existingInterest.split(', ').filter(v => v);
+
+    // Try to match existing names with available cars
+    const matchedIds: string[] = [];
+    const unmatchedNames: string[] = [];
+
+    vehiclesArr.forEach(vName => {
+      const match = carros.find(c => `${c.name} ${c.model}` === vName);
+      if (match) {
+        matchedIds.push(match.id);
+      } else {
+        unmatchedNames.push(vName);
+      }
+    });
+
+    setLeadForm({
+      name: lead.lead_name || lead.nomewpp || "",
+      telefone: lead.telefone || "",
+      veiculosSelecionados: matchedIds,
+      outroVeiculo: unmatchedNames.join(', '),
+    });
+    setIsEditLeadOpen(true);
+  };
+
+  const saveLead = async () => {
+    if (!leadForm.name || !leadForm.telefone) {
+      toast.error("Nome e telefone são obrigatórios.");
+      return;
+    }
+
+    const unformattedPhone = leadForm.telefone.replace(/\D/g, "");
+
+    // Build lead_field01 string
+    const selectedCarNames = carros
+      .filter(c => leadForm.veiculosSelecionados.includes(c.id))
+      .map(c => `${c.name} ${c.model}`);
+
+    const allInterests = [...selectedCarNames];
+    if (leadForm.outroVeiculo.trim()) {
+      allInterests.push(leadForm.outroVeiculo.trim());
+    }
+    const leadField01 = allInterests.join(', ');
+
+    if (selectedLead) {
+      // Edit
+      const { error } = await supabase
+        .from("dados_cliente")
+        .update({
+          lead_name: leadForm.name,
+          telefone: unformattedPhone,
+          lead_field01: leadField01,
+        })
+        .eq("id", selectedLead.id);
+
+      if (error) {
+        toast.error("Erro ao atualizar lead.");
+      } else {
+        toast.success("Lead atualizado!");
+        setIsEditLeadOpen(false);
+        fetchLeads();
+      }
+    } else {
+      // Create new
+      if (!user?.id) return;
+      const { error } = await supabase
+        .from("dados_cliente")
+        .insert({
+          whatsapp_id: user.id,
+          lead_name: leadForm.name,
+          nomewpp: leadForm.name,
+          telefone: unformattedPhone,
+          lead_field01: leadField01,
+          crm_status: "novo",
+        });
+
+      if (error) {
+        toast.error("Erro ao criar lead.");
+      } else {
+        toast.success("Lead criado!");
+        setIsNewLeadOpen(false);
+        fetchLeads();
+      }
+    }
+  };
+
+  const toggleVeiculo = (carId: string) => {
+    setLeadForm(prev => {
+      const current = prev.veiculosSelecionados;
+      if (current.includes(carId)) {
+        return { ...prev, veiculosSelecionados: current.filter(id => id !== carId) };
+      }
+      return { ...prev, veiculosSelecionados: [...current, carId] };
+    });
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -136,6 +280,10 @@ export default function LeadsPage() {
         </div>
 
         <div className="flex items-center gap-3">
+          <Button onClick={openNewLead} className="bg-gradient-to-r from-violet-500 to-indigo-600 hover:from-violet-400 hover:to-indigo-500 text-white border-0 shadow-lg text-sm h-10">
+            <Plus className="w-4 h-4 mr-2" />
+            Cadastrar Lead Manual
+          </Button>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
             <Input
@@ -194,6 +342,7 @@ export default function LeadsPage() {
                   draggable
                   onDragStart={() => setDragging(lead.id)}
                   onDragEnd={() => setDragging(null)}
+                  onClick={() => openEditLead(lead)}
                   className="bg-[#13141a] border border-white/10 rounded-xl p-3.5 cursor-grab active:cursor-grabbing hover:border-violet-500/40 transition-all group"
                 >
                   {/* Avatar + Nome */}
@@ -216,7 +365,6 @@ export default function LeadsPage() {
                     </div>
                   )}
 
-                  {/* Data + Botão WhatsApp */}
                   <div className="flex items-center justify-between">
                     <span className="text-white/30 text-xs">{date}</span>
                     <Button
@@ -245,6 +393,82 @@ export default function LeadsPage() {
           </div>
         ))}
       </div>
+
+      {/* Modal Lead (Novo / Editar) */}
+      <Dialog open={isNewLeadOpen || isEditLeadOpen} onOpenChange={(open) => {
+        if (!open) {
+          setIsNewLeadOpen(false);
+          setIsEditLeadOpen(false);
+          setSelectedLead(null);
+        }
+      }}>
+        <DialogContent className="sm:max-w-md bg-[#13141a] border border-white/10 text-white">
+          <DialogHeader>
+            <DialogTitle className="text-white">{isEditLeadOpen ? "Editar Lead" : "Cadastrar Lead Manual"}</DialogTitle>
+            <DialogDescription className="text-white/50">
+              {isEditLeadOpen ? "Edite as informações do lead e seus veículos de interesse." : "Adicione manualmente clientes que visitaram a loja ou contataram por outro canal."}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label>Nome do Lead</Label>
+              <Input
+                placeholder="Ex: João Silva"
+                value={leadForm.name}
+                onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })}
+                className="bg-white/5 border-white/10"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Telefone / WhatsApp</Label>
+              <Input
+                placeholder="Ex: (86) 99999-9999"
+                value={leadForm.telefone}
+                onChange={(e) => setLeadForm({ ...leadForm, telefone: e.target.value })}
+                className="bg-white/5 border-white/10"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Veículos de Interesse (Estoque)</Label>
+              <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto p-1">
+                {carros.length === 0 ? (
+                  <p className="text-xs text-white/40 col-span-2">Nenhum carro disponível no estoque.</p>
+                ) : (
+                  carros.map(car => (
+                    <div
+                      key={car.id}
+                      onClick={() => toggleVeiculo(car.id)}
+                      className={`cursor-pointer border rounded-md p-2 text-xs transition-colors ${leadForm.veiculosSelecionados.includes(car.id)
+                          ? "bg-violet-500/20 border-violet-500 text-violet-200"
+                          : "bg-white/5 border-white/10 text-white/60 hover:border-white/20"
+                        }`}
+                    >
+                      <span className="font-semibold">{car.name}</span> {car.model}
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Outro Veículo (Não listado / Avulso)</Label>
+              <Input
+                placeholder="Ex: Hilux SRX 2024 Branca"
+                value={leadForm.outroVeiculo}
+                onChange={(e) => setLeadForm({ ...leadForm, outroVeiculo: e.target.value })}
+                className="bg-white/5 border-white/10"
+              />
+            </div>
+
+            <Button onClick={saveLead} className="w-full bg-violet-600 hover:bg-violet-500 text-white">
+              {isEditLeadOpen ? "Salvar Alterações" : "Cadastrar Lead"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

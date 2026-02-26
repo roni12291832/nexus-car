@@ -74,7 +74,7 @@ export default function Dashboard() {
       value: whatsappConnected ? "Ativo" : "Offline",
       icon: whatsappConnected ? Wifi : WifiOff,
       color: whatsappConnected ? "from-green-500 to-emerald-700" : "from-red-500 to-red-700",
-      sub: whatsappConnected ? "bot funcionando" : "conecte seu número",
+      sub: whatsappConnected ? "IA de Atendimento funcionando" : "conecte seu número",
     },
   ];
 
@@ -183,7 +183,7 @@ export default function Dashboard() {
           <div className={`mt-6 p-3 rounded-xl flex items-center gap-3 ${whatsappConnected ? "bg-green-500/10 border border-green-500/20" : "bg-red-500/10 border border-red-500/20"}`}>
             <MessageSquare className={`w-4 h-4 ${whatsappConnected ? "text-green-400" : "text-red-400"}`} />
             <p className="text-sm text-white/70">
-              Bot {whatsappConnected ? <span className="text-green-400 font-medium">ativo e funcionando</span> : <span className="text-red-400 font-medium">offline — <Link href="/whatsapp" className="underline">conecte agora</Link></span>}
+              IA de Atendimento {whatsappConnected ? <span className="text-green-400 font-medium">ativa e funcionando</span> : <span className="text-red-400 font-medium">offline — <Link href="/whatsapp" className="underline">conecte agora</Link></span>}
             </p>
           </div>
         </div>

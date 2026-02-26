@@ -316,7 +316,7 @@ export default function Settings() {
               </div>
               <Button onClick={saveSettings} disabled={isLoading} size="lg">
                 <Save className="h-4 w-4 mr-2" />
-                {isLoading ? "Salvando..." : "Salvar e Ativar Bot"}
+                {isLoading ? "Salvando..." : "Salvar e Ativar IA de Atendimento"}
               </Button>
             </div>
           </CardContent>

@@ -28,7 +28,7 @@ export default function WhatsAppPage() {
                     </div>
                     <div>
                         <h1 className="text-2xl font-bold text-white">Conecte seu WhatsApp</h1>
-                        <p className="text-sm text-white/50">Gerencie os números conectados ao seu bot</p>
+                        <p className="text-sm text-white/50">Gerencie os números conectados à sua IA de Atendimento</p>
                     </div>
                 </div>
 
@@ -44,7 +44,7 @@ export default function WhatsAppPage() {
                         <DialogHeader>
                             <DialogTitle className="text-white">Conectar WhatsApp</DialogTitle>
                             <DialogDescription className="text-white/50">
-                                Escaneie o QR Code com seu WhatsApp para ativar o bot.
+                                Escaneie o QR Code com seu WhatsApp para ativar a IA de Atendimento.
                             </DialogDescription>
                         </DialogHeader>
                         <CardConnection onSuccess={() => {
@@ -63,7 +63,7 @@ export default function WhatsAppPage() {
                 {[
                     { step: "1", title: "Clique em Adicionar", desc: "Clique no botão acima para iniciar o processo de conexão do seu WhatsApp." },
                     { step: "2", title: "Escaneie o QR Code", desc: "Abra o WhatsApp no celular, vá em Dispositivos Conectados e escaneie o código." },
-                    { step: "3", title: "Bot ativado!", desc: "Assim que conectar, o bot começa a atender seus clientes automaticamente." },
+                    { step: "3", title: "IA de Atendimento ativada!", desc: "Assim que conectar, a IA de Atendimento começa a atender seus clientes automaticamente." },
                 ].map((item) => (
                     <div key={item.step} className="bg-white/5 border border-white/10 rounded-2xl p-5">
                         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-blue-600 flex items-center justify-center text-white text-sm font-bold mb-3">
