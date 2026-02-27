@@ -113,7 +113,7 @@ export default function LeadsPage() {
     if (user?.id) {
       supabase.from("store_settings").select("store_name").eq("user_id", user.id).single()
         .then(({ data }) => setStoreName(data?.store_name || ""));
-      supabase.from("estoque").select("id, name, model, year").eq("user_id", user.id).eq("status", "Disponível")
+      supabase.from("estoque").select("id, name, model, year").eq("user_id", user.id).order("name", { ascending: true })
         .then(({ data }) => setCarros(data || []));
     }
 
