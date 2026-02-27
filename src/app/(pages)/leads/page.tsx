@@ -80,13 +80,26 @@ export default function LeadsPage() {
 
   const fetchLeads = useCallback(async () => {
     if (!user?.id) return;
-    const { data } = await supabase
+
+    // Tenta buscar com as colunas novas primeiro
+    let { data, error } = await supabase
       .from("dados_cliente")
       .select("id, nomewpp, lead_name, lead_field01, telefone, created_at, crm_status")
       .eq("whatsapp_id", user.id)
       .order("created_at", { ascending: false });
+
+    // Se falhar porque as colunas não existem, faz fallback para as antigas
+    if (error && error.message.includes("does not exist")) {
+      const fallback = await supabase
+        .from("dados_cliente")
+        .select("id, nomewpp, telefone, created_at, crm_status")
+        .eq("whatsapp_id", user.id)
+        .order("created_at", { ascending: false });
+      data = fallback.data as any;
+    }
+
     setLeads(
-      (data || []).map((l) => ({
+      (data || []).map((l: any) => ({
         ...l,
         crm_status: l.crm_status || "novo",
         telefone: (l.telefone || "").replace("@s.whatsapp.net", ""),
@@ -208,13 +221,20 @@ export default function LeadsPage() {
       const { error } = await supabase
         .from("dados_cliente")
         .update({
+          nomewpp: leadForm.name,
           lead_name: leadForm.name,
           telefone: unformattedPhone,
           lead_field01: leadField01,
         })
         .eq("id", selectedLead.id);
 
-      if (error) {
+      if (error && error.message.includes("column")) {
+        // Fallback for missing columns
+        await supabase.from("dados_cliente").update({ nomewpp: leadForm.name, telefone: unformattedPhone }).eq("id", selectedLead.id);
+        toast.warning("Colunas 'lead_name' e 'lead_field01' ausentes no banco. Apenas nome e telefone atualizados. Acesse o Supabase e adicione-as as na tabela dados_cliente para salvar os veículos.", { duration: 8000 });
+        setIsEditLeadOpen(false);
+        fetchLeads();
+      } else if (error) {
         toast.error("Erro ao atualizar lead.");
       } else {
         toast.success("Lead atualizado!");
@@ -224,18 +244,26 @@ export default function LeadsPage() {
     } else {
       // Create new
       if (!user?.id) return;
-      const { error } = await supabase
-        .from("dados_cliente")
-        .insert({
-          whatsapp_id: user.id,
-          lead_name: leadForm.name,
-          nomewpp: leadForm.name,
-          telefone: unformattedPhone,
-          lead_field01: leadField01,
-          crm_status: "novo",
-        });
+      const payload: any = {
+        whatsapp_id: user.id,
+        nomewpp: leadForm.name,
+        lead_name: leadForm.name,
+        telefone: unformattedPhone,
+        lead_field01: leadField01,
+        crm_status: "novo",
+      };
 
-      if (error) {
+      const { error } = await supabase.from("dados_cliente").insert(payload);
+
+      if (error && error.message.includes("column")) {
+        // Fallback
+        delete payload.lead_name;
+        delete payload.lead_field01;
+        await supabase.from("dados_cliente").insert(payload);
+        toast.warning("Lead criado! Porém, para salvar veículos de interesse, adicione as colunas 'lead_name' e 'lead_field01' no seu Supabase.", { duration: 8000 });
+        setIsNewLeadOpen(false);
+        fetchLeads();
+      } else if (error) {
         toast.error("Erro ao criar lead.");
       } else {
         toast.success("Lead criado!");
@@ -442,8 +470,8 @@ export default function LeadsPage() {
                       key={car.id}
                       onClick={() => toggleVeiculo(car.id)}
                       className={`cursor-pointer border rounded-md p-2 text-xs transition-colors ${leadForm.veiculosSelecionados.includes(car.id)
-                          ? "bg-violet-500/20 border-violet-500 text-violet-200"
-                          : "bg-white/5 border-white/10 text-white/60 hover:border-white/20"
+                        ? "bg-violet-500/20 border-violet-500 text-violet-200"
+                        : "bg-white/5 border-white/10 text-white/60 hover:border-white/20"
                         }`}
                     >
                       <span className="font-semibold">{car.name}</span> {car.model}
