@@ -15,6 +15,6 @@ export const config = {
          * - api (API routes)
          * Feel free to modify this pattern to include more paths.
          */
-        "/((?!_next/static|_next/image|favicon.ico|api|login|auth|admin/login|esqueci-senha|redefinir-senha|termos-de-uso|politica-de-privacidade).*)",
+        "/((?!_next/static|_next/image|favicon.ico|api|login|auth|admin/login|carro|esqueci-senha|redefinir-senha|termos-de-uso|politica-de-privacidade).*)",
     ],
 };

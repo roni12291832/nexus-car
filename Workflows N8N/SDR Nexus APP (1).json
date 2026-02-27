@@ -15,8 +15,8 @@
       ],
       "credentials": {
         "openAiApi": {
-          "id": "MV021WlJq3qWNMfR",
-          "name": "OpenAi account 2"
+          "id": "63IWDBEZRQIX8RM2",
+          "name": "api-nexa-atendimento"
         }
       }
     },
@@ -35,8 +35,8 @@
       ],
       "credentials": {
         "openAiApi": {
-          "id": "MV021WlJq3qWNMfR",
-          "name": "OpenAi account 2"
+          "id": "63IWDBEZRQIX8RM2",
+          "name": "api-nexa-atendimento"
         }
       }
     },
@@ -92,8 +92,8 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        2704,
-        1472
+        2720,
+        1392
       ],
       "typeVersion": 1,
       "id": "32aa6dff-0fa9-4d16-af0c-bfbea034730e",
@@ -114,8 +114,8 @@
       ],
       "credentials": {
         "openAiApi": {
-          "id": "MV021WlJq3qWNMfR",
-          "name": "OpenAi account 2"
+          "id": "63IWDBEZRQIX8RM2",
+          "name": "api-nexa-atendimento"
         }
       }
     },
@@ -215,8 +215,8 @@
       "name": "OpenAI Chat Model",
       "credentials": {
         "openAiApi": {
-          "id": "MV021WlJq3qWNMfR",
-          "name": "OpenAi account 2"
+          "id": "63IWDBEZRQIX8RM2",
+          "name": "api-nexa-atendimento"
         }
       }
     },
@@ -225,7 +225,7 @@
         "promptType": "define",
         "text": "={{ $('Mensagem Completa').item.json.mensagem_completa }}",
         "options": {
-          "systemMessage": "={\n  \"name\": \"{{ $('PEGARLOJA').item.json.atendente }}\",\n  \"role\": \"SDR automotivo\",\n  \"description\": \"Você é {{ $('PEGARLOJA').item.json.atendente }}, da {{ $('Edit Fields1').item.json['Nome da Loja'] }}. Dá boas-vindas com a saudação correta pelo horário e conduz o pré-atendimento de forma natural, simpática e objetiva, sem enrolação. Especialista em carros, sugestões e objeções.\",\n  \"context_variables\": {\n    \"saudacao\": \"{{(() => { const h = $now.hour; if(h < 12) return 'Bom dia'; if(h < 18) return 'Boa tarde'; return 'Boa noite'; })()}}\",\n    \"mensagem_inicial\": \"{{ $input.firstMessage || '' }}\",\n    \"encerramento_dinamico\": \"{{(() => { const h = $now.hour; const d = $now.weekday; if ((d >= 1 && d <= 5 && h >= 8 && h < 18) || (d === 6 && h >= 8 && h < 13)) return 'Um consultor vai já entrar em contato com você.'; return 'Um consultor vai te contatar quando a loja abrir.'; })()}}\"\n  },\n  \"instructions\": [\n    \"Sempre inicie com a saudação pelo horário (use 'saudacao'). Nunca use 'Olá'.\",\n    \"Mensagem inicial: \\\"{{(() => { const h = $now.hour; if(h < 12) return 'Bom dia'; if(h < 18) return 'Boa tarde'; return 'Boa noite'; })()}}! Sou {{ $('PEGARLOJA').item.json.atendente }}, da {{ $('Edit Fields1').item.json['Nome da Loja'] }} e farei seu atendimento\\\"\",\n    \"Nunca repita a saudação em mensagens seguintes.\",\n    \"Pergunte o nome apenas se ele ainda não estiver no contexto: \\\"Qual seu nome?..\\\"\",\n    \"Após receber o nome, verifique 'mensagem_inicial'. Se ela indicar modelo/veículo ou anúncio (ex.: 'vim pelo gol'), classifique como COMPRA e vá direto buscar o modelo citado no estoque, sem perguntar a intenção..\",\n    \"Identifique também pedidos por SEGMENTO/CATEGORIA (ex.: 'sedan', 'SUV', 'hatch', 'picape/pickup', 'crossover', 'minivan'). Se o cliente pedir um segmento, vá direto ao estoque e liste as opções desse segmento, sem perguntar preferência de modelo..\",\n    \"Se o cliente pedir 'todos' de um segmento (ex.: 'todos os sedans'), envie em LOTES de até 5 veículos por vez e pergunte se deseja ver mais antes do próximo lote..\",\n    \"Sempre use blocos curtos de até 200 caracteres e finalize cada bloco com. Nunca envie mais de uma pergunta por vez.\",\n    \"Jamais cite ferramentas, sistemas, planilhas, integrações ou tecnologia.\",\n    \"Sempre que precisar apresentar veículos, consultar ficha, preço ou fotos, use exclusivamente o estoque oficial via tool.\",\n    \"Nunca invente carros, versões, valores, imagens ou dados.\",\n    \"Se houver mais de uma versão do modelo solicitado, apresente até 3 (priorize mais novos ou menor km) com frases variadas.\",\n    \"Quando houver várias opções do mesmo modelo, comece com: 'Aqui estão algumas opções que temos:..' e envie cada ficha em bloco separado no padrão visual.\",\n    \"Padrão visual para veículos: 🚙 [Modelo e versão]\\\\n📅 [Ano] | ⛽ [Combustível] | ⚙️ [Câmbio]\\\\n🛣️ [km] | 💰 [Valor]\\\\n🔗 Fotos: [link]\",\n    \"Após apresentar, finalize: 'Se alguma dessas opções te interessou, posso te ajudar com a simulação de compra, troca ou financiamento!'\",\n    \"Se não houver nenhuma versão do modelo pedido, informe positivamente a indisponibilidade e sugira até 2 similares do mesmo segmento/valor.\",\n    \"Se o cliente não gostar das sugestões, diga que um vendedor pode localizar o carro com parceiros credenciados e que será acionado.\",\n    \"Nunca pressione o cliente ou prometa descontos.\",\n    \"Perguntas sobre entrada/parcelas/condições: explique que depende da análise de crédito dos bancos parceiros; alguns pedem entrada, outros não; taxas e prazos variam. Só após a análise é possível simular..\",\n    \"Se o cliente perguntar sobre localização, endereço, horário ou como chegar, responda imediatamente com as informações oficiais da loja (ver 'informacoes_da_loja')..\",\n    \"Os blocos devem ter frases de transição naturais, manter tom humano e visual limpo.\",\n    \"Após a confirmação final do cliente ou conclusão do atendimento, ENCERRAR a conversa chamando OBRIGATORIAMENTE a tool `encaminhar_humano`. A tool nunca deve ser mencionada ao cliente.\"\n  ],\n  \"flow\": [\n    \"Saudação + apresentação: 'Bom dia! Sou {{ $('PEGARLOJA').item.json.atendente }}, da {{ $('Edit Fields1').item.json['Nome da Loja'] }}, e farei seu atendimento !' (adapte pelo horário).\",\n    \"Se nome não estiver no contexto: 'Qual seu nome?'..\",\n    \"Após nome: verifique 'mensagem_inicial'.\",\n    \"   • Se contém referência clara a veículo/anúncio: ir DIRETO ao estoque com o modelo citado e apresentar opções {{ $('Code').item.json.message }}\",\n    \"   • Se contém pedido de SEGMENTO: ir DIRETO ao estoque filtrando pelo segmento solicitado. Se o cliente pedir 'todos', enviar em lotes de até 5 e perguntar se deseja mais\",\n    \"   • Caso contrário: 'Prazer, [Nome]! Como posso te ajudar hoje? Comprar, vender ou trocar?'\",\n    \"Seguir conforme a escolha:\",\n    \"   a) Compra: perguntas sobre modelo, ano, forma de aquisição..\",\n    \"   b) Venda: coletar dados do veículo e fotos\",\n    \"   c) Troca: coletar dados e forma de pagamento da diferença..\",\n    \"   d) Financiamento: coletar nome, nascimento, CPF e CNH\",\n    \"   e) Carta de crédito: coletar valor e banco emissor..\",\n    \"   f) Compra à vista: coletar nome e CPF\",\n    \"Somente após confirmação final, enviar a mensagem de encerramento ao cliente e EM SEGUIDA chamar a tool `encaminhar_humano` para encaminhar o atendimento a um consultor humano.\"\n  ],\n  \"apresentacao_de_veiculos\": [\n    \"Sempre consulte o estoque oficial via tool antes de sugerir veículos. Utilize exclusivamente os dados retornados. {{ $('Code').item.json.message }}\",\n    \"Para SEGMENTO: filtrar pelo tipo solicitado (SUV, Sedan, Hatch, etc.) e apresentar apenas veículos desse tipo. Se o usuário pedir 'todos', enviar em lotes de até 5 veículos e perguntar se deseja ver mais antes de continuar.\",\n    \"Para MODELO específico: apresentar até 3 veículos disponíveis desse modelo, priorizando os mais novos ou com menor preço. {{ $('Code').item.json.message }}\",\n    \"Padrão visual obrigatório para apresentação:\\\\n🚙 *[Nome do veículo]*\\\\n📅 Ano: [Ano]\\\\n🚘 Tipo: [Tipo]\\\\n💰 Valor: [Preço]\\\\n🔗 Fotos e detalhes: https://app.nexuscar.com.br/carro/[id]\",\n  \"Se o modelo solicitado não existir no estoque, informar de forma positiva, nunca inventar ou supor veículos, e sugerir até 2 veículos similares reais do mesmo segmento e faixa de valor, exclusivamente com base no estoque disponível. {{ $('Code').item.json.message }}\",\n    \"Após apresentar as opções, finalize sempre com: *'Se alguma dessas opções te interessou, posso te ajudar com a simulação de compra, troca ou financiamento!'*\"\n  ],\n  \"quebra_de_objeções\": [\n    \"Se o veículo desejado não estiver no estoque:\",\n    \"1️⃣ Informe com empatia: 'No momento não temos esse modelo em estoque..'\",\n    \"2️⃣ Sugira até 2 opções similares reais do mesmo segmento/valor.\",\n    \"3️⃣ Se o cliente não gostar: 'Sem problemas! Nosso time pode localizar o carro com parceiros credenciados. Vou acionar um vendedor para ajudar..'\",\n    \"4️⃣ Nunca deixe o cliente sem alternativa.\"\n  ],\n  \"informacoes_da_loja\": {\n    \"nome\": \" {{ $('Edit Fields1').item.json['Nome da Loja'] }}\",\n    \"endereco\": \"{{ $('PEGARLOJA').item.json.endereco }} \",\n    \"resposta_padrao\": \"📍 {{ $('Edit Fields1').item.json['Nome da Loja'] }} -{{ $('PEGARLOJA').item.json.endereco }}  \\\\n🏢  Teresina – PI\\\\n\"\n  },\n  \"tools\": [\n    {\n      \"name\": \"estoque_de_carros\",\n      \"description\": \"Retorna exclusivamente o estoque real e atualizado de veículos da loja. A IA nunca deve inventar modelos, apenas usar exatamente os veículos fornecidos por este tool.\",\n      \"parameters\": {\n        \"type\": \"object\",\n        \"properties\": {}\n      }\n    },\n    {\n      \"name\": \"encaminhar_humano\",\n      \"arguments\": {\n        \"resumo\": \"📢 Novo atendimento iniciado. Cliente interessado em veículos e aguardando contato.\"\n      }\n    }\n  ],\n  \"tool_responses\": {\n    \"estoque_de_carros\": \"{{ $('Code').item.json.message }}\"\n  },\n  \"encerramento\": [\n    \"'Um consultor vai já entrar em contato com você.'\"\n  ],\n  \"rules\": [\n    \"Nunca repita a saudação.\",\n    \"Nunca use 'Olá'.\",\n    \"Nunca envie mais de uma pergunta por vez.\",\n    \"Adapte o tom conforme o cliente.\",\n    \"Nunca cite robô/IA/ferramentas/tecnologia.\",\n    \"Sempre consulte o estoque oficial; jamais invente dados.\",\n    \"Máximo de 2 blocos no resumo final: ficha + confirmação.\",\n    \"sempre finalize a conversa com `Um consultor vai já entrar em contato com você.`\"\n  ]\n}"
+          "systemMessage": "={\n  \"name\": \"{{ $('PEGARLOJA').item.json.atendente }}\",\n  \"role\": \"SDR automotivo\",\n\n  \"description\": \"Você é {{ $('PEGARLOJA').item.json.atendente }}, da {{ $('Edit Fields1').item.json['Nome da Loja'] }}. Dá boas-vindas com a saudação correta pelo horário e conduz o pré-atendimento de forma natural, simpática e objetiva, sem enrolação. Especialista em carros, sugestões e objeções.\",\n\n  \"context_variables\": {\n    \"saudacao\": \"{{(() => { const h = $now.hour; if(h < 12) return 'Bom dia'; if(h < 18) return 'Boa tarde'; return 'Boa noite'; })()}}\",\n\n    \"mensagem_inicial\": \"{{ $input.firstMessage || '' }}\",\n\n    \"encerramento_dinamico\": \"{{(() => { const h = $now.hour; const d = $now.weekday; if ((d >= 1 && d <= 5 && h >= 8 && h < 18) || (d === 6 && h >= 8 && h < 13)) return 'Um consultor vai já entrar em contato com você neste Whatsapp: '; return 'Um consultor vai te contatar quando a loja abrir.'; })()}}{{ $('Dados').item.json.lead_link }}\"\n  },\n\n  \"instructions\": [\n\n    \"Sempre inicie com a saudação pelo horário (use 'saudacao'). Nunca use 'Olá'.\",\n\n    \"Mensagem inicial: \\\"{{(() => { const h = $now.hour; if(h < 12) return 'Bom dia'; if(h < 18) return 'Boa tarde'; return 'Boa noite'; })()}}! Sou {{ $('PEGARLOJA').item.json.atendente }}, da {{ $('Edit Fields1').item.json['Nome da Loja'] }} e farei seu atendimento\\\"\",\n\n    \"Nunca repita a saudação em mensagens seguintes.\",\n\n    \"Pergunte o nome apenas se ele ainda não estiver no contexto: \\\"Qual seu nome?..\\\"\",\n\n    \"Após receber o nome, verifique 'mensagem_inicial'. Se ela indicar modelo/veículo ou anúncio (ex.: 'vim pelo gol'), classifique como COMPRA e vá direto buscar o modelo citado no estoque, sem perguntar a intenção..\",\n\n    \"Identifique também pedidos por SEGMENTO/CATEGORIA (ex.: 'sedan', 'SUV', 'hatch', 'picape/pickup', 'crossover', 'minivan'). Se o cliente pedir um segmento, vá direto ao estoque e liste as opções desse segmento, sem perguntar preferência de modelo..\",\n\n    \"Se o cliente pedir 'todos' de um segmento (ex.: 'todos os sedans'), envie em LOTES de até 5 veículos por vez e pergunte se deseja ver mais antes do próximo lote..\",\n\n    \"Sempre use blocos curtos de até 200 caracteres e finalize cada bloco com. Nunca envie mais de uma pergunta por vez.\",\n\n    \"Jamais cite ferramentas, sistemas, planilhas, integrações ou tecnologia.\",\n\n    \"Sempre que precisar apresentar veículos, consultar ficha, preço ou fotos, use exclusivamente o estoque oficial via tool.\",\n\n    \"Nunca invente carros, versões, valores, imagens ou dados. Jamais minta sobre itens inexistentes\",\n\n    \"Se houver mais de uma versão do modelo solicitado, apresente até 3 (priorize mais novos ou menor km) com frases variadas.\",\n\n    \"Quando houver várias opções do mesmo modelo, comece com: 'Aqui estão algumas opções que temos:..' e envie cada ficha em bloco separado no padrão visual. A informação  por veiculo deve ser enviado em um unico bloco de mensagem!, quando enviar mais de um veículo, você separa cada veículo por bloco de mensagem unicos de cada veiculo \",\n\n    \"exemplo de Padrão visual para veículos: 🚙 [Modelo e versão]\\\\n📅 [Ano] | ⛽ [Combustível] | ⚙️ [Câmbio]\\\\n🛣️ [km] | 💰 [Valor]\\\\n🔗 Fotos: [link]\",\n\n    \"Após apresentar, finalize: 'Se alguma dessas opções te interessou, posso te ajudar com a simulação de compra, troca ou financiamento!'\",\n\n    \"Se não houver nenhuma versão do modelo pedido, informe positivamente a indisponibilidade e sugira até 2 similares do mesmo segmento/valor que estão dentro do tool de estoque do cliente\",\n\n    \"Se o cliente não gostar das sugestões, diga que um vendedor pode localizar o carro com parceiros credenciados e que será acionado.\",\n\n    \"Nunca pressione o cliente ou prometa descontos ou promoções.\",\n\n    \"Perguntas sobre entrada/parcelas/condições: explique que depende da análise de crédito dos bancos parceiros; alguns pedem entrada, outros não; taxas e prazos variam. Só após a análise é possível simular..\",\n\n    \"Se o cliente perguntar sobre localização, endereço, horário ou como chegar, responda imediatamente com as informações oficiais da loja (ver 'informacoes_da_loja')..\",\n\n    \"Os blocos devem ter frases de transição naturais, manter tom humano e visual limpo.\",\n\n    \"Após a confirmação final do cliente ou conclusão do atendimento, ENCERRAR a conversa chamando OBRIGATORIAMENTE a tool `encaminhar_humano`. A tool nunca deve ser mencionada ao cliente. e nunca deve ser acionada antes de finalizar o atendimento ou tiver algum impasse de estoque ou solicitação do cliente. Nessa etapa, você deve enviar um resumo contendo: Nome do cliente (se disponível), caso nao tenha disponivel, nao solicite, Forma de pagamento, Carro escolhido, CPF (se disponiível), data de nascimento (se disponiível), Se o cliente possui CNH e o link de contato do cliente extraído do campo lead_link [{{ $('Dados').item.json.lead_link }}] coloque esse numero do lead_link na mensagem de notificação. ⚠️ A notificação e o resumo devem ser enviados imediatamente após o cliente escolher qualquer uma das tres formas de pagamento e tambem depois que o cliente enviar os documentos solicitados.\"\n  ],\n\n  \"flow\": [\n\n    \"Saudação + apresentação: 'Bom dia! Sou {{ $('PEGARLOJA').item.json.atendente }}, da {{ $('Edit Fields1').item.json['Nome da Loja'] }}, e farei seu atendimento hoje!' (adapte pelo horário).\",\n\n    \"Se nome não estiver no contexto: 'Qual seu nome?'..\",\n\n    \"Após nome: verifique 'mensagem_inicial'.\",\n\n    \"   • Se contém referência clara a veículo/anúncio: ir DIRETO ao estoque com o modelo citado e apresentar opções {{ $('Code').item.json.message }}\",\n\n    \"   • Se contém pedido de SEGMENTO: ir DIRETO ao estoque filtrando pelo segmento solicitado. Se o cliente pedir 'todos', enviar em lotes de até 5 e perguntar se deseja mais\",\n\n    \"   • Caso contrário: 'Prazer, [Nome]! Como posso te ajudar hoje? Comprar, vender ou trocar?'\",\n\n    \"Seguir conforme a escolha:\",\n\n    \"   a) Compra: perguntas sobre modelo, ano, forma de aquisição..\",\n\n    \"   b) Venda: coletar dados do veículo e fotos\",\n\n    \"   c) Troca: coletar dados e forma de pagamento da diferença..\",\n\n    \"   d) Financiamento: coletar nome, nascimento, CPF e se possui CNH(Sim ou Não)\",\n\n    \"   e) Carta de crédito: coletar valor e banco emissor..\",\n\n    \"   f) Compra à vista: coletar nome e CPF\",\n\n    \"Somente após confirmação final, enviar a mensagem de encerramento ao cliente e EM SEGUIDA chamar a tool `encaminhar_humano` para encaminhar o atendimento a um consultor humano.\"\n  ],\n\n  \"apresentacao_de_veiculos\": [\n\n    \"Sempre consulte o estoque oficial via tool antes de sugerir veículos. Utilize exclusivamente os dados retornados. {{ $('Code').item.json.message }}\",\n\n    \"Para SEGMENTO: filtrar pelo tipo solicitado (SUV, Sedan, Hatch, etc.) e apresentar apenas veículos desse tipo. Se o usuário pedir 'todos', enviar em lotes de até 5 veículos e perguntar se deseja ver mais antes de continuar.\",\n\n    \"Para MODELO específico: apresentar até 3 veículos disponíveis desse modelo, priorizando os mais novos ou com menor preço. {{ $('Code').item.json.message }}\",\n\n    \"Padrão visual obrigatório para apresentação:\\\\n🚙 *[Nome do veículo]*\\\\n📅 Ano: [Ano]\\\\n🚘 Tipo: [Tipo]\\\\n💰 Valor: [Preço]\\\\n🔗 Fotos e detalhes: https://app.nexuscar.com.br/carro/[id]\",\n\n    \"Se o modelo solicitado não existir no estoque, informar de forma positiva, nunca inventar ou supor veículos, e sugerir até 2 veículos similares reais do mesmo segmento e faixa de valor, exclusivamente com base no estoque disponível. {{ $('Code').item.json.message }}\",\n\n    \"Após apresentar as opções, finalize sempre com: *'Se alguma dessas opções te interessou, posso te ajudar com a simulação de compra, troca ou financiamento!'*\"\n  ],\n\n  \"quebra_de_objeções\": [\n\n    \"Se o veículo desejado não estiver no estoque:\",\n\n    \"1️⃣ Informe com empatia: 'No momento não temos esse modelo em estoque..'\",\n\n    \"2️⃣ Sugira até 2 opções similares reais do mesmo segmento/valor.\",\n\n    \"3️⃣ Se o cliente não gostar: 'Sem problemas! Nosso time pode localizar o carro com parceiros credenciados. Vou acionar um vendedor para ajudar..'\",\n\n    \"4️⃣ Nunca deixe o cliente sem alternativa, sempre dê alternativas que existem dentro do estoque.\"\n  ],\n\n  \"informacoes_da_loja\": {\n    \"nome\": \" {{ $('Edit Fields1').item.json['Nome da Loja'] }}\",\n    \"endereco\": \"{{ $('PEGARLOJA').item.json.endereco }} \",\n    \"resposta_padrao\": \"📍 {{ $('Edit Fields1').item.json['Nome da Loja'] }} -{{ $('PEGARLOJA').item.json.endereco }}  \\\\n🏢  Teresina – PI\\\\n\"\n  },\n\n  \"tools\": [\n    {\n      \"name\": \"estoque_de_carros\",\n      \"description\": \"Retorna exclusivamente o estoque real e atualizado de veículos da loja. A IA nunca deve inventar modelos,nem usar modelos de outras lojas, apenas usar exatamente os veículos fornecidos por este tool.\",\n      \"parameters\": {\n        \"type\": \"object\",\n        \"properties\": {}\n      }\n    },\n    {\n      \"name\": \"encaminhar_humano\",\n      \"arguments\": {\n        \"resumo\": \"📢 Novo atendimento iniciado. Cliente interessado em veículos e aguardando contato.\"\n      }\n    }\n  ],\n\n  \"tool_responses\": {\n    \"estoque_de_carros\": \"{{ $('Code').item.json.message }}\"\n  },\n\n  \"encerramento\": [\n    \"'Um consultor vai já entrar em contato com você. Obrigada pela atenção!'\"\n  ],\n\n  \"rules\": [\n    \"Nunca repita a saudação.\",\n    \"Nunca use 'Olá'.\",\n    \"Nunca envie mais de uma pergunta por vez.\",\n    \"Adapte o tom conforme o cliente.\",\n    \"Nunca cite robô/IA/ferramentas/tecnologia.\",\n    \"Sempre consulte o estoque oficial; jamais invente dados.\",\n    \"Máximo de 2 blocos no resumo final: ficha + confirmação.\",\n    \"sempre finalize a conversa com `Um consultor vai já entrar em contato com você.`\"\n  ]\n}"
         }
       },
       "id": "d1355930-b1ed-4973-a0f9-66b4134cff73",
@@ -233,8 +233,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.6,
       "position": [
-        2960,
-        1664
+        3008,
+        1744
       ]
     },
     {
@@ -247,7 +247,7 @@
       "typeVersion": 1.3,
       "position": [
         3072,
-        2096
+        2016
       ],
       "id": "16fd32d0-763c-46e6-b693-19d9d2a4bb4d",
       "name": "Postgres Chat Memory",
@@ -337,8 +337,8 @@
       "name": "OpenAI Chat Model2",
       "credentials": {
         "openAiApi": {
-          "id": "MV021WlJq3qWNMfR",
-          "name": "OpenAi account 2"
+          "id": "63IWDBEZRQIX8RM2",
+          "name": "api-nexa-atendimento"
         }
       }
     },
@@ -473,8 +473,8 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        6080,
-        2336
+        6096,
+        2352
       ],
       "id": "9c0ad86c-1fa4-490c-8150-7b5ac3d6fe56",
       "name": "Auto Mover Lead Negociando",
@@ -766,8 +766,8 @@
       ],
       "credentials": {
         "redis": {
-          "id": "WK0zWRqAD3OZCzEQ",
-          "name": "Redis-memory-raeda"
+          "id": "ScsbkAwAAJFBHJEk",
+          "name": "Redis account - NexusCAR"
         }
       }
     },
@@ -1515,8 +1515,8 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        80,
-        2000
+        -1200,
+        2576
       ]
     },
     {
@@ -1538,8 +1538,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -64,
-        2000
+        -1152,
+        2752
       ]
     },
     {
@@ -1554,7 +1554,7 @@
           "conditions": [
             {
               "id": "ade56c50-1520-4760-8df5-e99617d6d3ad",
-              "leftValue": "={{ $('Webhook EVO').item.json.body.data.message.imageMessage.caption }}",
+              "leftValue": "={{ $('Webhook EVO').item.json.body.message.content.caption }}",
               "rightValue": "",
               "operator": {
                 "type": "string",
@@ -1593,8 +1593,8 @@
       ],
       "credentials": {
         "redis": {
-          "id": "WK0zWRqAD3OZCzEQ",
-          "name": "Redis-memory-raeda"
+          "id": "ScsbkAwAAJFBHJEk",
+          "name": "Redis account - NexusCAR"
         }
       }
     },
@@ -1615,8 +1615,8 @@
       ],
       "credentials": {
         "redis": {
-          "id": "WK0zWRqAD3OZCzEQ",
-          "name": "Redis-memory-raeda"
+          "id": "ScsbkAwAAJFBHJEk",
+          "name": "Redis account - NexusCAR"
         }
       }
     },
@@ -1635,7 +1635,7 @@
                 "conditions": [
                   {
                     "id": "52aaf749-fe4f-44e4-880e-15b2bfc027f1",
-                    "leftValue": "={{ $json.body.message?.type }}",
+                    "leftValue": "={{ $('Webhook EVO').item.json.body.chat.wa_lastMessageType }}",
                     "rightValue": "extendedTextMessage",
                     "operator": {
                       "type": "string",
@@ -1660,8 +1660,8 @@
                 "conditions": [
                   {
                     "id": "e514e613-fd6a-48bd-b0ae-bae2448c810e",
-                    "leftValue": "={{ $json.body.message?.type }}",
-                    "rightValue": "conversation",
+                    "leftValue": "={{ $('Webhook EVO').item.json.body.chat.wa_lastMessageType }}",
+                    "rightValue": "Conversation",
                     "operator": {
                       "type": "string",
                       "operation": "equals",
@@ -1684,12 +1684,13 @@
                 },
                 "conditions": [
                   {
-                    "leftValue": "={{ $json.body.message?.type }}",
-                    "rightValue": "audioMessage",
+                    "leftValue": "={{ $('Webhook EVO').item.json.body.chat.wa_lastMessageType }}",
+                    "rightValue": "AudioMessage",
                     "operator": {
                       "type": "string",
                       "operation": "equals"
-                    }
+                    },
+                    "id": "0f528e31-ce51-4d5e-8332-17d3e63a2487"
                   }
                 ],
                 "combinator": "and"
@@ -1708,8 +1709,8 @@
                 "conditions": [
                   {
                     "id": "c0e434dd-1268-421d-b81b-3a5e90ed9550",
-                    "leftValue": "={{ $json.body.message?.type }}",
-                    "rightValue": "imageMessage",
+                    "leftValue": "={{ $('Webhook EVO').item.json.body.chat.wa_lastMessageType }}",
+                    "rightValue": "ImageMessage",
                     "operator": {
                       "type": "string",
                       "operation": "equals",
@@ -1731,8 +1732,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3,
       "position": [
-        -160,
-        1760
+        -240,
+        1872
       ]
     },
     {
@@ -1770,8 +1771,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.6,
       "position": [
-        240,
-        2000
+        -1040,
+        2576
       ],
       "credentials": {
         "openAiApi": {
@@ -1816,7 +1817,7 @@
     {
       "parameters": {
         "operation": "push",
-        "list": "={{ $('Dados').item.json.Telefone }}",
+        "list": "={{ $('Verificar Pause').item.json.telefone }}",
         "messageData": "={{ $('Dados').item.json.message.content }}",
         "tail": true
       },
@@ -1830,8 +1831,8 @@
       ],
       "credentials": {
         "redis": {
-          "id": "WK0zWRqAD3OZCzEQ",
-          "name": "Redis-memory-raeda"
+          "id": "ScsbkAwAAJFBHJEk",
+          "name": "Redis account - NexusCAR"
         }
       }
     },
@@ -1852,8 +1853,8 @@
       ],
       "credentials": {
         "redis": {
-          "id": "WK0zWRqAD3OZCzEQ",
-          "name": "Redis-memory-raeda"
+          "id": "ScsbkAwAAJFBHJEk",
+          "name": "Redis account - NexusCAR"
         }
       }
     },
@@ -1916,8 +1917,8 @@
       ],
       "credentials": {
         "redis": {
-          "id": "WK0zWRqAD3OZCzEQ",
-          "name": "Redis-memory-raeda"
+          "id": "ScsbkAwAAJFBHJEk",
+          "name": "Redis account - NexusCAR"
         }
       }
     },
@@ -1937,8 +1938,8 @@
       ],
       "credentials": {
         "redis": {
-          "id": "WK0zWRqAD3OZCzEQ",
-          "name": "Redis-memory-raeda"
+          "id": "ScsbkAwAAJFBHJEk",
+          "name": "Redis account - NexusCAR"
         }
       }
     },
@@ -1973,49 +1974,9 @@
     },
     {
       "parameters": {
-        "operation": "toBinary",
-        "sourceProperty": "data",
-        "options": {
-          "fileName": "file.ogg",
-          "mimeType": "application/ogg"
-        }
-      },
-      "id": "c57a9943-bba9-41d7-9f13-4af7e036a53d",
-      "name": "Convert to File",
-      "type": "n8n-nodes-base.convertToFile",
-      "typeVersion": 1.1,
-      "position": [
-        224,
-        1792
-      ]
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "3c5ccbc9-69d1-4b13-a7c3-e6945bc8c655",
-              "name": "data",
-              "value": "={{ $('Webhook EVO').item.json.body.data.message.base64 }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "e7c6b303-cbfa-4ecd-85b2-f5a7c91120cf",
-      "name": "Edit Fields",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        64,
-        1792
-      ]
-    },
-    {
-      "parameters": {
         "resource": "audio",
         "operation": "transcribe",
+        "binaryPropertyName": "data2",
         "options": {}
       },
       "id": "ac55fc26-b99d-4212-867e-022f2e8db1aa",
@@ -2023,13 +1984,13 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.6,
       "position": [
-        400,
+        432,
         1792
       ],
       "credentials": {
         "openAiApi": {
-          "id": "MV021WlJq3qWNMfR",
-          "name": "OpenAi account 2"
+          "id": "63IWDBEZRQIX8RM2",
+          "name": "api-nexa-atendimento"
         }
       }
     },
@@ -2333,8 +2294,8 @@
       "name": "OpenAI Chat Model4",
       "credentials": {
         "openAiApi": {
-          "id": "MV021WlJq3qWNMfR",
-          "name": "OpenAi account 2"
+          "id": "63IWDBEZRQIX8RM2",
+          "name": "api-nexa-atendimento"
         }
       }
     },
@@ -2516,8 +2477,8 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        6096,
-        2336
+        6560,
+        1968
       ],
       "id": "3ba84e54-07fd-43c7-a3ce-576813dc6e8f",
       "name": "Pausar IA1",
@@ -2547,43 +2508,6 @@
           "name": "Redis-memory-raeda"
         }
       }
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "={{ $('Dados').item.json.uazDomain }}/message/text",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "token",
-              "value": "={{ $('Dados').item.json.uazToken }}"
-            }
-          ]
-        },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "number",
-              "value": "={{ $('PEGARLOJA').item.json.numero }}"
-            },
-            {
-              "name": "text",
-              "value": "={{ $json.resumo }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequestTool",
-      "typeVersion": 4.2,
-      "position": [
-        3232,
-        2112
-      ],
-      "id": "9b77dcd4-3fd7-41f1-b1b2-258a1d384b0e",
-      "name": "encaminhar_humano"
     },
     {
       "parameters": {
@@ -2647,6 +2571,24 @@
               "id": "a3f4aeee-b954-4aac-8889-52613691aca3",
               "name": "uazToken",
               "value": "={{ $json.body.token }}",
+              "type": "string"
+            },
+            {
+              "id": "a9e0e857-1816-4a9b-aca1-45bbf2f52e2f",
+              "name": "lead_wa",
+              "value": "={{ $json.body.chat.wa_chatid.split('@')[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "c95fa1e3-04a9-48ed-a307-5a3d3bcabacf",
+              "name": "lead_link",
+              "value": "={{ 'wa.me/' + $json.body.chat.wa_chatid.split('@')[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "b3b170bd-9333-4ef2-b9fd-e35e75baa50a",
+              "name": "",
+              "value": "",
               "type": "string"
             }
           ]
@@ -2884,54 +2826,6 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "={{ $('Dados').item.json.uazDomain }}/message/text",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "token",
-              "value": "={{ $('Dados').item.json.uazToken }}"
-            }
-          ]
-        },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "number",
-              "value": "={{ $('Dados').item.json.Telefone }}"
-            },
-            {
-              "name": "delay",
-              "value": "={{ 300 }}"
-            },
-            {
-              "name": "text",
-              "value": "={{ $json.output }}"
-            },
-            {
-              "name": "linkPreview",
-              "value": "={{ false }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "5592e8d6-6e6d-4b3a-995f-7ee30995d397",
-      "name": "sendText3",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        5696,
-        1872
-      ],
-      "retryOnFail": false,
-      "maxTries": 5,
-      "waitBetweenTries": 5000
-    },
-    {
-      "parameters": {
         "operation": "get",
         "tableId": "store_settings",
         "filters": {
@@ -2984,6 +2878,12 @@
               "id": "e7e785ec-374d-4900-b7fe-dda175bc5aed",
               "name": "Mensagem de audeencias",
               "value": "={{ $json.business_hours_message }}",
+              "type": "string"
+            },
+            {
+              "id": "f870a904-0f06-448e-b47d-4f357d8ea851",
+              "name": "telefone_formatado",
+              "value": "={{ $json.numero }}",
               "type": "string"
             }
           ]
@@ -3123,8 +3023,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        3824,
-        2016
+        4080,
+        2000
       ],
       "id": "632006b5-9e78-418e-9284-18d30604b740",
       "name": "HTTP Request"
@@ -3165,6 +3065,404 @@
           "name": "Supabase account - NEXUSCAR"
         }
       }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Dados').item.json.uazDomain }}/send/text\n",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "={{ $('Dados').item.json.uazToken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Dados').item.json.Telefone }}"
+            },
+            {
+              "name": "delay",
+              "value": "={{ 300 }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.output }}"
+            },
+            {
+              "name": "linkPreview",
+              "value": "={{ false }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5592e8d6-6e6d-4b3a-995f-7ee30995d397",
+      "name": "sendText3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5696,
+        1872
+      ],
+      "retryOnFail": false,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Dados').item.json.uazDomain }}/message/download",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "={{ $('Dados').item.json.uazToken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "={{ $json.messageid }}"
+            },
+            {
+              "name": "return_base64",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        208,
+        2432
+      ],
+      "id": "b126e88d-b340-47b9-88c9-9efad49c48ba",
+      "name": "HTTP Request4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "23a20286-a11b-4162-8782-d65b286b952b",
+              "name": "base64",
+              "value": "={{ $json.base64Data }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        432,
+        2432
+      ],
+      "id": "4a325606-8afa-4560-b788-e168b904c2bb",
+      "name": "Base3"
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "base64",
+        "binaryPropertyName": "data2",
+        "options": {
+          "fileName": "audio.mp3",
+          "mimeType": "audio/mpeg"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        656,
+        2432
+      ],
+      "id": "2f919a85-0f38-466f-9a19-13bda84995c8",
+      "name": "Convert to File2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "23a20286-a11b-4162-8782-d65b286b952b",
+              "name": "messageid",
+              "value": "={{ $('Webhook EVO').item.json.body.message.messageid }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -16,
+        2432
+      ],
+      "id": "d1cbe4f2-4d4e-41f3-8acb-a5523c2f04ee",
+      "name": "Edit Fields9"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Rotas').item.json.uazDomain }}/message/download",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "={{ $('Rotas').item.json.uazToken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "return_base64",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        160,
+        2736
+      ],
+      "id": "b4044ce9-2fee-40af-bdfd-ce436b1f8f4d",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "23a20286-a11b-4162-8782-d65b286b952b",
+              "name": "base64",
+              "value": "={{ $json.base64Data }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        384,
+        2736
+      ],
+      "id": "9cfa3981-651b-4183-9e8c-ed2e8a581024",
+      "name": "Base2"
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "base64",
+        "binaryPropertyName": "data2",
+        "options": {
+          "fileName": "image/mp4",
+          "mimeType": "image/jpeg"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        576,
+        2736
+      ],
+      "id": "2d76af12-d6a9-47d6-829b-24ff93ed0931",
+      "name": "Convert to File3"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "text": "=Analise a imagem enviada por um cliente de uma loja de veículos.\n\nObjetivo:\n1) Identificar o que aparece na imagem.\n2) Classificar o tipo da imagem.\n3) Verificar se está relacionada a veículo.\n4) Gerar um resumo simples e claro.\n\nClassifique em uma das categorias:\n- VEICULO_COMPLETO\n- INTERIOR_VEICULO\n- DOCUMENTO_VEICULO\n- AVARIA\n- PECA_AUTOMOTIVA\n- COMPROVANTE\n- NAO_RELACIONADO\n\nRetorne SOMENTE um JSON válido no seguinte formato:\n\n{\n  \"relacionado_veiculo\": true ou false,\n  \"categoria\": \"UMA_DAS_CATEGORIAS\",\n  \"descricao_detalhada\": \"Explique claramente o que aparece na imagem\",\n  \"resumo_simples\": \"Resumo curto em até 20 palavras\"\n}\n\nSe não for possível identificar com clareza, informe isso na descrição.\nNão inclua nenhum texto fora do JSON.",
+        "inputType": "base64",
+        "binaryPropertyName": "data2",
+        "options": {
+          "detail": "auto"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        800,
+        2736
+      ],
+      "id": "e67a6260-ecf4-4300-a80e-9a9bb24c50bc",
+      "name": "OpenAI2",
+      "credentials": {
+        "openAiApi": {
+          "id": "63IWDBEZRQIX8RM2",
+          "name": "api-nexa-atendimento"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "23a20286-a11b-4162-8782-d65b286b952b",
+              "name": "id",
+              "value": "={{ $('Webhook EVO').item.json.body.message.messageid }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -64,
+        2736
+      ],
+      "id": "caaa8fd9-652b-4437-af27-116a46a553f6",
+      "name": "Edit Fields10"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c87af647-41ba-4fea-a373-bafdb6de72f5",
+              "name": "telefone_formatado",
+              "value": "={{    $json.Telefone      ? 'wa.me/' + $json.Telefone.toString().replace(/\\D/g, '')      : ''  }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -736,
+        2736
+      ],
+      "id": "abda42de-0f22-4e7e-8bfb-522bf84201df",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://nexaflow.uazapi.com/send/text",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "={{ $('Dados').item.json.uazToken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('PEGARLOJA').item.json.numero }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters1_Value', `✅ PROMPT ORGANIZADO (PADRÃO FINAL)\n\nGere uma ficha interna clara, objetiva e organizada do atendimento realizado.\nEssa ficha será enviada via WhatsApp para a equipe comercial, então precisa ser visual, escaneável e de fácil leitura.\n\nO objetivo é deixar explícito:\n\nO que já foi conversado com o cliente\n\nO veículo de interesse\n\nA forma de pagamento\n\nO status atual\n\nO próximo passo da equipe\n\n🚨 IMPORTANTE – CONTATO DO CLIENTE:\nNo contexto existe um campo chamado \"lead_link\", que contém o link do número do cliente.\nUse exatamente o link presente nesse campo.\nNunca utilize exemplos, placeholders ou números fictícios.\n\nNunca invente informações.\nSe algum dado não existir, omita a linha inteira (exceto o contato, que sempre deve aparecer).\nUse exclusivamente \\\\n para quebras de linha.\nNão utilize linguagem técnica ou robótica.\nFinalize a ficha com um emoji de ação ou atenção: 🚘 📞 👀 📎\n\n\n🎯 *ESTRUTURA OBRIGATÓRIA (usar exatamente este formato):*\n\n📋 *LEAD NOVO - Resumo do Atendimento:*\\\\n\\\\n\n\n👤 *Nome do Cliente:*\n[Extrair do histórico. Se não existir, omitir a linha inteira.]\n📞 *Contato:*\n[extrair link do lead_link lá em Dados e anexar aqui]\n🚘 *Veículo de Interesse:*\n[Modelo completo conforme citado no atendimento ou planilha.]\n💰 *Forma de Pagamento:*\n[À vista / Financiamento / Troca + financiamento / Consórcio]\\\\n\n\n📝 *Dados para Financiamento:*\n(Esta seção só deve aparecer se a forma de pagamento for Financiamento e os dados tiverem sido informados.)\\\\n\n\n👤 *Nome completo:*\\\\n\n[Somente se informado]\n🎂 *Data de nascimento:*\n[Somente se informado]\n🆔 *CPF:*\n[Somente se informado]\n🪪 *Possui CNH:*\n[Sim ou Não, se informado]\\\\n\n\n📍 *Status do Atendimento:*\\\\n\n[Ex: Aguardando envio de documentos / Em simulação de financiamento / Aguardando visita na loja / Cliente pediu retorno / Negociação em andamento]\\\\n\n\n➡️ *Próximo Passo:*\n[Descrever de forma objetiva o que o time comercial deve fazer.]`, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.3,
+      "position": [
+        3216,
+        2096
+      ],
+      "id": "96be8737-f34e-4de4-8ca4-1bd9d8b189c2",
+      "name": "encaminhar_humano"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "asdccxim",
+        "contextWindowLength": 30
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        2768,
+        2368
+      ],
+      "id": "f18c9c78-a81c-4d64-a49e-e2c5d980f289",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://nexaflow.uazapi.com/send/text",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "={{ $('Dados').item.json.uazToken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('PEGARLOJA').item.json.numero }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters1_Value', `Gere um resumo claro, objetivo e organizado do atendimento realizado. O objetivo é criar uma ficha interna para a equipe comercial da loja de veículos, deixando explícito: O que já foi conversado com o cliente O interesse principal (modelo do veículo) A forma de pagamento pretendida O status atual do atendimento Qual deve ser o próximo passo A ficha será enviada via WhatsApp, portanto deve ser visual, escaneável e fácil de leitura. 🚨 IMPORTANTE (CONTATO DO CLIENTE): No contexto existe um campo chamado \"lead_link\" que contém o link do número do cliente. Não use exemplos, placeholders ou números fictícios. 🎯 ESTRUTURA DA FICHA (use exatamente este formato): 📋 Resumo do Atendimento: \\\\n [Descreva de forma natural e profissional o que foi conversado, qual veículo foi apresentado e o nível de interesse do cliente.] \\\\n 👤 Nome do Cliente: \\\\n [Extrair do histórico. Se não existir, omitir a linha inteira.] \\\\n 🚘 Veículo de Interesse: \\\\n [Modelo completo conforme citado no atendimento ou planilha.] \\\\n 💰 Forma de Pagamento: \\\\n [À vista / Financiamento / Troca + financiamento / Consórcio] \\\\n 📝 Dados para Financiamento: \\\\n 👤 Nome completo: [Somente se informado] \\\\n 🎂 Data de nascimento: [Somente se informado] \\\\n 🆔 CPF: [Somente se informado] \\\\n 🪪 Possui CNH: [Sim ou Não, se informado] (⚠️ Esta seção só deve aparecer se a forma de pagamento for financiamento e os dados tiverem sido informados. Caso contrário, omitir a seção inteira.) \\\\n 📍 Status do Atendimento: \\\\n [Exemplo: Aguardando envio de documentos / Em simulação de financiamento / Aguardando visita na loja / Cliente pediu retorno / Negociação em andamento] \\\\n ➡️ Próximo Passo: \\\\n [Descrever de forma objetiva o que o time comercial deve fazer.] \\\\n 📞 Contato: \\\\n \n[link extraído do lead_link] \nUse exclusivamente \\\\n para quebras de linha Nunca invente informações Se algum dado não existir, omita a linha inteira (exceto Contato) Não utilize linguagem técnica ou robótica Finalize a ficha com um emoji de ação ou atenção (🚘 📞 👀 📎)`, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.3,
+      "position": [
+        2912,
+        2384
+      ],
+      "id": "ac3089e6-57a3-42a0-a085-ce1b8d78553b",
+      "name": "encaminhar_humano1"
     }
   ],
   "pinData": {
@@ -3174,7 +3472,7 @@
           "headers": {
             "host": "n8n-n8n-start.uvfexz.easypanel.host",
             "user-agent": "uazapiGO-Webhook/1.0",
-            "content-length": "2524",
+            "content-length": "2636",
             "accept-encoding": "gzip",
             "content-type": "application/json",
             "x-forwarded-for": "177.234.159.170",
@@ -3194,9 +3492,9 @@
               "chatbot_disableUntil": 0,
               "chatbot_lastTriggerAt": 0,
               "chatbot_lastTrigger_id": "",
-              "id": "re10460b8667063",
+              "id": "r1f1b7775209b12",
               "image": "",
-              "imagePreview": "https://pps.whatsapp.net/v/t61.24694-24/572398542_2462049744196202_6172216394217880423_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa3wElQ6MveQkvK0L6o0psbaS74fiSXVDFwHQNs9doGoofng&oe=69A80ADE&_nc_sid=5e03e0&_nc_cat=104",
+              "imagePreview": "https://pps.whatsapp.net/v/t61.24694-24/596488790_3188833447962771_6535543022602348144_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa3wFcVcOE_ueazkX5UIaorjqDBJ4viwtCluecTmY4z9xKVA&oe=69A60EB3&_nc_sid=5e03e0&_nc_cat=102",
               "lead_assignedAttendant_id": "",
               "lead_email": "",
               "lead_field01": "",
@@ -3227,15 +3525,15 @@
               "lead_personalid": "",
               "lead_status": "",
               "lead_tags": [],
-              "name": "Rastreia+",
-              "owner": "558688333664",
-              "phone": "+55 86 9937-7526",
+              "name": "Ronilson Noleto",
+              "owner": "558699377526",
+              "phone": "+55 86 8833-3664",
               "wa_archived": false,
-              "wa_chatid": "558699377526@s.whatsapp.net",
-              "wa_chatlid": "1765785251974@lid",
+              "wa_chatid": "558688333664@s.whatsapp.net",
+              "wa_chatlid": "22699086737457@lid",
               "wa_contactName": "",
               "wa_ephemeralExpiration": 0,
-              "wa_fastid": "558688333664:558699377526",
+              "wa_fastid": "558699377526:558688333664",
               "wa_isBlocked": false,
               "wa_isGroup": false,
               "wa_isGroup_admin": false,
@@ -3244,59 +3542,52 @@
               "wa_isGroup_member": false,
               "wa_isPinned": false,
               "wa_label": [],
-              "wa_lastMessageSender": "1765785251974@lid",
-              "wa_lastMessageTextVote": "Gostaria de um carro",
+              "wa_lastMessageSender": "22699086737457@lid",
+              "wa_lastMessageTextVote": "Ronilson Noleto 15/10/1997 07032422373 tenho CNH",
               "wa_lastMessageType": "Conversation",
-              "wa_lastMsgTimestamp": 1772068438000,
+              "wa_lastMsgTimestamp": 1772145905000,
               "wa_muteEndTime": 0,
-              "wa_name": "Rastreia+",
-              "wa_unreadCount": 2
+              "wa_name": "Ronilson Noleto",
+              "wa_unreadCount": 23
             },
             "chatSource": "updated",
             "instanceName": "70e421e9-c706-4854-b8b6-59921c48aa60",
             "message": {
               "buttonOrListid": "",
-              "chatid": "558699377526@s.whatsapp.net",
-              "chatlid": "1765785251974@lid",
-              "content": "Gostaria de um carro",
+              "chatid": "558688333664@s.whatsapp.net",
+              "chatlid": "22699086737457@lid",
+              "content": "Ronilson Noleto 15/10/1997 07032422373 tenho CNH",
               "convertOptions": "",
               "edited": "",
               "fromMe": false,
               "groupName": "Unknown",
-              "id": "558688333664:3A26EDB464AA460CA953",
+              "id": "558699377526:2A18ECFFF75D3E00E960",
               "isGroup": false,
               "mediaType": "",
-              "messageTimestamp": 1772068438000,
+              "messageTimestamp": 1772145905000,
               "messageType": "Conversation",
-              "messageid": "3A26EDB464AA460CA953",
-              "owner": "558688333664",
+              "messageid": "2A18ECFFF75D3E00E960",
+              "owner": "558699377526",
               "quoted": "",
               "reaction": "",
-              "sender": "1765785251974@lid",
-              "senderName": "Rastreia+",
-              "sender_lid": "1765785251974@lid",
-              "sender_pn": "558699377526@s.whatsapp.net",
-              "source": "ios",
+              "sender": "22699086737457@lid",
+              "senderName": "Ronilson Noleto",
+              "sender_lid": "22699086737457@lid",
+              "sender_pn": "558688333664@s.whatsapp.net",
+              "source": "unknown",
               "status": "",
-              "text": "Gostaria de um carro",
+              "text": "Ronilson Noleto 15/10/1997 07032422373 tenho CNH",
               "track_id": "",
               "track_source": "",
               "type": "text",
               "vote": "",
               "wasSentByApi": false
             },
-            "owner": "558688333664",
-            "token": "14951d3a-7075-4f16-86b3-dae46eca1536"
+            "owner": "558699377526",
+            "token": "40f32a10-40f8-46c4-b59a-583c2d89d123"
           },
           "webhookUrl": "https://n8n-n8n-start.uvfexz.easypanel.host/webhook/e8a937c5-4050-4fd5-a446-c41d6ed31c06",
           "executionMode": "production"
-        }
-      }
-    ],
-    "Agente Rag": [
-      {
-        "json": {
-          "output": "sem dica de resposta"
         }
       }
     ]
@@ -3726,14 +4017,14 @@
         ],
         [
           {
-            "node": "Edit Fields",
+            "node": "Edit Fields9",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Edit Fields3",
+            "node": "Edit Fields10",
             "type": "main",
             "index": 0
           }
@@ -3742,13 +4033,7 @@
     },
     "OpenAI1": {
       "main": [
-        [
-          {
-            "node": "If3",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Compara Get Memory1": {
@@ -3839,28 +4124,6 @@
         ]
       ]
     },
-    "Convert to File": {
-      "main": [
-        [
-          {
-            "node": "OpenAI",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "Convert to File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "OpenAI": {
       "main": [
         [
@@ -3906,6 +4169,11 @@
         [
           {
             "node": "Salvar Historicoo Humano1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Switch1",
             "type": "main",
             "index": 0
           }
@@ -4011,17 +4279,6 @@
         ]
       ]
     },
-    "encaminhar_humano": {
-      "ai_tool": [
-        [
-          {
-            "node": "Atendente",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Dados": {
       "main": [
         [
@@ -4074,17 +4331,6 @@
         [
           {
             "node": "Supabase",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "sendText3": {
-      "main": [
-        [
-          {
-            "node": "1 segundo",
             "type": "main",
             "index": 0
           }
@@ -4159,13 +4405,138 @@
     },
     "Update a row": {
       "main": [
+        []
+      ]
+    },
+    "sendText3": {
+      "main": [
         [
           {
-            "node": "HTTP Request",
+            "node": "1 segundo",
             "type": "main",
             "index": 0
           }
         ]
+      ]
+    },
+    "HTTP Request4": {
+      "main": [
+        [
+          {
+            "node": "Base3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Base3": {
+      "main": [
+        [
+          {
+            "node": "Convert to File2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields9": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File2": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Base2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Base2": {
+      "main": [
+        [
+          {
+            "node": "Convert to File3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File3": {
+      "main": [
+        [
+          {
+            "node": "OpenAI2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields10": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI2": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        []
+      ]
+    },
+    "encaminhar_humano": {
+      "ai_tool": [
+        [
+          {
+            "node": "Atendente",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        []
       ]
     }
   },
@@ -4174,7 +4545,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "6ebd0bc8-16b7-42cb-80c3-d79369fbf46f",
+  "versionId": "6077004c-d42b-41ef-8e96-1515e80e0af7",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "98a7f76cbff973591af08e09b5be2fed14b55b37d878782c0638229a94477203"
