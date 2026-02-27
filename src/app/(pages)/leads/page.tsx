@@ -82,11 +82,14 @@ export default function LeadsPage() {
     if (!user?.id) return;
 
     // Tenta buscar com as colunas novas primeiro
-    let { data, error } = await supabase
+    let data;
+    const { data: initialData, error } = await supabase
       .from("dados_cliente")
       .select("id, nomewpp, lead_name, lead_field01, telefone, created_at, crm_status")
       .eq("whatsapp_id", user.id)
       .order("created_at", { ascending: false });
+
+    data = initialData;
 
     // Se falhar porque as colunas não existem, faz fallback para as antigas
     if (error && error.message.includes("does not exist")) {
@@ -95,10 +98,12 @@ export default function LeadsPage() {
         .select("id, nomewpp, telefone, created_at, crm_status")
         .eq("whatsapp_id", user.id)
         .order("created_at", { ascending: false });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       data = fallback.data as any;
     }
 
     setLeads(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (data || []).map((l: any) => ({
         ...l,
         crm_status: l.crm_status || "novo",
@@ -244,6 +249,7 @@ export default function LeadsPage() {
     } else {
       // Create new
       if (!user?.id) return;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const payload: any = {
         whatsapp_id: user.id,
         nomewpp: leadForm.name,

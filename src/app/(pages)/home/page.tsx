@@ -42,7 +42,7 @@ export default function Dashboard() {
         { count: estoqueCount },
       ] = await Promise.all([
         supabase.from("whatsapp_instances").select("status").eq("user_id", user.id).limit(1).single(),
-        supabase.from("store_settings").select("store_name").eq("user_id", user.id).single(),
+        supabase.from("store_settings").select("store_name").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).single(),
         supabase.from("dados_cliente").select("id, nomewpp, telefone, created_at, crm_status")
           .eq("whatsapp_id", user.id).order("created_at", { ascending: false }).limit(5),
         supabase.from("carros").select("*", { count: "exact", head: true }).eq("user_id", user.id),
