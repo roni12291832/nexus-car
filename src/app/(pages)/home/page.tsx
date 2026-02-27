@@ -45,7 +45,7 @@ export default function Dashboard() {
         supabase.from("store_settings").select("store_name").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).single(),
         supabase.from("dados_cliente").select("id, nomewpp, telefone, created_at, crm_status")
           .eq("whatsapp_id", user.id).order("created_at", { ascending: false }).limit(5),
-        supabase.from("carros").select("*", { count: "exact", head: true }).eq("user_id", user.id),
+        supabase.from("estoque").select("*", { count: "exact", head: true }).eq("user_id", user.id),
       ]);
 
       setWhatsappConnected(wppData?.status === "conectado");
