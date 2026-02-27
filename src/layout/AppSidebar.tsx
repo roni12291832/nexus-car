@@ -78,7 +78,7 @@ export default function AppSidebar() {
   const navigation = [
     { name: "Dashboard", href: "/home", icon: LayoutDashboard },
     { name: "Estoque", href: "/estoque", icon: Car },
-    { name: "Leads", href: "/leads", icon: Users },
+    { name: "CRM", href: "/leads", icon: Users },
     { name: "Conecte seu WhatsApp", href: "/whatsapp", icon: MessageSquare },
     { name: "Financeiro", href: "/financeiro", icon: DollarSign },
   ];
