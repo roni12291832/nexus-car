@@ -9,26 +9,28 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import {
   Check,
   Crown,
-  Zap,
   CreditCard,
   Calendar,
-  Download,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 
-// ... existing imports ...
+interface UserProfile {
+  user_id?: string;
+  plan_name?: string;
+  plan_price?: string;
+  subscription_id?: string;
+  next_billing?: string;
+}
 
 export default function Billing() {
   const [loadingPortal, setLoadingPortal] = useState(false);
-  const [profile, setProfile] = useState<any>(null);
-  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -40,9 +42,8 @@ export default function Billing() {
           .select("*")
           .eq("user_id", user.id)
           .single();
-        setProfile(data);
+        setProfile(data as UserProfile);
       }
-      setLoadingProfile(false);
     };
     fetchProfile();
   }, []);
@@ -224,8 +225,8 @@ export default function Billing() {
                   </div>
                   <Button
                     className={`w-full h-12 rounded-xl font-bold transition-all ${plan.current
-                        ? "bg-white/5 text-slate-400 border border-white/5 cursor-default hover:bg-white/5"
-                        : "bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-900/20"
+                      ? "bg-white/5 text-slate-400 border border-white/5 cursor-default hover:bg-white/5"
+                      : "bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-900/20"
                       }`}
                     disabled={plan.current || loadingIndex === index}
                     onClick={async () => {
