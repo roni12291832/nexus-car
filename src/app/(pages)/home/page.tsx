@@ -64,7 +64,7 @@ export default function Dashboard() {
       }
     };
     fetchAll();
-  }, [user?.id]);
+  }, [user?.id, supabase]);
 
   const stats = [
     { title: "Leads Novos", value: crmCounts.novo, icon: Users, color: "from-blue-500 to-blue-700", sub: "aguardando atendimento" },

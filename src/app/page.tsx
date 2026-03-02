@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 
 import Redirecting from "./redirecting";
 import { useAuth } from "../contexts/AuthContext";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 
 export default function Page() {
   const { user } = useAuth();
+  const supabase = createClient();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
 
@@ -39,7 +40,7 @@ export default function Page() {
     };
 
     handleRedirect().finally(() => setLoading(false));
-  }, [user, router]);
+  }, [user, router, supabase]);
 
   if (loading) {
     return <Redirecting />;

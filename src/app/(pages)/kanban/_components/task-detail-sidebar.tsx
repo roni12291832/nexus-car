@@ -50,7 +50,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 
 interface TaskDetailSidebarProps {
   task: Task;
@@ -69,6 +69,7 @@ export default function TaskDetailSidebar({
   onDuplicate,
   columns,
 }: TaskDetailSidebarProps) {
+  const supabase = createClient();
   const [editedTask, setEditedTask] = useState<Task>({ ...task });
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
@@ -527,11 +528,10 @@ export default function TaskDetailSidebar({
                         )}
                       </Button>
                       <span
-                        className={`text-sm ${
-                          subtask.completed
-                            ? "line-through text-gray-500 dark:text-gray-400"
-                            : "dark:text-gray-200"
-                        }`}
+                        className={`text-sm ${subtask.completed
+                          ? "line-through text-gray-500 dark:text-gray-400"
+                          : "dark:text-gray-200"
+                          }`}
                       >
                         {subtask.title}
                       </span>

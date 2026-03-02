@@ -1,4 +1,4 @@
-import { supabase, supabaseService } from "@/lib/supabase/server";
+import { getServiceRoleClient } from "@/lib/supabase/server";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
@@ -12,7 +12,7 @@ type SubscriptionWithPeriod = Stripe.Subscription & {
 };
 
 // Dummy client fallback for types, shouldn't be used in production without the real key
-const supabaseServiceDummy = supabaseService || supabase;
+const supabaseService = getServiceRoleClient();
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -55,10 +55,10 @@ export async function POST(req: Request) {
             subscriptionId
           );
 
-          const { error } = await (supabaseService || supabaseServiceDummy)
+          const { error } = await supabaseService!
             .from("users")
             .update({
-              subscription_id: subscriptionId, // Changed from customerId to subscriptionId as per recommendations
+              subscription_id: subscription.customer as string, // Store Customer ID for portal compatibility
               status: subscription.status,
               ativo: true,
             })
@@ -93,10 +93,10 @@ export async function POST(req: Request) {
         subscription.current_period_end * 1000
       ).toISOString();
 
-      await (supabaseService || supabaseServiceDummy).from("users").upsert(
+      await supabaseService!.from("users").upsert(
         {
           user_id: userId,
-          subscription_id: subscription.id,
+          subscription_id: subscription.customer as string, // Store Customer ID for portal compatibility
           status: subscription.status,
           current_period_end: periodEnd,
           ativo: true,
@@ -113,7 +113,7 @@ export async function POST(req: Request) {
       const userId = subscription.metadata?.user_id;
       if (!userId) break;
 
-      await (supabaseService || supabaseServiceDummy).from("users").upsert(
+      await supabaseService!.from("users").upsert(
         {
           user_id: userId,
           subscription_id: subscription.id,

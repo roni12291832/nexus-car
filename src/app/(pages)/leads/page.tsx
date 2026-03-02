@@ -15,13 +15,6 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 interface Carro {
   id: string;
@@ -112,7 +105,7 @@ export default function LeadsPage() {
       }))
     );
     setLoading(false);
-  }, [user?.id]);
+  }, [user?.id, supabase]);
 
   useEffect(() => {
     fetchLeads();
@@ -136,7 +129,7 @@ export default function LeadsPage() {
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
-  }, [fetchLeads, user?.id]);
+  }, [fetchLeads, user?.id, supabase]);
 
   const moveCard = async (leadId: string, newStatus: CrmStatus) => {
     setLeads((prev) =>

@@ -12,11 +12,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 
-export default function CriarAgente() {
+export function ButtonCreateAgente() {
   const { user } = useAuth();
+  const supabase = createClient();
 
   const [name, setName] = useState("");
   const [instructions, setInstructions] = useState("");

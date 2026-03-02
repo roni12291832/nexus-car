@@ -22,12 +22,13 @@ import type {
 
 import { toast } from "sonner";
 import TaskDetailSidebar from "./task-detail-sidebar";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export default function KanbanBoard() {
   const { user } = useAuth();
+  const supabase = createClient();
   const [columns, setColumns] = useState<ColumnType[]>([]);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [newColumnTitle, setNewColumnTitle] = useState("");
@@ -55,7 +56,8 @@ export default function KanbanBoard() {
         subtasks ( id, title, completed ),
         custom_fields ( id, name, value )
       `
-        );
+        )
+        .eq("user_id", user.id);
 
       if (taskErr) {
         console.error("Erro ao buscar tasks:", taskErr);
@@ -93,7 +95,8 @@ export default function KanbanBoard() {
         rule_conditions ( id, type, field, operator, value ),
         rule_actions ( id, type, target_column_id )
       `
-        );
+        )
+        .eq("user_id", user.id);
 
       if (ruleErr) {
         console.error("Erro ao buscar regras:", ruleErr);
@@ -108,29 +111,29 @@ export default function KanbanBoard() {
           // Define condition default seguro
           const condition: RuleCondition = conditionData
             ? {
-                type: conditionData.type ?? "custom-field",
-                field: conditionData.field ?? undefined,
-                operator: conditionData.operator ?? "equals",
-                value: conditionData.value ?? undefined,
-              }
+              type: conditionData.type ?? "custom-field",
+              field: conditionData.field ?? undefined,
+              operator: conditionData.operator ?? "equals",
+              value: conditionData.value ?? undefined,
+            }
             : {
-                type: "custom-field",
-                operator: "equals",
-              };
+              type: "custom-field",
+              operator: "equals",
+            };
 
           // Define action default seguro
           const action: RuleAction = actionData
             ? {
-                type: actionData.type ?? "move-to-column",
-                targetColumnId:
-                  actionData.target_column_id ??
-                  mappedColumns[0]?.id ??
-                  "default-column-id",
-              }
+              type: actionData.type ?? "move-to-column",
+              targetColumnId:
+                actionData.target_column_id ??
+                mappedColumns[0]?.id ??
+                "default-column-id",
+            }
             : {
-                type: "move-to-column",
-                targetColumnId: mappedColumns[0]?.id ?? "default-column-id",
-              };
+              type: "move-to-column",
+              targetColumnId: mappedColumns[0]?.id ?? "default-column-id",
+            };
 
           return {
             id: rule.id,
@@ -145,7 +148,7 @@ export default function KanbanBoard() {
     };
 
     fetchData();
-  }, [user]);
+  }, [user?.id, supabase]);
 
   useEffect(() => {
     if (rules.length === 0) return;
@@ -171,8 +174,8 @@ export default function KanbanBoard() {
           ) {
             conditionMet = Boolean(
               task.dueDate &&
-                new Date(task.dueDate) < new Date() &&
-                task.status !== "Completed"
+              new Date(task.dueDate) < new Date() &&
+              task.status !== "Completed"
             );
           } else if (
             condition.type === "subtasks-completed" &&
@@ -443,11 +446,11 @@ export default function KanbanBoard() {
         tasks: column.tasks.map((task) =>
           task.id === updatedTask.id
             ? {
-                ...updatedTask,
-                status:
-                  columns.find((c) => c.id === columnId)?.title ??
-                  updatedTask.status,
-              }
+              ...updatedTask,
+              status:
+                columns.find((c) => c.id === columnId)?.title ??
+                updatedTask.status,
+            }
             : task
         ),
       };
@@ -598,10 +601,10 @@ export default function KanbanBoard() {
     const newColumns = columns.map((column) =>
       column.id === columnId
         ? {
-            ...column,
-            ...updates,
-            id: (data?.[0] as { id: string } | undefined)?.id ?? column.id, // ✅ cast seguro
-          }
+          ...column,
+          ...updates,
+          id: (data?.[0] as { id: string } | undefined)?.id ?? column.id, // ✅ cast seguro
+        }
         : column
     );
 

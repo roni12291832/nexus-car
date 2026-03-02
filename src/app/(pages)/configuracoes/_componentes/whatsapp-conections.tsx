@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { QrCode, Wifi, WifiOff, LogOut, Trash2, RefreshCw } from "lucide-react";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import Image from "next/image";
 
@@ -27,6 +27,7 @@ type WhatsAppConnection = {
 
 export default function WhatsAppConnections() {
   const { user } = useAuth();
+  const supabase = createClient();
   const [connections, setConnections] = useState<WhatsAppConnection[]>([]);
   const [loading, setLoading] = useState(false);
   const [syncing, setSyncing] = useState(false);

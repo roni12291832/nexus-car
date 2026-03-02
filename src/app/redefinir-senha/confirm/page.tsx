@@ -7,7 +7,7 @@ import Link from "next/link";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 import {
   Card,
   CardContent,
@@ -19,6 +19,7 @@ import {
 import { Label } from "@/components/ui/label";
 
 export default function ConfirmResetPassword() {
+  const supabase = createClient();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -51,7 +52,7 @@ export default function ConfirmResetPassword() {
     };
 
     autenticarComToken();
-  }, [token, email, router]);
+  }, [token, email, router, supabase.auth]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,7 +83,7 @@ export default function ConfirmResetPassword() {
 
   return (
     <div className="flex  flex-col h-screen w-screen justify-center items-center px-4 ">
-      
+
       <Card className="w-full max-w-md rounded-sm mt-2">
         <CardHeader>
           <CardTitle>Redefinir Senha</CardTitle>

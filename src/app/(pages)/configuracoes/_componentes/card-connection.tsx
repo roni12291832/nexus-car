@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { QrCode, CheckCircle, Loader2 } from "lucide-react";
 
@@ -21,6 +21,7 @@ interface CardConnectionProps {
 
 export default function CardConnection({ onSuccess }: CardConnectionProps) {
   const { user } = useAuth();
+  const supabase = createClient();
   const instanceName = user?.id || "";
 
   const [loading, setLoading] = useState(false);
@@ -33,7 +34,7 @@ export default function CardConnection({ onSuccess }: CardConnectionProps) {
       clearInterval(pollingRef.current);
       pollingRef.current = null;
     }
-  }, []);
+  }, [onSuccess]);
 
   // Polling de status: verifica se o WhatsApp foi conectado
   const startPolling = useCallback((token: string) => {

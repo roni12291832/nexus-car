@@ -23,7 +23,7 @@ import {
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
 
 const formSchema = z.object({
@@ -37,6 +37,7 @@ type FormData = z.infer<typeof formSchema>;
 
 export default function OnboardingNexusCar() {
   const { user } = useAuth();
+  const supabase = createClient();
   const router = useRouter();
 
   const {

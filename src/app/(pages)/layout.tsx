@@ -7,7 +7,7 @@ import "../globals.css";
 
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 import AppShell from "@/layout/AppShell";
 
 export default function RootLayout({
@@ -17,6 +17,7 @@ export default function RootLayout({
 }) {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const supabase = createClient();
 
   useEffect(() => {
     if (loading) return;
@@ -39,7 +40,7 @@ export default function RootLayout({
     }
 
     checkUser();
-  }, [router, user, loading]);
+  }, [user, loading, router, supabase]);
 
   if (loading) {
     return null;

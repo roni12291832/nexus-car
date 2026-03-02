@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -24,18 +22,24 @@ import { usePathname, useRouter } from "next/navigation";
 
 import { ModeToggle } from "@/components/ThemeToggle";
 import Image from "next/image";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
-import { Label } from "@/components/ui/label";
+
+interface UserData {
+  email: string | undefined;
+  name: string;
+  customerId: string | null | undefined;
+}
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<UserData | null>(null);
   const isMobile = useIsMobile();
   const pathname = usePathname();
   const router = useRouter();
   const [loadingPortal, setLoadingPortal] = useState(false);
   const [customerId, setCustomerId] = useState<string | null>(null);
+  const supabase = createClient();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -46,7 +50,7 @@ export default function Navbar() {
       if (user) {
         const { data: profile } = await supabase
           .from("users")
-          .select("full_name,subscription_id ")
+          .select("full_name, subscription_id")
           .eq("user_id", user.id)
           .single();
 
@@ -61,7 +65,7 @@ export default function Navbar() {
     };
 
     fetchUser();
-  }, []);
+  }, [supabase]);
 
   const handleOpenBillingPortal = async () => {
     if (!customerId) {

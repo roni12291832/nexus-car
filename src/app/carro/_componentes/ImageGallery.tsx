@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import Image from "next/image";
 
 interface ImageGalleryProps {
   images: (File | string)[] | string; // 👈 aceita string do banco também
@@ -69,11 +70,14 @@ export function ImageGallery({ images, alt, className }: ImageGalleryProps) {
         className="relative h-[45vh] md:h-[500px] w-full overflow-hidden rounded-2xl bg-[#0f1117] flex items-center justify-center cursor-pointer group"
         onClick={() => setIsFullscreen(true)}
       >
-        <img
+        <Image
           src={getImageSrc(parsedImages[currentIndex])}
           alt={`${alt} - Imagem ${currentIndex + 1}`}
-          className="w-full h-full object-contain transition-all duration-500 hover:scale-[1.02]"
+          fill
+          className="object-contain transition-all duration-500 hover:scale-[1.02]"
           key={currentIndex}
+          unoptimized
+          priority
         />
         <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
           <span className="bg-black/60 text-white px-3 py-1.5 rounded-full text-sm font-medium">Toque para expandir</span>
@@ -125,10 +129,12 @@ export function ImageGallery({ images, alt, className }: ImageGalleryProps) {
                   : "opacity-60 hover:opacity-100"
               )}
             >
-              <img
+              <Image
                 src={getImageSrc(image)}
                 alt={`${alt} - Miniatura ${index + 1}`}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                unoptimized
               />
             </button>
           ))}
@@ -139,10 +145,12 @@ export function ImageGallery({ images, alt, className }: ImageGalleryProps) {
       <Dialog open={isFullscreen} onOpenChange={setIsFullscreen}>
         <DialogContent className="max-w-[100vw] w-screen h-screen max-h-[100vh] p-0 m-0 bg-black border-none rounded-none flex flex-col pt-10">
           <div className="relative flex-1 w-full h-full flex items-center justify-center overflow-hidden">
-            <img
+            <Image
               src={getImageSrc(parsedImages[currentIndex])}
               alt={`${alt} - Fullscreen ${currentIndex + 1}`}
-              className="w-full h-full object-contain"
+              fill
+              className="object-contain"
+              unoptimized
             />
             {parsedImages.length > 1 && (
               <>

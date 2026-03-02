@@ -22,9 +22,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Clock, Edit3 } from "lucide-react";
-import CriarAgente from "./button-create-agente";
+import { ButtonCreateAgente } from "./button-create-agente";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 
 type Agent = {
@@ -35,8 +35,10 @@ type Agent = {
   lastUpdate: string;
 };
 
-export default function AgentConfigPage() {
+export default function ConfigAgente() {
   const { user } = useAuth();
+  const supabase = createClient();
+  const [config, setConfig] = useState<any>(null);
   const [agents, setAgents] = useState<Agent[]>([]);
 
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
@@ -100,11 +102,11 @@ export default function AgentConfigPage() {
       prev.map((a) =>
         a.id === selectedAgent.id
           ? {
-              ...a,
-              name: formData.name,
-              instructions: formData.instructions,
-              lastUpdate: new Date().toLocaleString("pt-BR"),
-            }
+            ...a,
+            name: formData.name,
+            instructions: formData.instructions,
+            lastUpdate: new Date().toLocaleString("pt-BR"),
+          }
           : a
       )
     );
@@ -147,7 +149,7 @@ export default function AgentConfigPage() {
             personalizadas e dê um nome único para cada assistente.
           </p>
 
-          <CriarAgente />
+          <ButtonCreateAgente />
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">

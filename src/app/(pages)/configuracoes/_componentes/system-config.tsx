@@ -23,7 +23,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 import CardConnection from "./card-connection";
 import WhatsAppConnections from "./whatsapp-conections";
 import { toast } from "sonner";
@@ -40,8 +40,9 @@ interface StoreSettings {
   atendente: string;
 }
 
-export default function Settings() {
+export default function SystemConfig() {
   const { user } = useAuth();
+  const supabase = createClient();
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [loadingPortal, setLoadingPortal] = useState(false);
@@ -121,7 +122,7 @@ export default function Settings() {
     };
 
     fetchUserSettings();
-  }, [user]);
+  }, [user, supabase]);
 
   const saveSettings = async () => {
     if (!user?.id) return;

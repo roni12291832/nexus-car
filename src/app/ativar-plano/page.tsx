@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Star, LogOut, ArrowLeft } from "lucide-react";
+import { Check, Star, LogOut } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import SubscribeButton from "./_componentes/button";

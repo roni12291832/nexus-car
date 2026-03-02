@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import {
     DollarSign, TrendingUp, TrendingDown, Wallet,
@@ -22,6 +22,7 @@ interface Transaction {
 
 export default function FinanceiroPage() {
     const { user } = useAuth();
+    const supabase = createClient();
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState<"entrada" | "saida" | null>(null);
@@ -36,11 +37,11 @@ export default function FinanceiroPage() {
             .order("created_at", { ascending: false });
         setTransactions((data as Transaction[]) || []);
         setLoading(false);
-    }, [user?.id]);
+    }, [user?.id, supabase]);
 
     useEffect(() => {
         fetchTransactions();
-    }, [fetchTransactions]);
+    }, [user, supabase, fetchTransactions]);
 
     const addTransaction = async () => {
         if (!form.description || !form.amount || !showForm) return;

@@ -1,6 +1,6 @@
 import { VehicleDetails } from "../_componentes/VehicleDetails";
 import type { Vehicle } from "../../../../types/vehicle";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 
 interface PageProps {
   params: {
@@ -9,6 +9,7 @@ interface PageProps {
 }
 
 export default async function Page({ params }: PageProps) {
+  const supabase = await createClient();
   const id = Number(params.id);
 
   if (isNaN(id)) {

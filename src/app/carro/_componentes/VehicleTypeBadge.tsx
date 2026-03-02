@@ -1,11 +1,7 @@
 import { Car, Truck, CircleDot } from "lucide-react";
 import type { Vehicle } from "../../../../types/vehicle";
 import { Badge } from "@/components/ui/badge";
-
-interface VehicleTypeBadgeProps {
-  type: Vehicle["type"];
-  className?: string;
-}
+import { cn } from "@/lib/utils";
 
 export const typeConfig = {
   SUV: {
@@ -65,13 +61,17 @@ export const typeConfig = {
   },
 } as const;
 
-export function VehicleTypeBadge({ type, className }: VehicleTypeBadgeProps) {
-  const config = typeConfig[type];
+export function VehicleTypeBadge({ type }: { type: string }) {
+  const config = typeConfig[type as keyof typeof typeConfig] || {
+    icon: Car,
+    bgClass: "bg-gray-500/15",
+    textClass: "text-gray-600",
+  };
   const Icon = config.icon;
 
   return (
-    <Badge variant="outline">
-      <Icon className="w-4 h-4" />
+    <Badge className={cn(config.bgClass, config.textClass, "border-none gap-1.5")}>
+      <Icon className="w-3 h-3" />
       {type}
     </Badge>
   );
