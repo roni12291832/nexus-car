@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Users, Car, TrendingUp, Wifi, WifiOff,
@@ -26,6 +26,7 @@ const statusColors: Record<string, string> = {
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const supabase = createClient();
   const [whatsappConnected, setWhatsappConnected] = useState(false);
   const [storeName, setStoreName] = useState("");
   const [leads, setLeads] = useState<Lead[]>([]);

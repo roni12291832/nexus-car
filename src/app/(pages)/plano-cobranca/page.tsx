@@ -8,12 +8,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import {
   Check,
   Crown,
   CreditCard,
   Calendar,
+  ArrowLeft,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
@@ -140,11 +142,19 @@ export default function Billing() {
   return (
     <div className="min-h-screen bg-[#050608] p-6 pb-20 antialiased">
       <div className="max-w-6xl mx-auto space-y-12">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-4xl font-black text-white tracking-tight border-none">Minha Assinatura</h1>
-          <p className="text-slate-400 font-light">
-            Gerencie seu plano, faturas e acompanhe seu uso em tempo real.
-          </p>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex flex-col gap-2">
+            <h1 className="text-4xl font-black text-white tracking-tight border-none">Minha Assinatura</h1>
+            <p className="text-slate-400 font-light">
+              Gerencie seu plano, faturas e acompanhe seu uso em tempo real.
+            </p>
+          </div>
+          <Link href="/home">
+            <Button variant="ghost" className="text-slate-400 hover:text-white hover:bg-white/5 rounded-xl gap-2 font-medium">
+              <ArrowLeft className="w-4 h-4" />
+              Voltar ao Início
+            </Button>
+          </Link>
         </div>
 
         {/* Plano Atual */}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Users, Plus, Search, Car } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -60,6 +60,7 @@ function WhatsAppIcon({ className }: { className?: string }) {
 
 export default function LeadsPage() {
   const { user } = useAuth();
+  const supabase = createClient();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");

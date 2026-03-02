@@ -1,12 +1,24 @@
 "use client";
 
-import { Check, Star } from "lucide-react";
+import { Check, Star, LogOut, ArrowLeft } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import SubscribeButton from "./_componentes/button";
+import Link from "next/link";
 
 export default function PlanNotActivated() {
   return (
     <div className="min-h-screen bg-[#050608] relative overflow-hidden flex items-center justify-center p-4 antialiased">
+      {/* Botão Sair */}
+      <div className="absolute top-8 right-8 z-50">
+        <Link href="/login">
+          <Button variant="ghost" className="text-slate-400 hover:text-white hover:bg-white/5 rounded-xl gap-2 font-medium">
+            <LogOut className="w-4 h-4" />
+            Sair e voltar ao login
+          </Button>
+        </Link>
+      </div>
+
       {/* Mesh Gradient Background */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
         <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-violet-600/10 rounded-full blur-[140px]" />

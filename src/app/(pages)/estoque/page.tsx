@@ -35,7 +35,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Filter, Eye, Loader2, Trash, Pencil, X, Upload } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
-import { supabase } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface Vehicle {
@@ -67,6 +67,7 @@ interface Vehicle {
 
 export default function Inventory() {
   const { user } = useAuth();
+  const supabase = createClient();
 
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
