@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Check } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -101,35 +101,46 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="flex justify-center items-center flex-col dark:bg-gray-900">
-      <Tabs defaultValue="login" className=" rounded-sm">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="login">Já tem conta? Entre</TabsTrigger>
-          <TabsTrigger value="register">Novo? Registre-se</TabsTrigger>
+    <div className="flex justify-center items-center flex-col">
+      <Tabs defaultValue="register" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 h-14 p-1.5 bg-white/5 rounded-2xl mb-8 backdrop-blur-md border border-white/10">
+          <TabsTrigger
+            value="register"
+            className="rounded-xl data-[state=active]:bg-violet-600 data-[state=active]:text-white text-slate-400 text-sm font-bold transition-all duration-300 px-4"
+          >
+            Criar conta
+          </TabsTrigger>
+          <TabsTrigger
+            value="login"
+            className="rounded-xl data-[state=active]:bg-violet-600 data-[state=active]:text-white text-slate-400 text-sm font-bold transition-all duration-300 px-4"
+          >
+            Entrar
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="login">
-          <Card className="rounded-sm">
-            <CardHeader>
-              <CardTitle>Login</CardTitle>
-              <CardDescription>
-                Insira suas credenciais para acessar sua conta.
+        <TabsContent value="login" className="mt-0 focus-visible:outline-none">
+          <Card className="border-white/10 shadow-2xl rounded-[32px] bg-[#0f1117]/80 backdrop-blur-2xl overflow-hidden animate-in fade-in zoom-in duration-500">
+            <CardHeader className="space-y-1 pb-4">
+              <CardTitle className="text-2xl font-bold text-white">Bem-vindo de volta</CardTitle>
+              <CardDescription className="text-slate-400">
+                Acesse sua conta para gerenciar seus negócios.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <form onSubmit={handleLogin}>
+              <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="login-email">E-mail</Label>
+                  <Label htmlFor="login-email" className="text-xs font-semibold uppercase tracking-wider text-slate-500">E-mail</Label>
                   <Input
                     id="login-email"
                     type="email"
                     placeholder="seuemail@exemplo.com"
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
+                    className="bg-white/5 border-white/10 text-white placeholder:text-slate-600 focus:border-violet-500/50 focus:ring-violet-500/20 h-12 rounded-xl"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="login-senha">Senha</Label>
+                  <Label htmlFor="login-senha" className="text-xs font-semibold uppercase tracking-wider text-slate-500">Senha</Label>
                   <div className="relative">
                     <Input
                       id="login-password"
@@ -137,12 +148,12 @@ export default function LoginForm() {
                       placeholder="********"
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
-                      className="pr-10"
+                      className="bg-white/5 border-white/10 text-white placeholder:text-slate-600 focus:border-violet-500/50 focus:ring-violet-500/20 h-12 rounded-xl pr-12"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword((prev) => !prev)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-[#372b82]"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
                     >
                       {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
@@ -150,7 +161,7 @@ export default function LoginForm() {
                 </div>
 
                 <Button
-                  className="w-full my-4 bg-[#372b82]  text-white"
+                  className="w-full bg-violet-600 hover:bg-violet-500 text-white h-12 rounded-xl font-bold shadow-lg shadow-violet-900/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
                   type="submit"
                 >
                   Entrar
@@ -176,29 +187,30 @@ export default function LoginForm() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="register">
-          <Card className="rounded-sm">
-            <CardHeader>
-              <CardTitle>Registre-se</CardTitle>
-              <CardDescription>
-                Crie uma conta preenchendo as informações abaixo.
+        <TabsContent value="register" className="mt-0 focus-visible:outline-none">
+          <Card className="border-white/10 shadow-2xl rounded-[32px] bg-[#0f1117]/80 backdrop-blur-2xl overflow-hidden animate-in fade-in zoom-in duration-500">
+            <CardHeader className="space-y-1 pb-4">
+              <CardTitle className="text-2xl font-bold text-white">Criar sua conta</CardTitle>
+              <CardDescription className="text-slate-400">
+                Junte-se a milhares de concessionárias que usam Nexus.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <form onSubmit={handleRegister}>
+              <form onSubmit={handleRegister} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="register-email">E-mail</Label>
+                  <Label htmlFor="register-email" className="text-xs font-semibold uppercase tracking-wider text-slate-500">E-mail corporativo</Label>
                   <Input
                     id="register-email"
                     type="email"
                     placeholder="seuemail@exemplo.com"
                     value={registerEmail}
                     onChange={(e) => setRegisterEmail(e.target.value)}
+                    className="bg-white/5 border-white/10 text-white placeholder:text-slate-600 focus:border-violet-500/50 focus:ring-violet-500/20 h-12 rounded-xl"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="register-password">Senha</Label>
+                  <Label htmlFor="register-password" title="Mínimo 8 caracteres" className="text-xs font-semibold uppercase tracking-wider text-slate-500">Senha</Label>
                   <div className="relative">
                     <Input
                       id="register-password"
@@ -206,12 +218,12 @@ export default function LoginForm() {
                       placeholder="********"
                       value={registerPassword}
                       onChange={(e) => setRegisterPassword(e.target.value)}
-                      className="pr-10"
+                      className="bg-white/5 border-white/10 text-white placeholder:text-slate-600 focus:border-violet-500/50 focus:ring-violet-500/20 h-12 rounded-xl pr-12"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPasswordRegister((prev) => !prev)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-[#372b82]"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
                     >
                       {showPasswordRegister ? (
                         <EyeOff size={20} />
@@ -223,7 +235,7 @@ export default function LoginForm() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="confirm-password">Confirme sua senha</Label>
+                  <Label htmlFor="confirm-password" className="text-xs font-semibold uppercase tracking-wider text-slate-500">Confirmar Senha</Label>
                   <div className="relative">
                     <Input
                       id="confirm-password"
@@ -231,14 +243,14 @@ export default function LoginForm() {
                       placeholder="********"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="pr-10"
+                      className="bg-white/5 border-white/10 text-white placeholder:text-slate-600 focus:border-violet-500/50 focus:ring-violet-500/20 h-12 rounded-xl pr-12"
                     />
                     <button
                       type="button"
                       onClick={() =>
                         setShowPasswordRegisterConfirm((prev) => !prev)
                       }
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-[#372b82]"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
                     >
                       {showPasswordRegisterConfirm ? (
                         <EyeOff size={20} />
@@ -250,37 +262,36 @@ export default function LoginForm() {
                 </div>
 
                 <Button
-                  className="w-full my-4 bg-[#372b82]  text-white"
+                  className="w-full bg-violet-600 hover:bg-violet-500 text-white h-12 rounded-xl font-bold shadow-lg shadow-violet-900/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
                   type="submit"
                 >
-                  Registrar
+                  Criar conta agora
                 </Button>
               </form>
 
-              <div className="mt-6 space-y-4">
-                <Separator className="my-4" />
-                <div className="space-y-2">
+              <div className="mt-4">
+                <Separator className="bg-white/5" />
+                <div className="mt-6">
                   <SignInGoogleButton />
                 </div>
               </div>
             </CardContent>
 
-            <CardFooter className="text-sm text-muted-foreground text-center">
+            <CardFooter className="text-[11px] text-slate-500 text-center pb-6">
               <p>
-                Ao clicar em &quot;Registrar&quot;, você concorda com nossos
+                Ao registrar, você aceita nossos
                 <Link
-                  className="text-[#372b82] underline"
+                  className="text-violet-400 hover:text-violet-300 transition-colors px-1"
                   href="/termos-de-uso"
                 >
-                  {" "}
-                  Termos de Uso
-                </Link>{" "}
-                e{" "}
+                  Termos
+                </Link>
+                e
                 <Link
-                  className="text-[#372b82] underline"
+                  className="text-violet-400 hover:text-violet-300 transition-colors px-1"
                   href="/politica-de-privacidade"
                 >
-                  Política de Privacidade.
+                  Privacidade.
                 </Link>
               </p>
             </CardFooter>
@@ -289,21 +300,24 @@ export default function LoginForm() {
       </Tabs>
 
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Conta criada com sucesso!</DialogTitle>
-            <DialogDescription>
-              Agora vá até a aba{" "}
-              <strong>&quot;Já tem conta? Entre&quot;</strong> e acesse com seu
-              e-mail e senha pela primeira vez.
-            </DialogDescription>
+        <DialogContent className="rounded-[40px] border border-white/10 shadow-2xl bg-[#0f1117] p-10 max-w-md">
+          <DialogHeader className="space-y-6">
+            <div className="w-20 h-20 bg-emerald-500/10 rounded-3xl flex items-center justify-center mx-auto border border-emerald-500/20">
+              <Check className="w-10 h-10 text-emerald-400" />
+            </div>
+            <div className="space-y-2">
+              <DialogTitle className="text-3xl font-bold text-center text-white">Quase lá!</DialogTitle>
+              <DialogDescription className="text-center text-slate-400 text-lg">
+                Enviamos um link de confirmação para o seu e-mail.
+              </DialogDescription>
+            </div>
           </DialogHeader>
-          <DialogFooter>
+          <DialogFooter className="mt-8">
             <Button
               onClick={() => setOpenDialog(false)}
-              className="bg-[#372b82] text-black hover:bg-[#f4e37b]"
+              className="w-full bg-violet-600 hover:bg-violet-500 text-white h-14 rounded-2xl font-bold text-lg shadow-xl shadow-violet-900/40 transition-all hover:scale-[1.05] active:scale-[0.95]"
             >
-              Ok, entendi
+              Entendi
             </Button>
           </DialogFooter>
         </DialogContent>
