@@ -41,9 +41,6 @@ export default function LoginForm() {
     useState(false);
 
   const [openDialog, setOpenDialog] = useState(false);
-
-  const router = useRouter();
-
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     const supabase = createClient();

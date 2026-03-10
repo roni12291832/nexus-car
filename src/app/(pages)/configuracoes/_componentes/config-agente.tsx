@@ -38,7 +38,6 @@ type Agent = {
 export default function ConfigAgente() {
   const { user } = useAuth();
   const supabase = createClient();
-  const [config, setConfig] = useState<any>(null);
   const [agents, setAgents] = useState<Agent[]>([]);
 
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
