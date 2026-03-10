@@ -70,7 +70,7 @@ export default function LoginForm() {
       );
     } else {
       toast.success("Login realizado com sucesso!");
-      router.push("/");
+      window.location.href = "/";
     }
   };
 

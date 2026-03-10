@@ -43,7 +43,7 @@ export default function AdminLoginPage() {
             return;
         }
 
-        router.push("/admin");
+        window.location.href = "/admin";
     };
 
     return (
